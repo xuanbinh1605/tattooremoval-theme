@@ -1,0 +1,544 @@
+/* 
+ * Main Stylesheet for Search Tattoo Removal Theme
+ * Version: 1.0.0
+ */
+
+/* ==========================================================================
+   Reset & Base Styles
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #004499;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.site {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.site-content {
+    flex: 1;
+    padding: 40px 0;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.site-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e1e1e1;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-branding {
+    display: flex;
+    align-items: center;
+}
+
+.site-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.site-title a {
+    color: #333;
+}
+
+.site-description {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+/* Navigation */
+.main-navigation {
+    display: flex;
+    align-items: center;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.primary-menu-container ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.primary-menu-container li {
+    position: relative;
+}
+
+.primary-menu-container a {
+    color: #333;
+    font-weight: 500;
+    padding: 10px 0;
+    display: block;
+}
+
+.primary-menu-container a:hover {
+    color: #0066cc;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.site-footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 40px 0 20px;
+    margin-top: 60px;
+}
+
+.footer-widgets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-widget-area h2 {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.footer-widget-area ul {
+    list-style: none;
+}
+
+.footer-widget-area li {
+    margin-bottom: 8px;
+}
+
+.footer-widget-area a {
+    color: #ecf0f1;
+}
+
+.footer-widget-area a:hover {
+    color: #3498db;
+}
+
+.site-info {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    text-align: center;
+}
+
+.copyright {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #95a5a6;
+}
+
+/* ==========================================================================
+   Clinic Cards
+   ========================================================================== */
+
+.clinic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.clinic-card {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.clinic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.clinic-thumbnail img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.clinic-content {
+    padding: 20px;
+}
+
+.clinic-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.clinic-title a {
+    color: #333;
+}
+
+.clinic-title a:hover {
+    color: #0066cc;
+}
+
+/* Rating */
+.clinic-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.stars {
+    display: flex;
+    gap: 2px;
+}
+
+.star {
+    font-size: 18px;
+}
+
+.star.full {
+    color: #ffa500;
+}
+
+.star.half {
+    color: #ffa500;
+}
+
+.star.empty {
+    color: #ddd;
+}
+
+.rating-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.reviews-count {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Clinic Details */
+.clinic-details {
+    margin: 15px 0;
+}
+
+.clinic-details > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.clinic-excerpt {
+    margin: 15px 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.clinic-actions {
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   Single Clinic
+   ========================================================================== */
+
+.single-clinic .entry-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.single-clinic .entry-title {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.clinic-featured-image {
+    margin-bottom: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.clinic-info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.clinic-main-content {
+    background: #fff;
+}
+
+.entry-content {
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.clinic-treatments {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.clinic-treatments h3 {
+    margin-bottom: 15px;
+}
+
+.treatment-list {
+    list-style: none;
+}
+
+.treatment-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.treatment-list li:last-child {
+    border-bottom: none;
+}
+
+/* Clinic Sidebar */
+.clinic-sidebar {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.clinic-contact-card {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.clinic-contact-card h3 {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #0066cc;
+}
+
+.contact-item {
+    margin-bottom: 20px;
+}
+
+.contact-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-item strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.contact-item p {
+    color: #666;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #0066cc;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #004499;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    color: #fff;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+
+.pagination {
+    margin: 40px 0;
+    text-align: center;
+}
+
+.pagination ul {
+    list-style: none;
+    display: inline-flex;
+    gap: 5px;
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination a {
+    display: block;
+    padding: 8px 14px;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    color: #333;
+}
+
+.pagination a:hover,
+.pagination li.active a {
+    background-color: #0066cc;
+    color: #fff;
+    border-color: #0066cc;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .site-header .container {
+        flex-wrap: wrap;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    .primary-menu-container ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+    
+    .primary-menu-container.active ul {
+        display: flex;
+    }
+    
+    .clinic-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .clinic-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-widgets {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+.skip-link:focus {
+    background-color: #f1f1f1;
+    border-radius: 3px;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+    clip: auto !important;
+    color: #0066cc;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    height: auto;
+    left: 5px;
+    line-height: normal;
+    padding: 15px 23px 14px;
+    text-decoration: none;
+    top: 5px;
+    width: auto;
+    z-index: 100000;
+}

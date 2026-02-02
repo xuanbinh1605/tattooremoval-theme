@@ -1,0 +1,11 @@
+<?php
+/**
+ * Screenshot placeholder
+ * 
+ * To add a proper screenshot:
+ * 1. Create a 1200x900px PNG file
+ * 2. Name it screenshot.png
+ * 3. Place it in the root of the theme folder
+ * 
+ * This is just a placeholder file.
+ */

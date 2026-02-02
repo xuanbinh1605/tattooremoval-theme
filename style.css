@@ -1,0 +1,20 @@
+/*
+Theme Name: Search Tattoo Removal
+Theme URI: https://searchtattooremoval.com
+Author: Robert Phillip
+Author URI: https://searchtattooremoval.com
+Description: A scalable WordPress theme for tattoo removal clinic search and directory
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: search-tattoo-removal
+Tags: custom-header, custom-menu, custom-logo, featured-images, footer-widgets, full-width-template, rtl-language-support, theme-options, translation-ready
+*/
+
+/* 
+ * Main stylesheet - styles are loaded from assets/css
+ * This file is required by WordPress for theme recognition
+ */
