@@ -160,3 +160,25 @@ function str_pagination() {
     
     echo '</ul></nav>' . "\n";
 }
+
+/**
+ * Custom menu item class for Tailwind styling
+ */
+function str_menu_item_classes($classes, $item, $args, $depth) {
+    if ($args->theme_location === 'primary') {
+        $classes = array('text-sm', 'font-semibold', 'text-graphite', 'hover:text-brand', 'transition-colors');
+    }
+    return $classes;
+}
+add_filter('nav_menu_css_class', 'str_menu_item_classes', 10, 4);
+
+/**
+ * Custom menu link attributes for Tailwind styling
+ */
+function str_menu_link_attributes($atts, $item, $args, $depth) {
+    if ($args->theme_location === 'primary') {
+        $atts['class'] = 'text-sm font-semibold text-graphite hover:text-brand transition-colors';
+    }
+    return $atts;
+}
+add_filter('nav_menu_link_attributes', 'str_menu_link_attributes', 10, 4);
