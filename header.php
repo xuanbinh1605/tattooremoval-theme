@@ -12,6 +12,38 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="profile" href="https://gmpg.org/xfn/11">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: '#2F80ED', // Medical Trust Blue
+                hover: '#1a6edb',
+                light: '#e9f2fd',
+              },
+              charcoal: '#2B2E34', // Primary Text
+              graphite: '#6B7280', // Secondary Text
+              offwhite: '#F7F9FC', // Main Background
+              teal: '#2BB0A6',     // Healing Teal (Accents)
+              amber: '#F2B705',    // Warm Amber (Ratings)
+              'gray-light': '#E5E7EB' // UI Lines
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      body {
+        background-color: #F7F9FC;
+        color: #2B2E34;
+      }
+    </style>
+    
     <?php wp_head(); ?>
 </head>
 
