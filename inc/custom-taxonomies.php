@@ -240,3 +240,31 @@ function str_prepopulate_clinic_features() {
     }
 }
 add_action('after_switch_theme', 'str_prepopulate_clinic_features');
+
+/**
+ * Pre-populate US states in us_location taxonomy
+ */
+function str_prepopulate_us_states() {
+    $states = array(
+        'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+        'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
+        'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+        'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
+        'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma',
+        'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
+        'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+        'Wisconsin', 'Wyoming'
+    );
+
+    foreach ($states as $state) {
+        $slug = sanitize_title($state);
+        if (!term_exists($slug, 'us_location')) {
+            wp_insert_term($state, 'us_location', array(
+                'slug'   => $slug,
+                'parent' => 0, // States are parent terms (no parent)
+            ));
+        }
+    }
+}
+add_action('after_switch_theme', 'str_prepopulate_us_states');
