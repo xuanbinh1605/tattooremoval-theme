@@ -497,6 +497,349 @@ get_header();
             </div>
         </section>
 
+        <!-- Browse by State Section -->
+        <section class="py-20 bg-white border-t border-gray-light">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <h2 class="text-4xl font-extrabold text-charcoal tracking-tight uppercase">Browse by State</h2>
+                    <p class="mt-2 text-graphite">Find centers in your specific region of the US.</p>
+                </div>
+
+                <!-- Featured States Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Alabama -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Alabama</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">5 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">23 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Alaska -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Alaska</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">2 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">5 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Arizona -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Arizona</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">8 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">56 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Arkansas -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Arkansas</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">4 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">18 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- California -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">California</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">42 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">245 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Colorado -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Colorado</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">9 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">48 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Connecticut -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Connecticut</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">6 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">22 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Delaware -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Delaware</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">2 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">8 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Florida -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Florida</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">25 cities</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">134 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All States Grid -->
+                <div class="mt-12 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 border-t border-gray-light pt-12">
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Georgia</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">52 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Hawaii</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">12 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Idaho</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">11 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Illinois</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">67 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Indiana</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">31 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Iowa</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">15 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Kansas</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">14 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Kentucky</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">21 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Louisiana</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">25 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Maine</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">9 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Maryland</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">34 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Massachusetts</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">41 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Michigan</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">46 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Minnesota</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">29 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Mississippi</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">13 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Missouri</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">28 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Montana</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">6 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Nebraska</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">10 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Nevada</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">38 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">New Hampshire</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">8 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">New Jersey</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">55 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">New Mexico</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">16 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">New York</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">158 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">North Carolina</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">49 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">North Dakota</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">4 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Ohio</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">51 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Oklahoma</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">23 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Oregon</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">33 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Pennsylvania</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">62 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Rhode Island</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">7 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">South Carolina</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">26 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">South Dakota</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">5 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Tennessee</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">35 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Texas</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">187 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Utah</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">19 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Vermont</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">4 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Virginia</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">44 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Washington</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">58 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">West Virginia</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">9 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Wisconsin</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">27 clinics</div>
+                    </div>
+                    <div class="p-4 border border-gray-light rounded-xl hover:border-brand hover:shadow-lg cursor-pointer transition-all bg-white group flex flex-col justify-center text-center">
+                        <div class="font-black text-charcoal text-sm group-hover:text-brand mb-0.5">Wyoming</div>
+                        <div class="text-[10px] text-graphite font-bold uppercase tracking-widest">3 clinics</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </main>
 
