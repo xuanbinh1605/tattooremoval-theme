@@ -64,6 +64,439 @@ get_header();
             </div>
         </section>
 
+        <!-- Top Rated Clinics Section -->
+        <section class="py-20 bg-offwhite">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold text-charcoal tracking-tight uppercase">Top Rated Clinics</h2>
+                    <p class="mt-4 text-xl text-graphite">Highest-rated specialists recommended by patients like you.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    
+                    <!-- Clinic Card 1 -->
+                    <div class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+                        <div class="relative h-44 w-full overflow-hidden">
+                            <img alt="Clean Slate Laser Center" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://picsum.photos/400/300?random=1">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
+                                    View Listing 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
+                        </div>
+                        <div class="p-4 flex flex-col">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5">Clean Slate Laser Center</h3>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-amber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current" aria-hidden="true">
+                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                        </svg>
+                                        <span class="ml-1 text-charcoal font-black text-xs">4.9</span>
+                                    </div>
+                                    <span class="text-gray-light">•</span>
+                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider">342 Reviews</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 mb-3">
+                                <div class="flex items-center text-xs overflow-hidden">
+                                    <button class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap">Austin</span>
+                                    </button>
+                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
+                                    <span class="font-bold whitespace-nowrap text-teal">Open Now</span>
+                                </div>
+                                <a href="tel:5125550199" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                                    </svg>
+                                    <span class="font-bold">(512) 555-0199</span>
+                                </a>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate">Candela PicoWay (Picosecond)</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Medical Supervision</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Top-rated in Austin</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Free Consultations</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                                <div class="text-[9px] font-bold text-graphite">$90 range</div>
+                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
+                                    View profile 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinic Card 2 -->
+                    <div class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+                        <div class="relative h-44 w-full overflow-hidden">
+                            <img alt="Invisible Ink Tattoo Removers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://picsum.photos/400/300?random=2">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
+                                    View Listing 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
+                        </div>
+                        <div class="p-4 flex flex-col">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5">Invisible Ink Tattoo Removers</h3>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-amber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current" aria-hidden="true">
+                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                        </svg>
+                                        <span class="ml-1 text-charcoal font-black text-xs">4.7</span>
+                                    </div>
+                                    <span class="text-gray-light">•</span>
+                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider">128 Reviews</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 mb-3">
+                                <div class="flex items-center text-xs overflow-hidden">
+                                    <button class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap">New York</span>
+                                    </button>
+                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
+                                    <span class="font-bold whitespace-nowrap text-teal">Open Now</span>
+                                </div>
+                                <a href="tel:2125550122" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                                    </svg>
+                                    <span class="font-bold">(212) 555-0122</span>
+                                </a>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate">PicoSure</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Medical Supervision</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Top-rated in New York</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Free Consultations</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                                <div class="text-[9px] font-bold text-graphite">$150 range</div>
+                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
+                                    View profile 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinic Card 3 -->
+                    <div class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+                        <div class="relative h-44 w-full overflow-hidden">
+                            <img alt="Fade Away Laser Spa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://picsum.photos/400/300?random=3">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
+                                    View Listing 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
+                        </div>
+                        <div class="p-4 flex flex-col">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5">Fade Away Laser Spa</h3>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-amber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current" aria-hidden="true">
+                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                        </svg>
+                                        <span class="ml-1 text-charcoal font-black text-xs">4.8</span>
+                                    </div>
+                                    <span class="text-gray-light">•</span>
+                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider">510 Reviews</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 mb-3">
+                                <div class="flex items-center text-xs overflow-hidden">
+                                    <button class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap">Los Angeles</span>
+                                    </button>
+                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
+                                    <span class="font-bold whitespace-nowrap text-teal">Open Now</span>
+                                </div>
+                                <a href="tel:3235550144" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                                    </svg>
+                                    <span class="font-bold">(323) 555-0144</span>
+                                </a>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate">Lutronic Spectra</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Medical Supervision</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Top-rated in Los Angeles</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Certified Techs</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                                <div class="text-[9px] font-bold text-graphite">Consultation range</div>
+                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
+                                    View profile 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinic Card 4 -->
+                    <div class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+                        <div class="relative h-44 w-full overflow-hidden">
+                            <img alt="Miami Ink Erasers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://picsum.photos/400/300?random=4">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
+                                    View Listing 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-4 flex flex-col">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5">Miami Ink Erasers</h3>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-amber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current" aria-hidden="true">
+                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                        </svg>
+                                        <span class="ml-1 text-charcoal font-black text-xs">4.6</span>
+                                    </div>
+                                    <span class="text-gray-light">•</span>
+                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider">215 Reviews</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 mb-3">
+                                <div class="flex items-center text-xs overflow-hidden">
+                                    <button class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap">Miami</span>
+                                    </button>
+                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
+                                    <span class="font-bold whitespace-nowrap text-red-500">Closed until 9am tomorrow</span>
+                                </div>
+                                <a href="tel:3055550177" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                                    </svg>
+                                    <span class="font-bold">(305) 555-0177</span>
+                                </a>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate">Enlighten III</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Medical Supervision</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Top-rated in Miami</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Free Consultations</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                                <div class="text-[9px] font-bold text-graphite">$100 range</div>
+                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
+                                    View profile 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinic Card 5 -->
+                    <div class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+                        <div class="relative h-44 w-full overflow-hidden">
+                            <img alt="Chicago Laser Removal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://picsum.photos/400/300?random=5">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
+                                    View Listing 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
+                        </div>
+                        <div class="p-4 flex flex-col">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5">Chicago Laser Removal</h3>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-amber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current" aria-hidden="true">
+                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                        </svg>
+                                        <span class="ml-1 text-charcoal font-black text-xs">4.5</span>
+                                    </div>
+                                    <span class="text-gray-light">•</span>
+                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider">98 Reviews</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 mb-3">
+                                <div class="flex items-center text-xs overflow-hidden">
+                                    <button class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap">Chicago</span>
+                                    </button>
+                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
+                                    <span class="font-bold whitespace-nowrap text-red-500">Closed until 10am tomorrow</span>
+                                </div>
+                                <a href="tel:3125550188" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                                    </svg>
+                                    <span class="font-bold">(312) 555-0188</span>
+                                </a>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate">Q-Switch Nd:YAG</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Medical Supervision</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Top-rated in Chicago</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Free Consultations</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                                <div class="text-[9px] font-bold text-graphite">$80 range</div>
+                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
+                                    View profile 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinic Card 6 -->
+                    <div class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+                        <div class="relative h-44 w-full overflow-hidden">
+                            <img alt="Seattle Skin Clear" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://picsum.photos/400/300?random=6">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
+                                    View Listing 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
+                        </div>
+                        <div class="p-4 flex flex-col">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5">Seattle Skin Clear</h3>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center text-amber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current" aria-hidden="true">
+                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                        </svg>
+                                        <span class="ml-1 text-charcoal font-black text-xs">4.9</span>
+                                    </div>
+                                    <span class="text-gray-light">•</span>
+                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider">156 Reviews</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 mb-3">
+                                <div class="flex items-center text-xs overflow-hidden">
+                                    <button class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
+                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap">Seattle</span>
+                                    </button>
+                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
+                                    <span class="font-bold whitespace-nowrap text-red-500">Closed until 9am tomorrow</span>
+                                </div>
+                                <a href="tel:2065550133" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-hidden" aria-hidden="true">
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+                                    </svg>
+                                    <span class="font-bold">(206) 555-0133</span>
+                                </a>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate">PiQo4</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Medical Supervision</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Top-rated in Seattle</span>
+                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">Free Consultations</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                                <div class="text-[9px] font-bold text-graphite">$120 range</div>
+                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
+                                    View profile 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
     </div>
 </main>
 
