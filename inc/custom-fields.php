@@ -33,6 +33,15 @@ function str_add_clinic_meta_boxes() {
     );
 
     add_meta_box(
+        'clinic_status_verification',
+        __('Status & Verification', 'search-tattoo-removal'),
+        'str_clinic_status_verification_callback',
+        'clinic',
+        'normal',
+        'high'
+    );
+
+    add_meta_box(
         'clinic_address',
         __('Address Details', 'search-tattoo-removal'),
         'str_clinic_address_callback',
@@ -132,6 +141,28 @@ function str_clinic_rating_callback($post) {
 }
 
 /**
+ * Status & Verification Meta Box
+ */
+function str_clinic_status_verification_callback($post) {
+    $is_verified = get_post_meta($post->ID, '_is_verified', true);
+    $open_status = get_post_meta($post->ID, '_open_status', true);
+    ?>
+    <p>
+        <label>
+            <input type="checkbox" name="is_verified" value="1" <?php checked($is_verified, '1'); ?>>
+            <strong><?php _e('Verified Clinic', 'search-tattoo-removal'); ?></strong>
+        </label>
+        <br><span class="description"><?php _e('Shows "Verified" badge on clinic card', 'search-tattoo-removal'); ?></span>
+    </p>
+    <p>
+        <label for="open_status"><strong><?php _e('Open Status:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="open_status" name="open_status" value="<?php echo esc_attr($open_status); ?>" style="width: 100%;" placeholder="Open Now, Closed until 9am tomorrow, etc.">
+        <span class="description"><?php _e('Display text for current operating status (e.g., "Open Now", "Closed until 9am tomorrow")', 'search-tattoo-removal'); ?></span>
+    </p>
+    <?php
+}
+
+/**
  * Address Meta Box
  * NOTE: City & State should be set via US Location taxonomy, not here
  */
@@ -179,6 +210,7 @@ function str_clinic_pricing_callback($post) {
     $min_price = get_post_meta($post->ID, '_min_price', true);
     $max_price = get_post_meta($post->ID, '_max_price', true);
     $consultation_price = get_post_meta($post->ID, '_consultation_price', true);
+    $price_range_display = get_post_meta($post->ID, '_price_range_display', true);
     ?>
     <p>
         <label for="min_price"><strong><?php _e('Minimum Price ($):', 'search-tattoo-removal'); ?></strong></label><br>
@@ -192,6 +224,11 @@ function str_clinic_pricing_callback($post) {
         <label for="consultation_price"><strong><?php _e('Consultation Price:', 'search-tattoo-removal'); ?></strong></label><br>
         <input type="text" id="consultation_price" name="consultation_price" value="<?php echo esc_attr($consultation_price); ?>" style="width: 100%;" placeholder="Free, $50, Varies, etc.">
         <span class="description"><?php _e('Can be text like "Free", "$50", "Varies", etc.', 'search-tattoo-removal'); ?></span>
+    </p>
+    <p>
+        <label for="price_range_display"><strong><?php _e('Price Range Display (for card):', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="price_range_display" name="price_range_display" value="<?php echo esc_attr($price_range_display); ?>" style="width: 100%;" placeholder="$90 range, $150 range, Consultation range, etc.">
+        <span class="description"><?php _e('Display text shown on clinic cards (e.g., "$90 range", "$150 range", "Consultation range")', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
@@ -324,8 +361,8 @@ function str_save_clinic_meta($post_id) {
     $fields = array(
         'website', 'phone', 'google_maps_url', 'rating', 'reviews_count',
         'street', 'zip_code', 'full_address', 'operating_hours_raw',
-        'min_price', 'max_price', 'consultation_price', 'logo',
-        'before_after_gallery', 'years_in_business'
+        'min_price', 'max_price', 'consultation_price', 'price_range_display',
+        'logo', 'before_after_gallery', 'years_in_business', 'open_status'
     );
 
     foreach ($fields as $field) {
@@ -337,6 +374,10 @@ function str_save_clinic_meta($post_id) {
     // Handle featured checkbox
     $is_featured = isset($_POST['is_featured']) ? '1' : '0';
     update_post_meta($post_id, '_is_featured', $is_featured);
+
+    // Handle verified checkbox
+    $is_verified = isset($_POST['is_verified']) ? '1' : '0';
+    update_post_meta($post_id, '_is_verified', $is_verified);
 
     // Handle laser technologies (relationship)
     if (isset($_POST['laser_technologies'])) {

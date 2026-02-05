@@ -228,6 +228,12 @@ function str_prepopulate_clinic_features() {
         
         // Medical
         array('name' => 'Medical Supervision', 'slug' => 'medical-supervision', 'group' => 'medical'),
+        
+        // Consultations
+        array('name' => 'Free Consultations', 'slug' => 'free-consultations', 'group' => 'consultations'),
+        
+        // Certification
+        array('name' => 'Certified Techs', 'slug' => 'certified-techs', 'group' => 'certification'),
     );
 
     foreach ($features as $feature) {
