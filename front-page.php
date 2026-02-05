@@ -840,6 +840,180 @@ get_header();
             </div>
         </section>
 
+        <!-- Major Cities Section -->
+        <section class="py-20 bg-offwhite border-t border-gray-light">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <h2 class="text-4xl font-extrabold text-charcoal tracking-tight uppercase">Major Cities</h2>
+                    <p class="mt-2 text-graphite">Leading experts in the busiest metropolitan areas.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- New York -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">New York</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">NY</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">84 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Los Angeles -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Los Angeles</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">CA</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">92 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Chicago -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Chicago</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">IL</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">55 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Houston -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Houston</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">TX</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">48 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Phoenix -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Phoenix</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">AZ</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">39 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Philadelphia -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Philadelphia</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">PA</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">32 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- San Antonio -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">San Antonio</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">TX</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">29 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- San Diego -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">San Diego</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">CA</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">35 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Dallas -->
+                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Dallas</h3>
+                            <div class="flex flex-col mb-4">
+                                <span class="text-brand font-black text-sm uppercase tracking-widest">TX</span>
+                                <span class="text-graphite font-bold text-xs uppercase tracking-wider">41 Clinics</span>
+                            </div>
+                        </div>
+                        <div class="relative z-10 flex items-center text-charcoal font-black text-xs uppercase tracking-[0.15em] hover:text-brand transition-colors mt-auto">
+                            Browse directory 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </main>
 
