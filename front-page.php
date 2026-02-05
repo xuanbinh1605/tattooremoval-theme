@@ -1014,6 +1014,39 @@ get_header();
             </div>
         </section>
 
+        <!-- The Path to Clear Skin Section -->
+        <section class="py-24 bg-brand-light relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-4xl font-extrabold text-charcoal tracking-tight uppercase">The Path to Clear Skin</h2>
+                    <p class="mt-4 text-xl text-graphite font-medium">We've removed the stress from tattoo removal by providing verified information.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                    <!-- Step 1 -->
+                    <div class="bg-white p-10 rounded-3xl shadow-sm border border-brand-light hover:shadow-xl transition-shadow duration-500">
+                        <div class="w-16 h-16 bg-brand text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-8 shadow-lg rotate-3">1</div>
+                        <h3 class="text-2xl font-bold mb-4 uppercase tracking-tight text-charcoal">Search Location</h3>
+                        <p class="text-graphite leading-relaxed font-medium">Enter your city or zip code to find the highest-rated clinics closest to you.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="bg-white p-10 rounded-3xl shadow-sm border border-brand-light hover:shadow-xl transition-shadow duration-500">
+                        <div class="w-16 h-16 bg-brand text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-8 shadow-lg -rotate-2">2</div>
+                        <h3 class="text-2xl font-bold mb-4 uppercase tracking-tight text-charcoal">Compare Tech</h3>
+                        <p class="text-graphite leading-relaxed font-medium">Examine pricing structures, verified patient reviews, and the specific laser technologies used.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="bg-white p-10 rounded-3xl shadow-sm border border-brand-light hover:shadow-xl transition-shadow duration-500">
+                        <div class="w-16 h-16 bg-brand text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-8 shadow-lg rotate-1">3</div>
+                        <h3 class="text-2xl font-bold mb-4 uppercase tracking-tight text-charcoal">Book Safely</h3>
+                        <p class="text-graphite leading-relaxed font-medium">Schedule your free initial consultation directly with your chosen specialist.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </main>
 
