@@ -1047,6 +1047,50 @@ get_header();
             </div>
         </section>
 
+        <!-- FAQ Section -->
+        <section class="py-24 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold text-charcoal tracking-tight uppercase">Answers You Need</h2>
+                    <p class="mt-2 text-graphite font-medium">New to tattoo removal? Here is what most people ask.</p>
+                </div>
+
+                <div class="space-y-16">
+                    <!-- FAQ 1 -->
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-black text-charcoal tracking-tight uppercase border-l-4 border-brand pl-6">Does tattoo removal hurt?</h3>
+                        <div class="pl-6">
+                            <p class="text-graphite leading-relaxed text-lg font-medium">Most patients compare the sensation to a rubber band snapping against the skin. Most clinics use cooling systems or numbing cream to minimize discomfort.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-black text-charcoal tracking-tight uppercase border-l-4 border-brand pl-6">How many sessions will I need?</h3>
+                        <div class="pl-6">
+                            <p class="text-graphite leading-relaxed text-lg font-medium">The average is between 5 to 10 sessions, depending on the age, density, color, and location of the tattoo.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-black text-charcoal tracking-tight uppercase border-l-4 border-brand pl-6">Will it leave a scar?</h3>
+                        <div class="pl-6">
+                            <p class="text-graphite leading-relaxed text-lg font-medium">When performed by a certified professional with proper aftercare, scarring is rare. However, some temporary hypopigmentation (lightening of skin) can occur.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-black text-charcoal tracking-tight uppercase border-l-4 border-brand pl-6">How much does it cost?</h3>
+                        <div class="pl-6">
+                            <p class="text-graphite leading-relaxed text-lg font-medium">Prices vary by size, but typically range from $100 to $500 per session. Consultations are usually free.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </main>
 
