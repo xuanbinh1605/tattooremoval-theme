@@ -274,3 +274,48 @@ function str_prepopulate_us_states() {
     }
 }
 add_action('after_switch_theme', 'str_prepopulate_us_states');
+
+/**
+ * Add Acronym field to US Location taxonomy (Add form)
+ */
+function str_add_us_location_acronym_field() {
+    ?>
+    <div class="form-field">
+        <label for="us_location_acronym"><?php _e('State Acronym', 'search-tattoo-removal'); ?></label>
+        <input type="text" name="us_location_acronym" id="us_location_acronym" maxlength="2" style="text-transform: uppercase;">
+        <p class="description"><?php _e('2-letter state abbreviation (e.g., CA, NY, TX)', 'search-tattoo-removal'); ?></p>
+    </div>
+    <?php
+}
+add_action('us_location_add_form_fields', 'str_add_us_location_acronym_field');
+
+/**
+ * Add Acronym field to US Location taxonomy (Edit form)
+ */
+function str_edit_us_location_acronym_field($term) {
+    $acronym = get_term_meta($term->term_id, 'us_location_acronym', true);
+    ?>
+    <tr class="form-field">
+        <th scope="row">
+            <label for="us_location_acronym"><?php _e('State Acronym', 'search-tattoo-removal'); ?></label>
+        </th>
+        <td>
+            <input type="text" name="us_location_acronym" id="us_location_acronym" value="<?php echo esc_attr($acronym); ?>" maxlength="2" style="text-transform: uppercase;">
+            <p class="description"><?php _e('2-letter state abbreviation (e.g., CA, NY, TX)', 'search-tattoo-removal'); ?></p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('us_location_edit_form_fields', 'str_edit_us_location_acronym_field');
+
+/**
+ * Save Acronym field for US Location taxonomy
+ */
+function str_save_us_location_acronym_field($term_id) {
+    if (isset($_POST['us_location_acronym'])) {
+        $acronym = strtoupper(sanitize_text_field($_POST['us_location_acronym']));
+        update_term_meta($term_id, 'us_location_acronym', $acronym);
+    }
+}
+add_action('created_us_location', 'str_save_us_location_acronym_field');
+add_action('edited_us_location', 'str_save_us_location_acronym_field');
