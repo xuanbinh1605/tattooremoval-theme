@@ -128,6 +128,7 @@ function str_clinic_basic_info_callback($post) {
 function str_clinic_rating_callback($post) {
     $rating = get_post_meta($post->ID, '_rating', true);
     $reviews_count = get_post_meta($post->ID, '_reviews_count', true);
+    $reviews_summary = get_post_meta($post->ID, '_reviews_summary', true);
     ?>
     <p>
         <label for="rating"><strong><?php _e('Rating (0-5):', 'search-tattoo-removal'); ?></strong></label><br>
@@ -136,6 +137,11 @@ function str_clinic_rating_callback($post) {
     <p>
         <label for="reviews_count"><strong><?php _e('Number of Reviews:', 'search-tattoo-removal'); ?></strong></label><br>
         <input type="number" id="reviews_count" name="reviews_count" value="<?php echo esc_attr($reviews_count); ?>" min="0" style="width: 100%;">
+    </p>
+    <p>
+        <label for="reviews_summary"><strong><?php _e('What People Say (Reviews Summary):', 'search-tattoo-removal'); ?></strong></label><br>
+        <textarea id="reviews_summary" name="reviews_summary" rows="5" style="width: 100%;"><?php echo esc_textarea($reviews_summary); ?></textarea>
+        <span class="description"><?php _e('A summary of patient reviews that will be displayed in the "What People Say" section.', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
@@ -369,6 +375,11 @@ function str_save_clinic_meta($post_id) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, '_' . $field, sanitize_text_field($_POST[$field]));
         }
+    }
+
+    // Handle textarea fields separately
+    if (isset($_POST['reviews_summary'])) {
+        update_post_meta($post_id, '_reviews_summary', sanitize_textarea_field($_POST['reviews_summary']));
     }
 
     // Handle featured checkbox
