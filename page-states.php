@@ -42,6 +42,40 @@ get_header();
 
             if (!empty($states) && !is_wp_error($states)) :
             ?>
+                <!-- Summary Stats -->
+                <div class="mb-12 text-center">
+                    <div class="inline-flex items-center gap-8 px-8 py-4 bg-white border border-gray-light rounded-xl">
+                        <div>
+                            <p class="text-3xl font-black text-brand"><?php echo count($states); ?></p>
+                            <p class="text-sm text-graphite font-medium">States</p>
+                        </div>
+                        <div class="w-px h-12 bg-gray-light"></div>
+                        <div>
+                            <?php
+                            // Get total number of cities
+                            $all_cities = get_terms(array(
+                                'taxonomy'   => 'us_location',
+                                'hide_empty' => false,
+                                'parent__not_in' => array(0),
+                                'fields'     => 'count',
+                            ));
+                            ?>
+                            <p class="text-3xl font-black text-brand"><?php echo esc_html($all_cities); ?></p>
+                            <p class="text-sm text-graphite font-medium">Cities</p>
+                        </div>
+                        <div class="w-px h-12 bg-gray-light"></div>
+                        <div>
+                            <?php
+                            // Get total number of clinics
+                            $total_clinics = wp_count_posts('clinic');
+                            $total_count = isset($total_clinics->publish) ? $total_clinics->publish : 0;
+                            ?>
+                            <p class="text-3xl font-black text-brand"><?php echo esc_html($total_count); ?></p>
+                            <p class="text-sm text-graphite font-medium">Total Clinics</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     <?php foreach ($states as $state) :
                         // Get clinic count for this state (including all child cities)
@@ -114,40 +148,6 @@ get_header();
                             </div>
                         </a>
                     <?php endforeach; ?>
-                </div>
-
-                <!-- Summary Stats -->
-                <div class="mt-12 text-center">
-                    <div class="inline-flex items-center gap-8 px-8 py-4 bg-white border border-gray-light rounded-xl">
-                        <div>
-                            <p class="text-3xl font-black text-brand"><?php echo count($states); ?></p>
-                            <p class="text-sm text-graphite font-medium">States</p>
-                        </div>
-                        <div class="w-px h-12 bg-gray-light"></div>
-                        <div>
-                            <?php
-                            // Get total number of cities
-                            $all_cities = get_terms(array(
-                                'taxonomy'   => 'us_location',
-                                'hide_empty' => false,
-                                'parent__not_in' => array(0),
-                                'fields'     => 'count',
-                            ));
-                            ?>
-                            <p class="text-3xl font-black text-brand"><?php echo esc_html($all_cities); ?></p>
-                            <p class="text-sm text-graphite font-medium">Cities</p>
-                        </div>
-                        <div class="w-px h-12 bg-gray-light"></div>
-                        <div>
-                            <?php
-                            // Get total number of clinics
-                            $total_clinics = wp_count_posts('clinic');
-                            $total_count = isset($total_clinics->publish) ? $total_clinics->publish : 0;
-                            ?>
-                            <p class="text-3xl font-black text-brand"><?php echo esc_html($total_count); ?></p>
-                            <p class="text-sm text-graphite font-medium">Total Clinics</p>
-                        </div>
-                    </div>
                 </div>
 
             <?php else : ?>
