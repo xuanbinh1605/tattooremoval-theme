@@ -306,7 +306,10 @@ function str_prepopulate_us_states() {
 
     foreach ($states as $state) {
         $slug = sanitize_title($state['name']);
-        if (!term_exists($slug, 'us_location')) {
+        $existing_term = term_exists($slug, 'us_location');
+        
+        if (!$existing_term) {
+            // Create new state term
             $term = wp_insert_term($state['name'], 'us_location', array(
                 'slug'   => $slug,
                 'parent' => 0, // States are parent terms (no parent)
@@ -315,6 +318,14 @@ function str_prepopulate_us_states() {
             // Add acronym as term meta
             if (!is_wp_error($term) && isset($term['term_id'])) {
                 update_term_meta($term['term_id'], 'us_location_acronym', $state['acronym']);
+            }
+        } else {
+            // Update existing state with acronym if missing
+            $term_id = is_array($existing_term) ? $existing_term['term_id'] : $existing_term;
+            $existing_acronym = get_term_meta($term_id, 'us_location_acronym', true);
+            
+            if (empty($existing_acronym)) {
+                update_term_meta($term_id, 'us_location_acronym', $state['acronym']);
             }
         }
     }
