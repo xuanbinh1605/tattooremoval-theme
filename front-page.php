@@ -91,7 +91,7 @@ get_header();
                 ?>
                 
                 <?php if ($featured_clinics->have_posts()) : ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <?php while ($featured_clinics->have_posts()) : $featured_clinics->the_post(); 
                         $clinic_id = get_the_ID();
                         $rating = get_post_meta($clinic_id, '_rating', true) ?: 0;
@@ -130,8 +130,8 @@ get_header();
                     ?>
                     
                     <!-- Clinic Card -->
-                    <a href="<?php the_permalink(); ?>" class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
-                        <div class="relative h-44 w-full overflow-hidden">
+                    <a href="<?php the_permalink(); ?>" class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col md:flex-row">
+                        <div class="relative w-full md:w-2/5 h-48 md:h-auto overflow-hidden flex-shrink-0">
                             <img alt="<?php echo esc_attr(get_the_title()); ?>" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                                  src="<?php echo esc_url($thumbnail); ?>">
@@ -147,7 +147,7 @@ get_header();
                             <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
                             <?php endif; ?>
                         </div>
-                        <div class="p-4 flex flex-col">
+                        <div class="p-4 flex flex-col flex-1">
                             <div class="mb-2">
                                 <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5"><?php the_title(); ?></h3>
                                 <div class="flex items-center space-x-2">
@@ -209,7 +209,7 @@ get_header();
                                 <?php endforeach; ?>
                             </div>
                             <?php endif; ?>
-                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
+                            <div class="flex items-center justify-between pt-2 border-t border-offwhite mt-auto">
                                 <div class="text-[9px] font-bold text-graphite">
                                     <?php 
                                     if ($price_range) {
