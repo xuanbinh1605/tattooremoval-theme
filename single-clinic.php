@@ -78,12 +78,7 @@ while (have_posts()) : the_post();
         );
     }
     
-    // Sample reviews data (replace with actual meta field when available)
-    $sample_reviews = array(
-        array('name' => 'David K.', 'date' => 'February 20, 2024', 'rating' => 5, 'text' => 'Best decision I ever made. Almost zero scarring.', 'verified' => 'Direct Verified'),
-        array('name' => 'Michael R.', 'date' => 'January 12, 2024', 'rating' => 5, 'text' => 'Incredible results. The laser technology really works wonders on darker inks.', 'verified' => 'Google Verified'),
-        array('name' => 'Sarah T.', 'date' => 'November 5, 2023', 'rating' => 4, 'text' => 'Clean facility and very professional. A bit pricey but worth it for the safety.', 'verified' => 'Yelp Verified'),
-    );
+
 ?>
 
 <main class="flex-grow">
@@ -98,7 +93,6 @@ while (have_posts()) : the_post();
                         <div class="flex space-x-6 overflow-x-auto no-scrollbar py-2">
                             <a href="#gallery-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-brand border-brand">Gallery</a>
                             <a href="#tech-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Technology</a>
-                            <a href="#reviews-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Reviews</a>
                             <a href="#director-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Director</a>
                             <a href="#hours-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Hours</a>
                         </div>
@@ -288,88 +282,7 @@ while (have_posts()) : the_post();
                         </section>
                     <?php endif; ?>
 
-                    <!-- What People Say Section -->
-                    <section class="bg-charcoal text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-48 h-48 bg-brand/10 blur-[100px] -mr-24 -mt-24"></div>
-                        <div class="relative z-10">
-                            <div class="flex items-center mb-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square w-6 h-6 text-brand mr-3" aria-hidden="true">
-                                    <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                                <h2 class="text-2xl font-black uppercase tracking-tight">What People Say</h2>
-                            </div>
-                            <div class="bg-white/5 border border-white/10 p-6 rounded-2xl">
-                                <p class="text-slate-200 leading-relaxed text-lg font-medium italic">
-                                    "Patients consistently praise this clinic for its exceptional cleanliness and professional staff. The majority of reviewers highlight the effectiveness of their laser technology, specifically noting faster fading times compared to previous experiences. While some mention the premium pricing, the consensus is that the high safety standards and medical supervision provide peace of mind that justifies the investment."
-                                </p>
-                            </div>
-                            <div class="mt-6 flex items-center">
-                                <div class="flex -space-x-3 mr-4">
-                                    <?php for ($i = 11; $i <= 14; $i++) : ?>
-                                        <img class="w-8 h-8 rounded-full border-2 border-charcoal" alt="user" src="https://i.pravatar.cc/100?u=<?php echo $i; ?>">
-                                    <?php endfor; ?>
-                                </div>
-                                <span class="text-xs font-black uppercase tracking-widest text-slate-400">Based on <?php echo esc_html($review_count); ?> verified patient reviews</span>
-                            </div>
-                        </div>
-                    </section>
 
-                    <!-- Reviews Section -->
-                    <section id="reviews-section" class="scroll-mt-32 bg-white p-8 rounded-2xl border border-gray-light shadow-sm">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 pb-6 border-b border-offwhite">
-                            <h2 class="text-2xl font-black text-charcoal uppercase tracking-tight flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-6 h-6 text-amber mr-3 fill-current" aria-hidden="true">
-                                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                                </svg>
-                                All Reviews
-                            </h2>
-                            <div class="relative group w-full md:w-auto">
-                                <div class="flex items-center bg-offwhite px-4 py-2.5 rounded-xl border border-gray-light cursor-pointer group-hover:border-brand transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-funnel w-4 h-4 text-graphite mr-2" aria-hidden="true">
-                                        <path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"></path>
-                                    </svg>
-                                    <span class="text-[10px] font-black uppercase tracking-widest text-graphite mr-4">Sort By:</span>
-                                    <select class="bg-transparent text-xs font-bold text-charcoal outline-none cursor-pointer appearance-none pr-6">
-                                        <option value="newest">Newest First</option>
-                                        <option value="highest">Highest Rated</option>
-                                        <option value="lowest">Lowest Rated</option>
-                                    </select>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-3.5 h-3.5 text-graphite absolute right-4 pointer-events-none" aria-hidden="true">
-                                        <path d="m6 9 6 6 6-6"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="space-y-6">
-                            <?php foreach ($sample_reviews as $review) : ?>
-                                <div class="p-6 rounded-2xl border border-offwhite bg-offwhite/30 hover:bg-white hover:shadow-md transition-all duration-300">
-                                    <div class="flex justify-between items-start mb-3">
-                                        <div class="flex items-center">
-                                            <div class="w-10 h-10 bg-brand/10 text-brand rounded-xl flex items-center justify-center font-black mr-4 uppercase">
-                                                <?php echo substr($review['name'], 0, 1); ?>
-                                            </div>
-                                            <div>
-                                                <p class="font-black text-charcoal text-sm"><?php echo esc_html($review['name']); ?></p>
-                                                <p class="text-[10px] text-graphite font-bold uppercase tracking-widest"><?php echo esc_html($review['date']); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="flex flex-col items-end">
-                                            <div class="flex text-amber mb-1">
-                                                <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3 h-3 <?php echo $i <= $review['rating'] ? 'fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
-                                                        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                                                    </svg>
-                                                <?php endfor; ?>
-                                            </div>
-                                            <span class="text-[8px] font-black uppercase tracking-[0.2em] text-graphite bg-white px-2 py-0.5 rounded border border-gray-light"><?php echo esc_html($review['verified']); ?></span>
-                                        </div>
-                                    </div>
-                                    <p class="text-graphite font-medium text-sm leading-relaxed"><?php echo esc_html($review['text']); ?></p>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </section>
 
                     <!-- Director Section -->
                     <section id="director-section" class="scroll-mt-32 bg-white p-8 md:p-12 rounded-2xl border border-gray-light shadow-sm w-full overflow-hidden">
