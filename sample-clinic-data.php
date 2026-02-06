@@ -1,0 +1,238 @@
+<?php
+/**
+ * Sample Clinic Data Generator
+ * Run this file once to create sample clinic posts with all meta fields and taxonomies
+ * 
+ * To use: Navigate to this file in your browser: yoursite.com/wp-content/themes/search-tattoo-removal/sample-clinic-data.php
+ * Or run via WP-CLI: wp eval-file sample-clinic-data.php
+ * 
+ * @package SearchTattooRemoval
+ */
+
+// Load WordPress
+require_once('../../../wp-load.php');
+
+// Check if user is admin
+if (!current_user_can('administrator')) {
+    die('You must be an administrator to run this script.');
+}
+
+/**
+ * Sample clinic data
+ */
+$sample_clinics = array(
+    array(
+        'title' => 'Miami Ink Erasers',
+        'content' => 'Miami Ink Erasers is a premier tattoo removal facility specializing in safe, effective laser tattoo removal treatments. Our state-of-the-art clinic uses the latest PicoWay and Enlighten III laser technology to ensure optimal results with minimal discomfort. With over 15 years of combined experience, our certified practitioners are dedicated to helping you achieve clear, tattoo-free skin. We offer free consultations to assess your tattoo and create a personalized treatment plan tailored to your specific needs.',
+        'state' => 'Florida',
+        'city' => 'Miami',
+        'meta' => array(
+            '_rating' => '4.8',
+            '_reviews_count' => '215',
+            '_phone' => '(305) 555-0177',
+            '_website' => 'https://miamiinkerasers.com',
+            '_is_verified' => '1',
+            '_open_status' => 'Open Now',
+            '_street' => '321 Ocean Drive',
+            '_zip_code' => '33139',
+            '_full_address' => "321 Ocean Drive\nMiami, FL 33139",
+            '_operating_hours_raw' => "Mon-Fri: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+            '_min_price' => '150',
+            '_max_price' => '350',
+            '_consultation_price' => '0',
+            '_price_range_display' => '$$',
+            '_years_in_business' => '8',
+            '_is_featured' => '1',
+        ),
+        'features' => array('Free Initial Consultation', 'Certified Practitioners', 'Latest Laser Technology', 'Safe for All Skin Tones'),
+    ),
+    array(
+        'title' => 'Clear Skin LA',
+        'content' => 'Clear Skin LA is Los Angeles\' trusted name in professional tattoo removal. Our medical-grade facility operates under the supervision of board-certified dermatologists, ensuring the highest standards of safety and efficacy. We use cutting-edge PicoSure lasers that can target even the most stubborn ink colors including blues, greens, and fluorescent pigments. Our compassionate team understands the personal journey of tattoo removal and provides a comfortable, judgment-free environment.',
+        'state' => 'California',
+        'city' => 'Los Angeles',
+        'meta' => array(
+            '_rating' => '4.9',
+            '_reviews_count' => '342',
+            '_phone' => '(310) 555-0198',
+            '_website' => 'https://clearskinsla.com',
+            '_is_verified' => '1',
+            '_open_status' => 'Open Now',
+            '_street' => '8500 Wilshire Boulevard',
+            '_zip_code' => '90211',
+            '_full_address' => "8500 Wilshire Boulevard, Suite 920\nBeverly Hills, CA 90211",
+            '_operating_hours_raw' => "Monday: 8:00 AM - 7:00 PM\nTuesday: 8:00 AM - 7:00 PM\nWednesday: 8:00 AM - 7:00 PM\nThursday: 8:00 AM - 7:00 PM\nFriday: 8:00 AM - 7:00 PM\nSaturday: 9:00 AM - 5:00 PM\nSunday: Closed",
+            '_min_price' => '200',
+            '_max_price' => '450',
+            '_consultation_price' => '50',
+            '_price_range_display' => '$$$',
+            '_years_in_business' => '12',
+            '_is_featured' => '1',
+        ),
+        'features' => array('Board Certified Dermatologist', 'Medical-Grade Facility', 'PicoSure Technology', 'Flexible Payment Plans'),
+    ),
+    array(
+        'title' => 'Fresh Start Tattoo Removal NYC',
+        'content' => 'Located in the heart of Manhattan, Fresh Start Tattoo Removal NYC offers premium laser tattoo removal services in a luxurious, spa-like environment. Our team of certified laser specialists has successfully treated thousands of clients, helping them move forward with confidence. We specialize in complete tattoo removal as well as selective fading for cover-up work. Our advanced Q-switched Nd:YAG lasers are safe for all skin types and can effectively treat both professional and amateur tattoos.',
+        'state' => 'New York',
+        'city' => 'New York',
+        'meta' => array(
+            '_rating' => '4.7',
+            '_reviews_count' => '489',
+            '_phone' => '(212) 555-0143',
+            '_website' => 'https://freshstartnyc.com',
+            '_is_verified' => '1',
+            '_open_status' => 'Open Now',
+            '_street' => '450 Park Avenue',
+            '_zip_code' => '10022',
+            '_full_address' => "450 Park Avenue, 15th Floor\nNew York, NY 10022",
+            '_operating_hours_raw' => "Mon-Fri: 7:00 AM - 8:00 PM\nSaturday: 9:00 AM - 6:00 PM\nSunday: 10:00 AM - 4:00 PM",
+            '_min_price' => '175',
+            '_max_price' => '400',
+            '_consultation_price' => '0',
+            '_price_range_display' => '$$$',
+            '_years_in_business' => '10',
+            '_is_featured' => '1',
+        ),
+        'features' => array('Luxury Spa Environment', 'Expert Laser Specialists', 'Cover-Up Fading', 'Safe for All Skin Types'),
+    ),
+    array(
+        'title' => 'Lone Star Laser Clinic',
+        'content' => 'Lone Star Laser Clinic brings world-class tattoo removal expertise to Houston, Texas. Our clinic is equipped with the most advanced laser systems available, including the revolutionary PicoWay Resolve. We pride ourselves on transparent pricing, detailed treatment plans, and exceptional patient care. Whether you have a small symbol or large sleeve, our experienced technicians will guide you through every step of your removal journey.',
+        'state' => 'Texas',
+        'city' => 'Houston',
+        'meta' => array(
+            '_rating' => '4.6',
+            '_reviews_count' => '178',
+            '_phone' => '(713) 555-0162',
+            '_website' => 'https://lonestarlaser.com',
+            '_is_verified' => '1',
+            '_open_status' => 'Open Now',
+            '_street' => '2855 Gramercy Street',
+            '_zip_code' => '77025',
+            '_full_address' => "2855 Gramercy Street\nHouston, TX 77025",
+            '_operating_hours_raw' => "Mon-Thu: 9:00 AM - 6:00 PM\nFriday: 9:00 AM - 5:00 PM\nSat-Sun: Closed",
+            '_min_price' => '125',
+            '_max_price' => '300',
+            '_consultation_price' => '0',
+            '_price_range_display' => '$$',
+            '_years_in_business' => '6',
+            '_is_featured' => '0',
+        ),
+        'features' => array('Transparent Pricing', 'PicoWay Technology', 'Detailed Treatment Plans', 'Experienced Technicians'),
+    ),
+    array(
+        'title' => 'Phoenix Skin Renewal',
+        'content' => 'Phoenix Skin Renewal is Arizona\'s leading tattoo removal specialist, offering comprehensive laser treatments in a modern, clinical setting. Our practice is led by Dr. Sarah Martinez, a board-certified dermatologist with specialized training in laser procedures. We use multiple laser wavelengths to effectively target all ink colors and achieve optimal clearance rates. Patient education and comfort are our top priorities.',
+        'state' => 'Arizona',
+        'city' => 'Phoenix',
+        'meta' => array(
+            '_rating' => '4.9',
+            '_reviews_count' => '267',
+            '_phone' => '(602) 555-0189',
+            '_website' => 'https://phoenixskinrenewal.com',
+            '_is_verified' => '1',
+            '_open_status' => 'Open Now',
+            '_street' => '5340 East Camelback Road',
+            '_zip_code' => '85018',
+            '_full_address' => "5340 East Camelback Road, Suite 190\nPhoenix, AZ 85018",
+            '_operating_hours_raw' => "Monday: 8:30 AM - 5:00 PM\nTuesday: 8:30 AM - 5:00 PM\nWednesday: 8:30 AM - 6:00 PM\nThursday: 8:30 AM - 5:00 PM\nFriday: 8:30 AM - 3:00 PM\nSat-Sun: Closed",
+            '_min_price' => '180',
+            '_max_price' => '380',
+            '_consultation_price' => '75',
+            '_price_range_display' => '$$$',
+            '_years_in_business' => '9',
+            '_is_featured' => '1',
+        ),
+        'features' => array('Dermatologist-Led Practice', 'Multiple Laser Wavelengths', 'Patient Education Focus', 'Modern Clinical Setting'),
+    ),
+);
+
+/**
+ * Create sample clinics
+ */
+echo '<h1>Creating Sample Clinic Data...</h1>';
+echo '<hr>';
+
+foreach ($sample_clinics as $index => $clinic_data) {
+    echo '<h2>Creating: ' . esc_html($clinic_data['title']) . '</h2>';
+    
+    // Create the post
+    $post_id = wp_insert_post(array(
+        'post_title' => $clinic_data['title'],
+        'post_content' => $clinic_data['content'],
+        'post_status' => 'publish',
+        'post_type' => 'clinic',
+        'post_author' => 1,
+    ));
+    
+    if (is_wp_error($post_id)) {
+        echo '<p style="color: red;">ERROR: Failed to create clinic - ' . $post_id->get_error_message() . '</p>';
+        continue;
+    }
+    
+    echo '<p style="color: green;">✓ Created clinic post (ID: ' . $post_id . ')</p>';
+    
+    // Add meta fields
+    foreach ($clinic_data['meta'] as $meta_key => $meta_value) {
+        update_post_meta($post_id, $meta_key, $meta_value);
+    }
+    echo '<p style="color: green;">✓ Added ' . count($clinic_data['meta']) . ' meta fields</p>';
+    
+    // Get or create state term
+    $state_term = term_exists($clinic_data['state'], 'us_location');
+    if (!$state_term) {
+        $state_term = wp_insert_term($clinic_data['state'], 'us_location');
+        echo '<p style="color: blue;">→ Created state term: ' . $clinic_data['state'] . '</p>';
+    }
+    $state_term_id = is_array($state_term) ? $state_term['term_id'] : $state_term;
+    
+    // Add state acronym if not set
+    $state_acronyms = array(
+        'Florida' => 'FL',
+        'California' => 'CA',
+        'New York' => 'NY',
+        'Texas' => 'TX',
+        'Arizona' => 'AZ',
+    );
+    if (isset($state_acronyms[$clinic_data['state']])) {
+        update_term_meta($state_term_id, 'us_location_acronym', $state_acronyms[$clinic_data['state']]);
+    }
+    
+    // Get or create city term
+    $city_term = term_exists($clinic_data['city'], 'us_location', $state_term_id);
+    if (!$city_term) {
+        $city_term = wp_insert_term($clinic_data['city'], 'us_location', array('parent' => $state_term_id));
+        echo '<p style="color: blue;">→ Created city term: ' . $clinic_data['city'] . '</p>';
+    }
+    $city_term_id = is_array($city_term) ? $city_term['term_id'] : $city_term;
+    
+    // Assign location taxonomy
+    wp_set_post_terms($post_id, array($city_term_id), 'us_location');
+    echo '<p style="color: green;">✓ Assigned location: ' . $clinic_data['city'] . ', ' . $clinic_data['state'] . '</p>';
+    
+    // Add clinic features
+    if (!empty($clinic_data['features'])) {
+        $feature_ids = array();
+        foreach ($clinic_data['features'] as $feature_name) {
+            $feature_term = term_exists($feature_name, 'clinic_feature');
+            if (!$feature_term) {
+                $feature_term = wp_insert_term($feature_name, 'clinic_feature');
+                echo '<p style="color: blue;">→ Created feature: ' . $feature_name . '</p>';
+            }
+            $feature_ids[] = is_array($feature_term) ? $feature_term['term_id'] : $feature_term;
+        }
+        wp_set_post_terms($post_id, $feature_ids, 'clinic_feature');
+        echo '<p style="color: green;">✓ Added ' . count($feature_ids) . ' features</p>';
+    }
+    
+    // Set featured image (placeholder)
+    echo '<p style="color: orange;">⚠ Featured image not set (would require actual image upload)</p>';
+    
+    echo '<p style="color: green;"><strong>✓ CLINIC CREATED SUCCESSFULLY</strong></p>';
+    echo '<hr>';
+}
+
+echo '<h2 style="color: green;">All Done! ✓</h2>';
+echo '<p><a href="' . admin_url('edit.php?post_type=clinic') . '">View Clinics in Admin</a></p>';
+echo '<p><strong>Important:</strong> You can now delete this file (sample-clinic-data.php) for security.</p>';
