@@ -91,7 +91,7 @@ get_header();
                 ?>
                 
                 <?php if ($featured_clinics->have_posts()) : ?>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php while ($featured_clinics->have_posts()) : $featured_clinics->the_post(); 
                         $clinic_id = get_the_ID();
                         $rating = get_post_meta($clinic_id, '_rating', true) ?: 0;
@@ -130,87 +130,59 @@ get_header();
                     ?>
                     
                     <!-- Clinic Card -->
-                    <a href="<?php the_permalink(); ?>" class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col md:flex-row">
-                        <div class="relative w-full md:w-2/5 h-48 md:h-auto overflow-hidden flex-shrink-0">
+                    <div class="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+                        <div class="relative h-48 w-full overflow-hidden">
                             <img alt="<?php echo esc_attr(get_the_title()); ?>" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                 class="w-full h-full object-cover" 
                                  src="<?php echo esc_url($thumbnail); ?>">
-                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                <span class="text-white font-black text-[10px] uppercase tracking-widest flex items-center">
-                                    View Listing 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-1 w-3.5 h-3.5" aria-hidden="true">
-                                        <path d="m9 18 6-6-6-6"></path>
-                                    </svg>
-                                </span>
-                            </div>
                             <?php if ($is_verified == '1') : ?>
-                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest border border-white/20">Verified</div>
+                            <div class="absolute top-3 right-3 bg-teal text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg uppercase tracking-widest">Verified</div>
                             <?php endif; ?>
                         </div>
-                        <div class="p-4 flex flex-col flex-1">
-                            <div class="mb-2">
-                                <h3 class="text-lg font-black text-charcoal line-clamp-1 group-hover:text-brand transition-colors mb-0.5"><?php the_title(); ?></h3>
-                                <div class="flex items-center space-x-2">
-                                    <div class="flex items-center text-amber">
-                                        <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 <?php echo $i <= round($rating) ? 'fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
-                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                                        </svg>
-                                        <?php endfor; ?>
-                                        <span class="ml-1 text-charcoal font-black text-xs"><?php echo number_format($rating, 1); ?></span>
-                                    </div>
-                                    <span class="text-gray-light">•</span>
-                                    <span class="text-graphite text-[10px] font-bold uppercase tracking-wider"><?php echo esc_html($review_count); ?> Reviews</span>
+                        <div class="p-5 flex flex-col flex-1">
+                            <a href="<?php the_permalink(); ?>" class="block mb-2">
+                                <h3 class="text-lg font-black text-charcoal mb-1 group-hover:text-brand transition-colors"><?php the_title(); ?></h3>
+                            </a>
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-amber">
+                                        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                    </svg>
+                                    <span class="ml-1 text-charcoal font-black text-sm"><?php echo number_format($rating, 1); ?></span>
                                 </div>
+                                <span class="text-graphite text-xs font-bold uppercase"><?php echo esc_html($review_count); ?> Reviews</span>
                             </div>
-                            <div class="space-y-1.5 mb-3">
-                                <div class="flex items-center text-xs overflow-hidden">
+                            <div class="space-y-2 mb-4 text-sm">
+                                <div class="flex items-center text-charcoal">
                                     <?php if ($location_link && !is_wp_error($location_link)) : ?>
-                                    <button onclick="event.preventDefault(); window.location='<?php echo esc_url($location_link); ?>';" class="flex items-center text-graphite hover:text-brand transition-colors text-left group/link mr-2 flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span class="underline decoration-gray-light underline-offset-4 font-bold whitespace-nowrap"><?php echo esc_html($location_name); ?></span>
-                                    </button>
+                                    <a href="<?php echo esc_url($location_link); ?>" class="font-semibold hover:text-brand transition-colors"><?php echo esc_html($location_name); ?></a>
                                     <?php else : ?>
-                                    <span class="flex items-center text-graphite text-left mr-2 flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-3.5 h-3.5 mr-1 flex-shrink-0 text-gray-light" aria-hidden="true">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span class="font-bold whitespace-nowrap"><?php echo esc_html($location_name); ?></span>
-                                    </span>
+                                    <span class="font-semibold"><?php echo esc_html($location_name); ?></span>
                                     <?php endif; ?>
-                                    <span class="text-gray-light mr-2 flex-shrink-0">•</span>
-                                    <span class="font-bold whitespace-nowrap <?php echo $status_class; ?>"><?php echo esc_html($status_text); ?></span>
+                                    <span class="mx-2 text-gray-light">•</span>
+                                    <span class="font-semibold <?php echo $status_class; ?>"><?php echo esc_html($status_text); ?></span>
                                 </div>
                                 <?php if ($phone) : ?>
-                                <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9]/', '', $phone)); ?>" onclick="event.stopPropagation();" class="flex items-center text-xs text-graphite hover:text-brand transition-colors group/link w-fit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone w-3.5 h-3.5 mr-2 flex-shrink-0 text-gray-light group-hover/link:text-brand" aria-hidden="true">
-                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
-                                    </svg>
-                                    <span class="font-bold"><?php echo esc_html($phone); ?></span>
-                                </a>
+                                <div class="text-charcoal font-medium"><?php echo esc_html($phone); ?></div>
                                 <?php endif; ?>
                                 <?php if ($equipment) : ?>
-                                <div class="flex items-center text-xs text-charcoal">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                <div class="flex items-center text-teal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
                                         <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
                                     </svg>
-                                    <span class="font-black text-[9px] uppercase tracking-wider truncate"><?php echo esc_html($equipment); ?></span>
+                                    <span class="font-black text-xs uppercase"><?php echo esc_html($equipment); ?></span>
                                 </div>
                                 <?php endif; ?>
                             </div>
                             <?php if (!empty($features)) : ?>
-                            <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
+                            <div class="flex flex-wrap gap-2 mb-4">
                                 <?php foreach ($features as $feature) : ?>
-                                <span class="text-[8px] font-black text-graphite bg-offwhite border border-gray-light px-1.5 py-0.5 rounded uppercase tracking-wider whitespace-nowrap"><?php echo esc_html($feature->name); ?></span>
+                                <span class="text-[9px] font-black text-charcoal bg-offwhite px-2 py-1 rounded uppercase tracking-wide"><?php echo esc_html($feature->name); ?></span>
                                 <?php endforeach; ?>
                             </div>
                             <?php endif; ?>
-                            <div class="flex items-center justify-between pt-2 border-t border-offwhite mt-auto">
-                                <div class="text-[9px] font-bold text-graphite">
+                            <div class="flex items-center justify-between pt-3 border-t border-gray-light mt-auto">
+                                <div class="text-xs font-bold text-charcoal">
                                     <?php 
                                     if ($price_range) {
                                         echo esc_html($price_range);
@@ -221,15 +193,15 @@ get_header();
                                     }
                                     ?>
                                 </div>
-                                <span class="text-[10px] font-black text-brand uppercase tracking-widest group-hover:underline flex items-center">
-                                    View profile 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-0.5 w-3 h-3" aria-hidden="true">
+                                <a href="<?php the_permalink(); ?>" class="text-xs font-black text-brand uppercase tracking-wider hover:underline flex items-center">
+                                    View profile
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1">
                                         <path d="m9 18 6-6-6-6"></path>
                                     </svg>
-                                </span>
+                                </a>
                             </div>
                         </div>
-                    </a>
+                    </div>
 
                     <?php endwhile; wp_reset_postdata(); ?>
                     
