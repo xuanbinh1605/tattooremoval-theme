@@ -102,6 +102,9 @@ get_header();
                         $city = get_post_meta($clinic_id, '_city', true);
                         $price_range = get_post_meta($clinic_id, '_price_range_display', true);
                         $min_price = get_post_meta($clinic_id, '_min_price', true);
+                        $equipment = get_post_meta($clinic_id, '_equipment', true);
+                        
+                        // Get thumbnail or use placeholder
                         $thumbnail = get_the_post_thumbnail_url($clinic_id, 'str-clinic-card');
                         if (!$thumbnail) {
                             $thumbnail = 'https://picsum.photos/400/300?random=' . $clinic_id;
@@ -190,6 +193,14 @@ get_header();
                                     <span class="font-bold"><?php echo esc_html($phone); ?></span>
                                 </a>
                                 <?php endif; ?>
+                                <?php if ($equipment) : ?>
+                                <div class="flex items-center text-xs text-charcoal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 flex-shrink-0 text-teal" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <span class="font-black text-[9px] uppercase tracking-wider truncate"><?php echo esc_html($equipment); ?></span>
+                                </div>
+                                <?php endif; ?>
                             </div>
                             <?php if (!empty($features)) : ?>
                             <div class="flex flex-wrap gap-1 mb-3 pt-3 border-t border-offwhite">
@@ -198,7 +209,7 @@ get_header();
                                 <?php endforeach; ?>
                             </div>
                             <?php endif; ?>
-                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-auto">
+                            <div class="flex items-center justify-between pt-1 border-t border-offwhite mt-1">
                                 <div class="text-[9px] font-bold text-graphite">
                                     <?php 
                                     if ($price_range) {
