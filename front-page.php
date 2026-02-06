@@ -128,9 +128,6 @@ get_header();
                     
                     <!-- Clinic Card -->
                     <a href="<?php the_permalink(); ?>" class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
-                    
-                    <!-- Clinic Card -->
-                    <a href="<?php the_permalink(); ?>" class="group bg-white rounded-xl border border-gray-light shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
                         <div class="relative h-44 w-full overflow-hidden">
                             <img alt="<?php echo esc_attr(get_the_title()); ?>" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
