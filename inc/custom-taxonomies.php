@@ -252,24 +252,70 @@ add_action('after_switch_theme', 'str_prepopulate_clinic_features');
  */
 function str_prepopulate_us_states() {
     $states = array(
-        'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-        'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
-        'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-        'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
-        'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma',
-        'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
-        'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
-        'Wisconsin', 'Wyoming'
+        array('name' => 'Alabama', 'acronym' => 'AL'),
+        array('name' => 'Alaska', 'acronym' => 'AK'),
+        array('name' => 'Arizona', 'acronym' => 'AZ'),
+        array('name' => 'Arkansas', 'acronym' => 'AR'),
+        array('name' => 'California', 'acronym' => 'CA'),
+        array('name' => 'Colorado', 'acronym' => 'CO'),
+        array('name' => 'Connecticut', 'acronym' => 'CT'),
+        array('name' => 'Delaware', 'acronym' => 'DE'),
+        array('name' => 'Florida', 'acronym' => 'FL'),
+        array('name' => 'Georgia', 'acronym' => 'GA'),
+        array('name' => 'Hawaii', 'acronym' => 'HI'),
+        array('name' => 'Idaho', 'acronym' => 'ID'),
+        array('name' => 'Illinois', 'acronym' => 'IL'),
+        array('name' => 'Indiana', 'acronym' => 'IN'),
+        array('name' => 'Iowa', 'acronym' => 'IA'),
+        array('name' => 'Kansas', 'acronym' => 'KS'),
+        array('name' => 'Kentucky', 'acronym' => 'KY'),
+        array('name' => 'Louisiana', 'acronym' => 'LA'),
+        array('name' => 'Maine', 'acronym' => 'ME'),
+        array('name' => 'Maryland', 'acronym' => 'MD'),
+        array('name' => 'Massachusetts', 'acronym' => 'MA'),
+        array('name' => 'Michigan', 'acronym' => 'MI'),
+        array('name' => 'Minnesota', 'acronym' => 'MN'),
+        array('name' => 'Mississippi', 'acronym' => 'MS'),
+        array('name' => 'Missouri', 'acronym' => 'MO'),
+        array('name' => 'Montana', 'acronym' => 'MT'),
+        array('name' => 'Nebraska', 'acronym' => 'NE'),
+        array('name' => 'Nevada', 'acronym' => 'NV'),
+        array('name' => 'New Hampshire', 'acronym' => 'NH'),
+        array('name' => 'New Jersey', 'acronym' => 'NJ'),
+        array('name' => 'New Mexico', 'acronym' => 'NM'),
+        array('name' => 'New York', 'acronym' => 'NY'),
+        array('name' => 'North Carolina', 'acronym' => 'NC'),
+        array('name' => 'North Dakota', 'acronym' => 'ND'),
+        array('name' => 'Ohio', 'acronym' => 'OH'),
+        array('name' => 'Oklahoma', 'acronym' => 'OK'),
+        array('name' => 'Oregon', 'acronym' => 'OR'),
+        array('name' => 'Pennsylvania', 'acronym' => 'PA'),
+        array('name' => 'Rhode Island', 'acronym' => 'RI'),
+        array('name' => 'South Carolina', 'acronym' => 'SC'),
+        array('name' => 'South Dakota', 'acronym' => 'SD'),
+        array('name' => 'Tennessee', 'acronym' => 'TN'),
+        array('name' => 'Texas', 'acronym' => 'TX'),
+        array('name' => 'Utah', 'acronym' => 'UT'),
+        array('name' => 'Vermont', 'acronym' => 'VT'),
+        array('name' => 'Virginia', 'acronym' => 'VA'),
+        array('name' => 'Washington', 'acronym' => 'WA'),
+        array('name' => 'West Virginia', 'acronym' => 'WV'),
+        array('name' => 'Wisconsin', 'acronym' => 'WI'),
+        array('name' => 'Wyoming', 'acronym' => 'WY'),
     );
 
     foreach ($states as $state) {
-        $slug = sanitize_title($state);
+        $slug = sanitize_title($state['name']);
         if (!term_exists($slug, 'us_location')) {
-            wp_insert_term($state, 'us_location', array(
+            $term = wp_insert_term($state['name'], 'us_location', array(
                 'slug'   => $slug,
                 'parent' => 0, // States are parent terms (no parent)
             ));
+            
+            // Add acronym as term meta
+            if (!is_wp_error($term) && isset($term['term_id'])) {
+                update_term_meta($term['term_id'], 'us_location_acronym', $state['acronym']);
+            }
         }
     }
 }
