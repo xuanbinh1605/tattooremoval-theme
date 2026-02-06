@@ -26,6 +26,7 @@ while (have_posts()) : the_post();
     $full_address = get_post_meta($clinic_id, '_full_address', true);
     $operating_hours = get_post_meta($clinic_id, '_operating_hours_raw', true);
     $years_in_business = get_post_meta($clinic_id, '_years_in_business', true);
+    $reviews_summary = get_post_meta($clinic_id, '_reviews_summary', true);
     
     // Get location
     $locations = wp_get_post_terms($clinic_id, 'us_location');
@@ -282,7 +283,33 @@ while (have_posts()) : the_post();
                         </section>
                     <?php endif; ?>
 
-
+                    <!-- What People Say Section -->
+                    <?php if ($reviews_summary) : ?>
+                        <section class="bg-charcoal text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-48 h-48 bg-brand/10 blur-[100px] -mr-24 -mt-24"></div>
+                            <div class="relative z-10">
+                                <div class="flex items-center mb-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square w-6 h-6 text-brand mr-3" aria-hidden="true">
+                                        <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <h2 class="text-2xl font-black uppercase tracking-tight">What People Say</h2>
+                                </div>
+                                <div class="bg-white/5 border border-white/10 p-6 rounded-2xl">
+                                    <p class="text-slate-200 leading-relaxed text-lg font-medium italic">
+                                        "<?php echo esc_html($reviews_summary); ?>"
+                                    </p>
+                                </div>
+                                <div class="mt-6 flex items-center">
+                                    <div class="flex -space-x-3 mr-4">
+                                        <?php for ($i = 11; $i <= 14; $i++) : ?>
+                                            <img class="w-8 h-8 rounded-full border-2 border-charcoal" alt="user" src="https://i.pravatar.cc/100?u=<?php echo $i; ?>">
+                                        <?php endfor; ?>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-400">Based on <?php echo esc_html($review_count); ?> verified patient reviews</span>
+                                </div>
+                            </div>
+                        </section>
+                    <?php endif; ?>
 
                     <!-- Director Section -->
                     <section id="director-section" class="scroll-mt-32 bg-white p-8 md:p-12 rounded-2xl border border-gray-light shadow-sm w-full overflow-hidden">
