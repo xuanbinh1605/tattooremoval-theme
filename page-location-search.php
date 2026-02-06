@@ -1,7 +1,8 @@
 <?php
 /**
- * Taxonomy Template: US Location Archive
- * Displays clinics for a specific US state or city
+ * Template Name: Location Search
+ * Description: Search clinics by location using URL parameters
+ * Usage: Create a page and assign this template, then use ?location_state=StateName&location_city=CityName
  *
  * @package SearchTattooRemoval
  * @since 1.0.0
@@ -9,38 +10,33 @@
 
 get_header();
 
-// Get current term and check for URL parameters
-$current_term = get_queried_object();
+// Get location parameters from URL
 $location_state = isset($_GET['location_state']) ? sanitize_text_field($_GET['location_state']) : '';
 $location_city = isset($_GET['location_city']) ? sanitize_text_field($_GET['location_city']) : '';
 
-// Determine if using URL parameters or taxonomy routing
-$using_url_params = !empty($location_state) || !empty($location_city);
-
-// Initialize location data
+// Initialize variables
 $location_name = '';
 $is_state = false;
 $location_term_ids = array();
 
-if ($using_url_params) {
-    // Using URL parameters - find matching terms
-    if (!empty($location_city) && !empty($location_state)) {
-        // Looking for a specific city in a state
-        $location_name = $location_city;
-        $state_term = get_term_by('name', $location_state, 'us_location');
-        if ($state_term) {
+if (!empty($location_state)) {
+    // Find the state term
+    $state_term = get_term_by('name', $location_state, 'us_location');
+    
+    if ($state_term) {
+        if (!empty($location_city)) {
+            // Looking for a specific city in a state
+            $location_name = $location_city . ', ' . $location_state;
             $city_term = get_term_by('name', $location_city, 'us_location');
             if ($city_term && $city_term->parent == $state_term->term_id) {
                 $location_term_ids[] = $city_term->term_id;
             }
-        }
-    } elseif (!empty($location_state)) {
-        // Looking for all clinics in a state
-        $location_name = $location_state;
-        $is_state = true;
-        $state_term = get_term_by('name', $location_state, 'us_location');
-        if ($state_term) {
+        } else {
+            // Looking for all clinics in a state
+            $location_name = $location_state;
+            $is_state = true;
             $location_term_ids[] = $state_term->term_id;
+            
             // Get all child cities
             $cities = get_terms(array(
                 'taxonomy'   => 'us_location',
@@ -51,24 +47,6 @@ if ($using_url_params) {
             if (!empty($cities)) {
                 $location_term_ids = array_merge($location_term_ids, $cities);
             }
-        }
-    }
-} else {
-    // Using standard taxonomy routing
-    $location_name = $current_term->name;
-    $is_state = ($current_term->parent == 0);
-    
-    // If it's a state, get all child cities
-    $location_term_ids = array($current_term->term_id);
-    if ($is_state) {
-        $cities = get_terms(array(
-            'taxonomy'   => 'us_location',
-            'hide_empty' => false,
-            'parent'     => $current_term->term_id,
-            'fields'     => 'ids',
-        ));
-        if (!empty($cities)) {
-            $location_term_ids = array_merge($location_term_ids, $cities);
         }
     }
 }
@@ -120,12 +98,17 @@ $total_clinics = $clinics_query->found_posts;
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <h1 class="text-2xl md:text-3xl font-black text-charcoal tracking-tight">
                         <?php 
-                        if ($total_clinics > 0) {
-                            echo 'Top ' . min($total_clinics, 10) . ' Best';
+                        if (!empty($location_name)) {
+                            if ($total_clinics > 0) {
+                                echo 'Top ' . min($total_clinics, 10) . ' Best';
+                            } else {
+                                echo 'Best';
+                            }
+                            echo ' Tattoo Removal Near ' . esc_html($location_name);
                         } else {
-                            echo 'Best';
+                            echo 'Find Tattoo Removal Clinics';
                         }
-                        ?> Tattoo Removal Near <?php echo esc_html($location_name); ?>
+                        ?>
                     </h1>
                     <div class="flex items-center space-x-2 text-sm">
                         <span class="text-graphite font-bold">Sort:</span>
@@ -230,121 +213,136 @@ $total_clinics = $clinics_query->found_posts;
 
                 <!-- Clinic Listings -->
                 <div class="col-span-1 lg:col-span-7">
-                    <?php if ($clinics_query->have_posts()) : ?>
-                        <div class="space-y-12">
-                            <?php 
-                            $counter = 1;
-                            while ($clinics_query->have_posts()) : $clinics_query->the_post();
-                                $clinic_id = get_the_ID();
-                                $rating = get_post_meta($clinic_id, '_rating', true) ?: 0;
-                                $review_count = get_post_meta($clinic_id, '_reviews_count', true) ?: 0;
-                                $city = get_post_meta($clinic_id, '_city', true);
-                                $price_range = get_post_meta($clinic_id, '_price_range_display', true);
-                                $thumbnail = get_the_post_thumbnail_url($clinic_id, 'large') ?: 'https://placehold.co/400x300';
-                            ?>
-                                <div class="flex flex-col md:flex-row gap-6 pb-10 border-b border-gray-light hover:bg-offwhite/30 transition-colors p-4 -m-4 rounded-2xl group cursor-pointer">
-                                    <!-- Clinic Image -->
-                                    <div class="w-full md:w-[240px] h-[240px] shrink-0 rounded-2xl overflow-hidden shadow-sm relative">
-                                        <img alt="<?php echo esc_attr(get_the_title()); ?>" 
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                             src="<?php echo esc_url($thumbnail); ?>">
-                                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest text-charcoal border border-gray-light shadow-sm">
-                                            <?php echo $counter; ?>
+                    <?php if (!empty($location_name)) : ?>
+                        <?php if ($clinics_query->have_posts()) : ?>
+                            <div class="space-y-12">
+                                <?php 
+                                $counter = 1;
+                                while ($clinics_query->have_posts()) : $clinics_query->the_post();
+                                    $clinic_id = get_the_ID();
+                                    $rating = get_post_meta($clinic_id, '_rating', true) ?: 0;
+                                    $review_count = get_post_meta($clinic_id, '_reviews_count', true) ?: 0;
+                                    $city = get_post_meta($clinic_id, '_city', true);
+                                    $price_range = get_post_meta($clinic_id, '_price_range_display', true);
+                                    $thumbnail = get_the_post_thumbnail_url($clinic_id, 'large') ?: 'https://placehold.co/400x300';
+                                ?>
+                                    <div class="flex flex-col md:flex-row gap-6 pb-10 border-b border-gray-light hover:bg-offwhite/30 transition-colors p-4 -m-4 rounded-2xl group cursor-pointer">
+                                        <!-- Clinic Image -->
+                                        <div class="w-full md:w-[240px] h-[240px] shrink-0 rounded-2xl overflow-hidden shadow-sm relative">
+                                            <img alt="<?php echo esc_attr(get_the_title()); ?>" 
+                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                                 src="<?php echo esc_url($thumbnail); ?>">
+                                            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest text-charcoal border border-gray-light shadow-sm">
+                                                <?php echo $counter; ?>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Clinic Info -->
-                                    <div class="flex-1 flex flex-col min-w-0">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h2 class="text-xl font-black text-charcoal group-hover:text-brand transition-colors">
-                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                                </h2>
-                                                <div class="flex items-center gap-2 mt-1">
-                                                    <div class="flex text-brand">
-                                                        <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-4 h-4 <?php echo $i <= round($rating) ? 'fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
-                                                                <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                                                            </svg>
-                                                        <?php endfor; ?>
+                                        <!-- Clinic Info -->
+                                        <div class="flex-1 flex flex-col min-w-0">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <h2 class="text-xl font-black text-charcoal group-hover:text-brand transition-colors">
+                                                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                                    </h2>
+                                                    <div class="flex items-center gap-2 mt-1">
+                                                        <div class="flex text-brand">
+                                                            <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-4 h-4 <?php echo $i <= round($rating) ? 'fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
+                                                                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                                                </svg>
+                                                            <?php endfor; ?>
+                                                        </div>
+                                                        <span class="text-sm font-black text-charcoal"><?php echo number_format($rating, 1); ?></span>
+                                                        <span class="text-sm text-graphite font-bold">(<?php echo $review_count; ?> reviews)</span>
                                                     </div>
-                                                    <span class="text-sm font-black text-charcoal"><?php echo number_format($rating, 1); ?></span>
-                                                    <span class="text-sm text-graphite font-bold">(<?php echo $review_count; ?> reviews)</span>
                                                 </div>
+                                            </div>
+
+                                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-bold text-graphite mb-4">
+                                                <span>•</span>
+                                                <span><?php echo esc_html($city ?: $location_name); ?></span>
+                                                <span>•</span>
+                                                <span class="text-charcoal font-black"><?php echo $price_range ?: 'N/A'; ?></span>
+                                            </div>
+
+                                            <!-- Features -->
+                                            <?php 
+                                            $clinic_features = wp_get_post_terms($clinic_id, 'clinic_feature', array('number' => 2));
+                                            if (!empty($clinic_features)) :
+                                            ?>
+                                                <div class="flex flex-wrap gap-2 mb-4">
+                                                    <?php foreach ($clinic_features as $feature) : ?>
+                                                        <span class="bg-offwhite text-graphite px-2 py-1 rounded text-[10px] font-black uppercase border border-gray-light tracking-widest">
+                                                            <?php echo esc_html($feature->name); ?>
+                                                        </span>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <!-- Portfolio Images -->
+                                            <div class="flex gap-2 mt-auto">
+                                                <?php for ($i = 1; $i <= 4; $i++) : ?>
+                                                    <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-light bg-offwhite flex-shrink-0 relative group/thumb">
+                                                        <img alt="Portfolio" class="w-full h-full object-cover grayscale group-hover/thumb:grayscale-0 transition-all" src="https://placehold.co/100x100">
+                                                        <?php if ($i === 4) : ?>
+                                                            <div class="absolute inset-0 bg-charcoal/40 flex items-center justify-center text-[8px] font-black text-white uppercase tracking-tighter">See All</div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endfor; ?>
                                             </div>
                                         </div>
 
-                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-bold text-graphite mb-4">
-                                            <span>•</span>
-                            <span><?php echo esc_html($city ?: $location_name); ?></span>
-                                        </div>
-
-                                        <!-- Features -->
-                                        <?php 
-                                        $clinic_features = wp_get_post_terms($clinic_id, 'clinic_feature', array('number' => 2));
-                                        if (!empty($clinic_features)) :
-                                        ?>
-                                            <div class="flex flex-wrap gap-2 mb-4">
-                                                <?php foreach ($clinic_features as $feature) : ?>
-                                                    <span class="bg-offwhite text-graphite px-2 py-1 rounded text-[10px] font-black uppercase border border-gray-light tracking-widest">
-                                                        <?php echo esc_html($feature->name); ?>
-                                                    </span>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <!-- Portfolio Images -->
-                                        <div class="flex gap-2 mt-auto">
-                                            <?php for ($i = 1; $i <= 4; $i++) : ?>
-                                                <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-light bg-offwhite flex-shrink-0 relative group/thumb">
-                                                    <img alt="Portfolio" class="w-full h-full object-cover grayscale group-hover/thumb:grayscale-0 transition-all" src="https://placehold.co/100x100">
-                                                    <?php if ($i === 4) : ?>
-                                                        <div class="absolute inset-0 bg-charcoal/40 flex items-center justify-center text-[8px] font-black text-white uppercase tracking-tighter">See All</div>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endfor; ?>
+                                        <!-- CTA Button -->
+                                        <div class="md:w-48 shrink-0 flex flex-col justify-between">
+                                            <button class="w-full bg-brand text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-brand-hover transition-all shadow-md shadow-brand/10 mb-4">
+                                                Request Quote
+                                            </button>
                                         </div>
                                     </div>
-
-                                    <!-- CTA Button -->
-                                    <div class="md:w-48 shrink-0 flex flex-col justify-between">
-                                        <button class="w-full bg-brand text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-brand-hover transition-all shadow-md shadow-brand/10 mb-4">
-                                            Request Quote
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php 
-                                $counter++;
-                            endwhile; 
-                            wp_reset_postdata();
-                            ?>
-                        </div>
-
-                        <!-- Pagination -->
-                        <?php if ($clinics_query->max_num_pages > 1) : ?>
-                            <div class="mt-12 flex justify-center">
-                                <?php
-                                echo paginate_links(array(
-                                    'total'     => $clinics_query->max_num_pages,
-                                    'current'   => $paged,
-                                    'prev_text' => '← Previous',
-                                    'next_text' => 'Next →',
-                                    'type'      => 'list',
-                                ));
+                                <?php 
+                                    $counter++;
+                                endwhile; 
+                                wp_reset_postdata();
                                 ?>
                             </div>
-                        <?php endif; ?>
 
+                            <!-- Pagination -->
+                            <?php if ($clinics_query->max_num_pages > 1) : ?>
+                                <div class="mt-12 flex justify-center">
+                                    <?php
+                                    echo paginate_links(array(
+                                        'total'     => $clinics_query->max_num_pages,
+                                        'current'   => $paged,
+                                        'prev_text' => '← Previous',
+                                        'next_text' => 'Next →',
+                                        'type'      => 'list',
+                                    ));
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+
+                        <?php else : ?>
+                            <div class="text-center py-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-full mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-graphite">
+                                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                </div>
+                                <h2 class="text-2xl font-bold text-charcoal mb-2">No Clinics Found</h2>
+                                <p class="text-graphite">There are no clinics in <?php echo esc_html($location_name); ?> yet.</p>
+                            </div>
+                        <?php endif; ?>
                     <?php else : ?>
                         <div class="text-center py-12">
                             <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-full mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-graphite">
-                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
+                                    <path d="M3 12a8.999 8.999 0 1 1 .001 0h-.001Z"></path>
+                                    <circle cx="12" cy="12" r="2"></circle>
                                 </svg>
                             </div>
-                            <h2 class="text-2xl font-bold text-charcoal mb-2">No Clinics Found</h2>
-                            <p class="text-graphite">There are no clinics in <?php echo esc_html($location_name); ?> yet.</p>
+                            <h2 class="text-2xl font-bold text-charcoal mb-2">Search for Clinics</h2>
+                            <p class="text-graphite">Please add location parameters to search: ?location_state=YourState&location_city=YourCity</p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -365,7 +363,7 @@ $total_clinics = $clinics_query->found_posts;
                                 </div>
                                 <h3 class="text-xl font-black mb-4 leading-tight">Clinic Owners</h3>
                                 <p class="text-slate-300 text-xs font-medium leading-relaxed mb-6">
-                                    Add your clinic and get found by <span class="text-white font-black underline decoration-brand decoration-2 underline-offset-4">13,000 monthly visitors</span> looking for tattoo removal in <span class="text-brand font-black"><?php echo esc_html($location_name); ?></span>.
+                                    Add your clinic and get found by <span class="text-white font-black underline decoration-brand decoration-2 underline-offset-4">13,000 monthly visitors</span> looking for tattoo removal<?php if (!empty($location_name)) : ?> in <span class="text-brand font-black"><?php echo esc_html($location_name); ?></span><?php endif; ?>.
                                 </p>
                                 <button class="w-full bg-brand hover:bg-brand-hover text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all shadow-xl shadow-brand/20 flex items-center justify-center">
                                     Let customers find you

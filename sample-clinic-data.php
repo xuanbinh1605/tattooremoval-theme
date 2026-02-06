@@ -182,6 +182,11 @@ foreach ($sample_clinics as $index => $clinic_data) {
     foreach ($clinic_data['meta'] as $meta_key => $meta_value) {
         update_post_meta($post_id, $meta_key, $meta_value);
     }
+    
+    // Add city and state as meta fields for easier querying
+    update_post_meta($post_id, '_city', $clinic_data['city']);
+    update_post_meta($post_id, '_state', $clinic_data['state']);
+    
     echo '<p style="color: green;">✓ Added ' . count($clinic_data['meta']) . ' meta fields</p>';
     
     // Get or create state term
