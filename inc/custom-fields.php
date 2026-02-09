@@ -103,9 +103,9 @@ add_action('add_meta_boxes', 'str_add_clinic_meta_boxes');
 function str_clinic_basic_info_callback($post) {
     wp_nonce_field('str_save_clinic_meta', 'str_clinic_meta_nonce');
     
-    $website = get_post_meta($post->ID, '_website', true);
-    $phone = get_post_meta($post->ID, '_phone', true);
-    $google_maps_url = get_post_meta($post->ID, '_google_maps_url', true);
+    $website = get_post_meta($post->ID, '_clinic_website', true);
+    $phone = get_post_meta($post->ID, '_clinic_phone', true);
+    $google_maps_url = get_post_meta($post->ID, '_clinic_google_maps_url', true);
     ?>
     <p>
         <label for="website"><strong><?php _e('Website URL:', 'search-tattoo-removal'); ?></strong></label><br>
@@ -126,9 +126,9 @@ function str_clinic_basic_info_callback($post) {
  * Rating Meta Box
  */
 function str_clinic_rating_callback($post) {
-    $rating = get_post_meta($post->ID, '_rating', true);
-    $reviews_count = get_post_meta($post->ID, '_reviews_count', true);
-    $reviews_summary = get_post_meta($post->ID, '_reviews_summary', true);
+    $rating = get_post_meta($post->ID, '_clinic_rating', true);
+    $reviews_count = get_post_meta($post->ID, '_clinic_reviews_count', true);
+    $reviews_summary = get_post_meta($post->ID, '_clinic_reviews_summary', true);
     ?>
     <p>
         <label for="rating"><strong><?php _e('Rating (0-5):', 'search-tattoo-removal'); ?></strong></label><br>
@@ -150,8 +150,8 @@ function str_clinic_rating_callback($post) {
  * Status & Verification Meta Box
  */
 function str_clinic_status_verification_callback($post) {
-    $is_verified = get_post_meta($post->ID, '_is_verified', true);
-    $open_status = get_post_meta($post->ID, '_open_status', true);
+    $is_verified = get_post_meta($post->ID, '_clinic_is_verified', true);
+    $open_status = get_post_meta($post->ID, '_clinic_open_status', true);
     ?>
     <p>
         <label>
@@ -173,9 +173,9 @@ function str_clinic_status_verification_callback($post) {
  * NOTE: City & State should be set via US Location taxonomy, not here
  */
 function str_clinic_address_callback($post) {
-    $street = get_post_meta($post->ID, '_street', true);
-    $zip_code = get_post_meta($post->ID, '_zip_code', true);
-    $full_address = get_post_meta($post->ID, '_full_address', true);
+    $street = get_post_meta($post->ID, '_clinic_street', true);
+    $zip_code = get_post_meta($post->ID, '_clinic_zip_code', true);
+    $full_address = get_post_meta($post->ID, '_clinic_full_address', true);
     ?>
     <div style="background: #fff3cd; padding: 10px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
         <strong>⚠️ Important:</strong> City & State MUST be set using the <strong>US Locations</strong> taxonomy (State → City), not these fields.
@@ -199,7 +199,7 @@ function str_clinic_address_callback($post) {
  * Operating Hours Meta Box
  */
 function str_clinic_hours_callback($post) {
-    $operating_hours_raw = get_post_meta($post->ID, '_operating_hours_raw', true);
+    $operating_hours_raw = get_post_meta($post->ID, '_clinic_operating_hours_raw', true);
     ?>
     <p>
         <label for="operating_hours_raw"><strong><?php _e('Operating Hours:', 'search-tattoo-removal'); ?></strong></label><br>
@@ -213,10 +213,10 @@ function str_clinic_hours_callback($post) {
  * Pricing Meta Box
  */
 function str_clinic_pricing_callback($post) {
-    $min_price = get_post_meta($post->ID, '_min_price', true);
-    $max_price = get_post_meta($post->ID, '_max_price', true);
-    $consultation_price = get_post_meta($post->ID, '_consultation_price', true);
-    $price_range_display = get_post_meta($post->ID, '_price_range_display', true);
+    $min_price = get_post_meta($post->ID, '_clinic_min_price', true);
+    $max_price = get_post_meta($post->ID, '_clinic_max_price', true);
+    $consultation_price = get_post_meta($post->ID, '_clinic_consultation_price', true);
+    $price_range_display = get_post_meta($post->ID, '_clinic_price_range_display', true);
     ?>
     <p>
         <label for="min_price"><strong><?php _e('Minimum Price ($):', 'search-tattoo-removal'); ?></strong></label><br>
@@ -243,8 +243,8 @@ function str_clinic_pricing_callback($post) {
  * Media & Branding Meta Box
  */
 function str_clinic_media_callback($post) {
-    $logo = get_post_meta($post->ID, '_logo', true);
-    $before_after_gallery = get_post_meta($post->ID, '_before_after_gallery', true);
+    $logo = get_post_meta($post->ID, '_clinic_logo', true);
+    $before_after_gallery = get_post_meta($post->ID, '_clinic_before_after_gallery', true);
     ?>
     <p>
         <label for="logo"><strong><?php _e('Logo URL:', 'search-tattoo-removal'); ?></strong></label><br>
@@ -263,8 +263,8 @@ function str_clinic_media_callback($post) {
  * Business Information Meta Box
  */
 function str_clinic_business_callback($post) {
-    $years_in_business = get_post_meta($post->ID, '_years_in_business', true);
-    $is_featured = get_post_meta($post->ID, '_is_featured', true);
+    $years_in_business = get_post_meta($post->ID, '_clinic_years_in_business', true);
+    $is_featured = get_post_meta($post->ID, '_clinic_is_featured', true);
     ?>
     <p>
         <label for="years_in_business"><strong><?php _e('Years in Business:', 'search-tattoo-removal'); ?></strong></label><br>
@@ -373,22 +373,22 @@ function str_save_clinic_meta($post_id) {
 
     foreach ($fields as $field) {
         if (isset($_POST[$field])) {
-            update_post_meta($post_id, '_' . $field, sanitize_text_field($_POST[$field]));
+            update_post_meta($post_id, '_clinic_' . $field, sanitize_text_field($_POST[$field]));
         }
     }
 
     // Handle textarea fields separately
     if (isset($_POST['reviews_summary'])) {
-        update_post_meta($post_id, '_reviews_summary', sanitize_textarea_field($_POST['reviews_summary']));
+        update_post_meta($post_id, '_clinic_reviews_summary', sanitize_textarea_field($_POST['reviews_summary']));
     }
 
     // Handle featured checkbox
     $is_featured = isset($_POST['is_featured']) ? '1' : '0';
-    update_post_meta($post_id, '_is_featured', $is_featured);
+    update_post_meta($post_id, '_clinic_is_featured', $is_featured);
 
     // Handle verified checkbox
     $is_verified = isset($_POST['is_verified']) ? '1' : '0';
-    update_post_meta($post_id, '_is_verified', $is_verified);
+    update_post_meta($post_id, '_clinic_is_verified', $is_verified);
 
     // Handle laser technologies (relationship)
     if (isset($_POST['laser_technologies'])) {
