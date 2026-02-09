@@ -71,17 +71,10 @@ get_header();
             'post_type'      => 'clinic',
             'posts_per_page' => 6,
             'meta_query'     => array(
-                'relation' => 'AND',
                 array(
                     'key'     => '_clinic_is_featured',
                     'value'   => '1',
-                    'compare' => '=',
-                    'type'    => 'CHAR'
-                ),
-                array(
-                    'key'     => '_clinic_rating',
-                    'compare' => 'EXISTS',
-                    'type'    => 'NUMERIC'
+                    'compare' => '='
                 )
             ),
             'meta_key'       => '_clinic_rating',
@@ -89,17 +82,29 @@ get_header();
             'order'          => 'DESC',
         ));
         
-        // Only show section if we actually have featured clinics
+        // Debug: Check what we got
+        $debug_info = array(
+            'total_posts' => $featured_clinics->found_posts,
+            'query_vars' => $featured_clinics->query_vars,
+        );
+        
+        // Only show section if we have results AND they are actually featured
         $has_featured = false;
         if ($featured_clinics->have_posts()) {
-            // Double-check that at least one post actually has the featured flag
-            foreach ($featured_clinics->posts as $clinic) {
-                if (get_post_meta($clinic->ID, '_clinic_is_featured', true) == '1') {
+            while ($featured_clinics->have_posts()) {
+                $featured_clinics->the_post();
+                $is_featured = get_post_meta(get_the_ID(), '_clinic_is_featured', true);
+                if ($is_featured == '1') {
                     $has_featured = true;
                     break;
                 }
             }
+            // Reset query after checking
+            $featured_clinics->rewind_posts();
         }
+        
+        // Debug output (remove after testing)
+        echo '<!-- Featured Clinics Debug: ' . print_r($debug_info, true) . ' Has Featured: ' . ($has_featured ? 'YES' : 'NO') . ' -->';
         ?>
         
         <?php if ($has_featured) : ?>
