@@ -65,6 +65,44 @@ get_header();
         </section>
 
         <!-- Top Rated Clinics Section -->
+        <?php
+        // Query featured clinics - only show if they have the featured flag set
+        $featured_clinics = new WP_Query(array(
+            'post_type'      => 'clinic',
+            'posts_per_page' => 6,
+            'meta_query'     => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => '_clinic_is_featured',
+                    'value'   => '1',
+                    'compare' => '=',
+                    'type'    => 'CHAR'
+                ),
+                array(
+                    'key'     => '_clinic_rating',
+                    'compare' => 'EXISTS',
+                    'type'    => 'NUMERIC'
+                )
+            ),
+            'meta_key'       => '_clinic_rating',
+            'orderby'        => 'meta_value_num',
+            'order'          => 'DESC',
+        ));
+        
+        // Only show section if we actually have featured clinics
+        $has_featured = false;
+        if ($featured_clinics->have_posts()) {
+            // Double-check that at least one post actually has the featured flag
+            foreach ($featured_clinics->posts as $clinic) {
+                if (get_post_meta($clinic->ID, '_clinic_is_featured', true) == '1') {
+                    $has_featured = true;
+                    break;
+                }
+            }
+        }
+        ?>
+        
+        <?php if ($has_featured) : ?>
         <section class="py-20 bg-offwhite">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
@@ -72,37 +110,18 @@ get_header();
                     <p class="mt-4 text-xl text-graphite">Highest-rated specialists recommended by patients like you.</p>
                 </div>
                 
-                <?php
-                // Query featured clinics
-                $featured_clinics = new WP_Query(array(
-                    'post_type'      => 'clinic',
-                    'posts_per_page' => 6,
-                    'meta_query'     => array(
-                        array(
-                            'key'     => '_is_featured',
-                            'value'   => '1',
-                            'compare' => '='
-                        )
-                    ),
-                    'meta_key'       => '_rating',
-                    'orderby'        => 'meta_value_num',
-                    'order'          => 'DESC',
-                ));
-                ?>
-                
-                <?php if ($featured_clinics->have_posts()) : ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php while ($featured_clinics->have_posts()) : $featured_clinics->the_post(); 
                         $clinic_id = get_the_ID();
-                        $rating = get_post_meta($clinic_id, '_rating', true) ?: 0;
-                        $review_count = get_post_meta($clinic_id, '_reviews_count', true) ?: 0;
-                        $phone = get_post_meta($clinic_id, '_phone', true);
-                        $is_verified = get_post_meta($clinic_id, '_is_verified', true);
-                        $open_status = get_post_meta($clinic_id, '_open_status', true);
-                        $city = get_post_meta($clinic_id, '_city', true);
-                        $price_range = get_post_meta($clinic_id, '_price_range_display', true);
-                        $min_price = get_post_meta($clinic_id, '_min_price', true);
-                        $equipment = get_post_meta($clinic_id, '_equipment', true);
+                        $rating = get_post_meta($clinic_id, '_clinic_rating', true) ?: 0;
+                        $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
+                        $phone = get_post_meta($clinic_id, '_clinic_phone', true);
+                        $is_verified = get_post_meta($clinic_id, '_clinic_is_verified', true);
+                        $open_status = get_post_meta($clinic_id, '_clinic_open_status', true);
+                        $city = get_post_meta($clinic_id, '_clinic_city', true);
+                        $price_range = get_post_meta($clinic_id, '_clinic_price_range_display', true);
+                        $min_price = get_post_meta($clinic_id, '_clinic_min_price', true);
+                        $equipment = get_post_meta($clinic_id, '_clinic_equipment', true);
                         
                         // Get thumbnail or use placeholder
                         $thumbnail = get_the_post_thumbnail_url($clinic_id, 'str-clinic-card');
@@ -206,13 +225,9 @@ get_header();
                     <?php endwhile; wp_reset_postdata(); ?>
                     
                 </div>
-                <?php else : ?>
-                <div class="text-center py-12">
-                    <p class="text-graphite text-lg">No featured clinics available at the moment.</p>
-                </div>
-                <?php endif; ?>
             </div>
         </section>
+        <?php endif; ?>
 
         <!-- Browse by State Section -->
         <section class="py-20 bg-white border-t border-gray-light">
