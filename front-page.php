@@ -104,7 +104,7 @@ get_header();
         }
         
         // Debug output (remove after testing)
-        echo '<!-- Featured Clinics Debug: ' . print_r($debug_info, true) . ' Has Featured: ' . ($has_featured ? 'YES' : 'NO') . ' -->';
+        // echo '<!-- Featured Clinics Debug: ' . print_r($debug_info, true) . ' Has Featured: ' . ($has_featured ? 'YES' : 'NO') . ' -->';
         ?>
         
         <?php if ($has_featured) : ?>

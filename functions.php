@@ -172,6 +172,7 @@ require_once STR_DIR . '/inc/custom-fields.php';
 require_once STR_DIR . '/inc/template-functions.php';
 require_once STR_DIR . '/inc/rest-api.php';
 require_once STR_DIR . '/inc/admin-functions.php';
+require_once STR_DIR . '/inc/clinic-importer.php';
 
 /**
  * Load Jetpack compatibility file if Jetpack is active
