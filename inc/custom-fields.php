@@ -69,6 +69,15 @@ function str_add_clinic_meta_boxes() {
     );
 
     add_meta_box(
+        'clinic_payment_services',
+        __('Payment & Services', 'search-tattoo-removal'),
+        'str_clinic_payment_services_callback',
+        'clinic',
+        'normal',
+        'default'
+    );
+
+    add_meta_box(
         'clinic_media',
         __('Media & Branding', 'search-tattoo-removal'),
         'str_clinic_media_callback',
@@ -240,6 +249,111 @@ function str_clinic_pricing_callback($post) {
 }
 
 /**
+ * Payment & Services Meta Box
+ */
+function str_clinic_payment_services_callback($post) {
+    // Get all checkbox values
+    $appointment_required = get_post_meta($post->ID, '_clinic_appointment_required', true);
+    $online_scheduling = get_post_meta($post->ID, '_clinic_online_scheduling', true);
+    $offers_packages = get_post_meta($post->ID, '_clinic_offers_packages', true);
+    $military_discount = get_post_meta($post->ID, '_clinic_military_discount', true);
+    $financing = get_post_meta($post->ID, '_clinic_financing', true);
+    $cash_only = get_post_meta($post->ID, '_clinic_cash_only', true);
+    $accepts_credit_cards = get_post_meta($post->ID, '_clinic_accepts_credit_cards', true);
+    $accepts_debit_cards = get_post_meta($post->ID, '_clinic_accepts_debit_cards', true);
+    $accepts_mobile_payments = get_post_meta($post->ID, '_clinic_accepts_mobile_payments', true);
+    $accepts_checks = get_post_meta($post->ID, '_clinic_accepts_checks', true);
+    $wheelchair_accessible = get_post_meta($post->ID, '_clinic_wheelchair_accessible', true);
+    $medical_supervision = get_post_meta($post->ID, '_clinic_medical_supervision', true);
+    ?>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <!-- Left Column -->
+        <div>
+            <h4 style="margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 5px;"><?php _e('Scheduling & Services', 'search-tattoo-removal'); ?></h4>
+            <p>
+                <label>
+                    <input type="checkbox" name="appointment_required" value="1" <?php checked($appointment_required, '1'); ?>>
+                    <?php _e('Appointment Required', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="online_scheduling" value="1" <?php checked($online_scheduling, '1'); ?>>
+                    <?php _e('Online Scheduling', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="offers_packages" value="1" <?php checked($offers_packages, '1'); ?>>
+                    <?php _e('Offers Packages', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="military_discount" value="1" <?php checked($military_discount, '1'); ?>>
+                    <?php _e('Military Discount', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="financing" value="1" <?php checked($financing, '1'); ?>>
+                    <?php _e('Financing Available', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="medical_supervision" value="1" <?php checked($medical_supervision, '1'); ?>>
+                    <?php _e('Medical Supervision', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+        </div>
+        
+        <!-- Right Column -->
+        <div>
+            <h4 style="margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 5px;"><?php _e('Payment Methods & Accessibility', 'search-tattoo-removal'); ?></h4>
+            <p>
+                <label>
+                    <input type="checkbox" name="cash_only" value="1" <?php checked($cash_only, '1'); ?>>
+                    <?php _e('Cash Only', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="accepts_credit_cards" value="1" <?php checked($accepts_credit_cards, '1'); ?>>
+                    <?php _e('Accepts Credit Cards', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="accepts_debit_cards" value="1" <?php checked($accepts_debit_cards, '1'); ?>>
+                    <?php _e('Accepts Debit Cards', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="accepts_mobile_payments" value="1" <?php checked($accepts_mobile_payments, '1'); ?>>
+                    <?php _e('Accepts Mobile Payments', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="accepts_checks" value="1" <?php checked($accepts_checks, '1'); ?>>
+                    <?php _e('Accepts Checks', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+            <p>
+                <label>
+                    <input type="checkbox" name="wheelchair_accessible" value="1" <?php checked($wheelchair_accessible, '1'); ?>>
+                    <?php _e('Wheelchair Accessible', 'search-tattoo-removal'); ?>
+                </label>
+            </p>
+        </div>
+    </div>
+    <?php
+}
+
+/**
  * Media & Branding Meta Box
  */
 function str_clinic_media_callback($post) {
@@ -389,6 +503,27 @@ function str_save_clinic_meta($post_id) {
     // Handle verified checkbox
     $is_verified = isset($_POST['is_verified']) ? '1' : '0';
     update_post_meta($post_id, '_clinic_is_verified', $is_verified);
+
+    // Handle payment & services checkboxes
+    $checkbox_fields = array(
+        'appointment_required',
+        'online_scheduling',
+        'offers_packages',
+        'military_discount',
+        'financing',
+        'cash_only',
+        'accepts_credit_cards',
+        'accepts_debit_cards',
+        'accepts_mobile_payments',
+        'accepts_checks',
+        'wheelchair_accessible',
+        'medical_supervision'
+    );
+
+    foreach ($checkbox_fields as $checkbox_field) {
+        $value = isset($_POST[$checkbox_field]) ? '1' : '0';
+        update_post_meta($post_id, '_clinic_' . $checkbox_field, $value);
+    }
 
     // Handle laser technologies (relationship)
     if (isset($_POST['laser_technologies'])) {

@@ -213,6 +213,71 @@ function str_importer_page() {
                         <td>Logo image URL</td>
                         <td>https://example.com/logo.png</td>
                     </tr>
+                    <tr>
+                        <td><strong>laser_tech</strong></td>
+                        <td>Laser technologies (comma-separated)</td>
+                        <td>PicoWay, Enlighten III</td>
+                    </tr>
+                    <tr>
+                        <td><strong>appointment_required</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>online_scheduling</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>FALSE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>offers_packages</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>military_discount</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>financing</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cash_only</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>FALSE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>accepts_credit_cards</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>accepts_debit_cards</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>accepts_mobile_payments</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>accepts_checks</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>FALSE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>wheelchair_accessible</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>medical_supervision</strong></td>
+                        <td>TRUE/FALSE or 1/0</td>
+                        <td>TRUE</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -390,6 +455,61 @@ function str_import_single_clinic($row, $import_mode) {
         update_post_meta($post_id, '_is_featured', ($row['is_featured'] == '1' || strtolower($row['is_featured']) === 'yes') ? '1' : '0');
     }
 
+    // Handle payment & services checkboxes
+    $checkbox_fields = array(
+        'appointment_required',
+        'online_scheduling',
+        'offers_packages',
+        'military_discount',
+        'financing',
+        'cash_only',
+        'accepts_credit_cards',
+        'accepts_debit_cards',
+        'accepts_mobile_payments',
+        'accepts_checks',
+        'wheelchair_accessible',
+        'medical_supervision'
+    );
+
+    foreach ($checkbox_fields as $checkbox_field) {
+        if (isset($row[$checkbox_field])) {
+            $value = ($row[$checkbox_field] == '1' || 
+                      strtolower($row[$checkbox_field]) === 'true' || 
+                      strtolower($row[$checkbox_field]) === 'yes') ? '1' : '0';
+            update_post_meta($post_id, '_clinic_' . $checkbox_field, $value);
+        }
+    }
+
+    // Handle laser technology taxonomy
+    if (isset($row['laser_tech']) && !empty($row['laser_tech'])) {
+        // Split by comma for multiple technologies
+        $technologies = array_map('trim', explode(',', $row['laser_tech']));
+        $term_names = array();
+
+        foreach ($technologies as $tech_name) {
+            if (empty($tech_name)) continue;
+
+            // Check if term exists
+            $existing_term = term_exists($tech_name, 'laser_technology');
+
+            if (!$existing_term) {
+                // Create the term if it doesn't exist
+                $result = wp_insert_term($tech_name, 'laser_technology');
+                
+                if (!is_wp_error($result)) {
+                    $term_names[] = $tech_name;
+                }
+            } else {
+                $term_names[] = $tech_name;
+            }
+        }
+
+        // Set the terms for this post
+        if (!empty($term_names)) {
+            wp_set_object_terms($post_id, $term_names, 'laser_technology', false);
+        }
+    }
+
     return $post_id;
 }
 
@@ -456,7 +576,10 @@ function str_download_template() {
         'website', 'google_maps_url', 'rating', 'reviews_count', 'reviews_summary',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
         'operating_hours_raw', 'open_status', 'years_in_business', 'is_verified', 
-        'is_featured', 'logo'
+        'is_featured', 'logo', 'laser_tech',
+        'appointment_required', 'online_scheduling', 'offers_packages', 'military_discount',
+        'financing', 'cash_only', 'accepts_credit_cards', 'accepts_debit_cards',
+        'accepts_mobile_payments', 'accepts_checks', 'wheelchair_accessible', 'medical_supervision'
     );
     
     fputcsv($output, $headers);
@@ -484,7 +607,20 @@ function str_download_template() {
         '15',
         '1',
         '0',
-        'https://example.com/logo.png'
+        'https://example.com/logo.png',
+        'PicoWay, Enlighten III',
+        'TRUE',
+        'FALSE',
+        'TRUE',
+        'TRUE',
+        'TRUE',
+        'FALSE',
+        'TRUE',
+        'TRUE',
+        'TRUE',
+        'FALSE',
+        'TRUE',
+        'TRUE'
     );
     
     fputcsv($output, $sample);

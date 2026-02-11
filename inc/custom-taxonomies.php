@@ -203,6 +203,48 @@ function str_register_laser_taxonomies() {
 add_action('init', 'str_register_laser_taxonomies', 0);
 
 /**
+ * Register Laser Technology Taxonomy (shared between clinics and laser_tech posts)
+ */
+function str_register_laser_technology_taxonomy() {
+    $labels = array(
+        'name'                       => _x('Laser Technologies', 'Taxonomy General Name', 'search-tattoo-removal'),
+        'singular_name'              => _x('Laser Technology', 'Taxonomy Singular Name', 'search-tattoo-removal'),
+        'menu_name'                  => __('Technologies', 'search-tattoo-removal'),
+        'all_items'                  => __('All Technologies', 'search-tattoo-removal'),
+        'new_item_name'              => __('New Technology Name', 'search-tattoo-removal'),
+        'add_new_item'               => __('Add New Technology', 'search-tattoo-removal'),
+        'edit_item'                  => __('Edit Technology', 'search-tattoo-removal'),
+        'update_item'                => __('Update Technology', 'search-tattoo-removal'),
+        'view_item'                  => __('View Technology', 'search-tattoo-removal'),
+        'separate_items_with_commas' => __('Separate technologies with commas', 'search-tattoo-removal'),
+        'add_or_remove_items'        => __('Add or remove technologies', 'search-tattoo-removal'),
+        'choose_from_most_used'      => __('Choose from the most used', 'search-tattoo-removal'),
+        'popular_items'              => __('Popular Technologies', 'search-tattoo-removal'),
+        'search_items'               => __('Search Technologies', 'search-tattoo-removal'),
+        'not_found'                  => __('Not Found', 'search-tattoo-removal'),
+        'no_terms'                   => __('No technologies', 'search-tattoo-removal'),
+        'items_list'                 => __('Technologies list', 'search-tattoo-removal'),
+        'items_list_navigation'      => __('Technologies list navigation', 'search-tattoo-removal'),
+    );
+
+    $args = array(
+        'labels'            => $labels,
+        'hierarchical'      => false,
+        'public'            => true,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_nav_menus' => true,
+        'show_tagcloud'     => true,
+        'show_in_rest'      => true,
+        'rest_base'         => 'laser-technologies',
+        'rewrite'           => array('slug' => 'laser-technology', 'with_front' => false),
+    );
+
+    register_taxonomy('laser_technology', array('clinic', 'laser_tech'), $args);
+}
+add_action('init', 'str_register_laser_technology_taxonomy', 0);
+
+/**
  * Pre-populate clinic features on theme activation
  */
 function str_prepopulate_clinic_features() {
