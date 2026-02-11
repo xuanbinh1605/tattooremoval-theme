@@ -214,6 +214,11 @@ function str_importer_page() {
                         <td>https://example.com/logo.png</td>
                     </tr>
                     <tr>
+                        <td><strong>thumbnail</strong></td>
+                        <td>Featured image URL (auto-downloaded and set)</td>
+                        <td>https://example.com/clinic-photo.jpg</td>
+                    </tr>
+                    <tr>
                         <td><strong>laser_tech</strong></td>
                         <td>Laser technologies (comma-separated)</td>
                         <td>PicoWay, Enlighten III</td>
@@ -418,6 +423,11 @@ function str_import_single_clinic($row, $import_mode) {
         str_set_clinic_location($post_id, $row['state'], $row['city']);
     }
 
+    // Set featured image from thumbnail URL
+    if (!empty($row['thumbnail'])) {
+        str_set_featured_image_from_url($post_id, $row['thumbnail']);
+    }
+
     // Set meta fields
     $meta_fields = array(
         'website' => 'website',
@@ -558,6 +568,62 @@ function str_set_clinic_location($post_id, $state_name, $city_name) {
 }
 
 /**
+ * Set featured image from URL
+ */
+function str_set_featured_image_from_url($post_id, $image_url) {
+    // Check if post already has a featured image
+    if (get_post_thumbnail_id($post_id)) {
+        return; // Skip if featured image already exists
+    }
+
+    // Validate URL
+    if (!filter_var($image_url, FILTER_VALIDATE_URL)) {
+        error_log("Invalid image URL: $image_url");
+        return;
+    }
+
+    // Include required WordPress files
+    require_once(ABSPATH . 'wp-admin/includes/media.php');
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+    // Download image to temp file
+    $tmp = download_url($image_url);
+
+    if (is_wp_error($tmp)) {
+        error_log("Failed to download image: " . $tmp->get_error_message());
+        return;
+    }
+
+    // Get file name from URL
+    $file_array = array();
+    $file_array['name'] = basename(parse_url($image_url, PHP_URL_PATH));
+    $file_array['tmp_name'] = $tmp;
+
+    // If filename is empty, generate one
+    if (empty($file_array['name'])) {
+        $file_array['name'] = 'clinic-thumbnail-' . $post_id . '.jpg';
+    }
+
+    // Upload to media library
+    $attachment_id = media_handle_sideload($file_array, $post_id);
+
+    // Clean up temp file
+    if (file_exists($tmp)) {
+        @unlink($tmp);
+    }
+
+    // Check for errors
+    if (is_wp_error($attachment_id)) {
+        error_log("Failed to create attachment: " . $attachment_id->get_error_message());
+        return;
+    }
+
+    // Set as featured image
+    set_post_thumbnail($post_id, $attachment_id);
+}
+
+/**
  * Download CSV template
  */
 function str_download_template() {
@@ -576,7 +642,7 @@ function str_download_template() {
         'website', 'google_maps_url', 'rating', 'reviews_count', 'reviews_summary',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
         'operating_hours_raw', 'open_status', 'years_in_business', 'is_verified', 
-        'is_featured', 'logo', 'laser_tech',
+        'is_featured', 'logo', 'thumbnail', 'laser_tech',
         'appointment_required', 'online_scheduling', 'offers_packages', 'military_discount',
         'financing', 'cash_only', 'accepts_credit_cards', 'accepts_debit_cards',
         'accepts_mobile_payments', 'accepts_checks', 'wheelchair_accessible', 'medical_supervision'
@@ -608,6 +674,7 @@ function str_download_template() {
         '1',
         '0',
         'https://example.com/logo.png',
+        'https://example.com/clinic-thumbnail.jpg',
         'PicoWay, Enlighten III',
         'TRUE',
         'FALSE',
