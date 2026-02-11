@@ -711,27 +711,37 @@ function str_import_single_laser_tech($row, $import_mode) {
         if (isset($row[$taxonomy]) && !empty($row[$taxonomy])) {
             // Split by comma for multiple terms
             $terms = array_map('trim', explode(',', $row[$taxonomy]));
-            $term_ids = array();
+            $term_names = array();
 
             foreach ($terms as $term_name) {
                 if (empty($term_name)) continue;
 
-                // Check if term exists
-                $term = term_exists($term_name, $taxonomy);
-
-                if (!$term) {
-                    // Create the term if it doesn't exist
-                    $term = wp_insert_term($term_name, $taxonomy);
+                // Skip if term_name is purely numeric (likely import error)
+                if (is_numeric($term_name) && !preg_match('/nm$|Type\s+[IVX]+/i', $term_name)) {
+                    continue;
                 }
 
-                if (!is_wp_error($term)) {
-                    $term_ids[] = is_array($term) ? $term['term_id'] : $term;
+                // Check if term exists
+                $existing_term = term_exists($term_name, $taxonomy);
+
+                if (!$existing_term) {
+                    // Create the term if it doesn't exist
+                    $result = wp_insert_term($term_name, $taxonomy);
+                    
+                    if (!is_wp_error($result)) {
+                        $term_names[] = $term_name;
+                    } else {
+                        error_log("Failed to create term '$term_name' in taxonomy '$taxonomy': " . $result->get_error_message());
+                    }
+                } else {
+                    // Term exists, add it to our list
+                    $term_names[] = $term_name;
                 }
             }
 
-            // Set the terms for this post
-            if (!empty($term_ids)) {
-                wp_set_object_terms($post_id, $term_ids, $taxonomy, false);
+            // Set the terms for this post using term names (more reliable than IDs)
+            if (!empty($term_names)) {
+                wp_set_object_terms($post_id, $term_names, $taxonomy, false);
             }
         }
     }
