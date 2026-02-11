@@ -402,3 +402,422 @@ function str_generate_sample_clinics() {
     
     return $created_ids;
 }
+
+/**
+ * Add Laser Tech Import submenu
+ */
+function str_add_laser_tech_import_menu() {
+    add_submenu_page(
+        'edit.php?post_type=laser_tech',
+        __('Import Laser Technologies', 'search-tattoo-removal'),
+        __('Import', 'search-tattoo-removal'),
+        'manage_options',
+        'laser-tech-importer',
+        'str_laser_tech_import_page'
+    );
+}
+add_action('admin_menu', 'str_add_laser_tech_import_menu');
+
+/**
+ * Laser Tech Import Page
+ */
+function str_laser_tech_import_page() {
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Import Laser Technologies from CSV', 'search-tattoo-removal'); ?></h1>
+        
+        <?php if (isset($_GET['import_success'])) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong><?php echo intval($_GET['import_success']); ?> laser technologies imported successfully!</strong></p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['import_error'])) : ?>
+            <div class="notice notice-error is-dismissible">
+                <p><strong>Error:</strong> <?php echo esc_html(urldecode($_GET['import_error'])); ?></p>
+            </div>
+        <?php endif; ?>
+
+        <div class="card" style="max-width: 800px;">
+            <h2><?php _e('Upload CSV File', 'search-tattoo-removal'); ?></h2>
+            
+            <form method="post" enctype="multipart/form-data" action="<?php echo admin_url('admin-post.php'); ?>">
+                <input type="hidden" name="action" value="str_import_laser_tech">
+                <?php wp_nonce_field('str_import_laser_tech', 'str_laser_tech_import_nonce'); ?>
+                
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="laser_tech_file"><?php _e('Select CSV File', 'search-tattoo-removal'); ?></label>
+                        </th>
+                        <td>
+                            <input type="file" name="laser_tech_file" id="laser_tech_file" accept=".csv" required>
+                            <p class="description">
+                                <?php _e('Upload a CSV file (.csv) with laser technology data.', 'search-tattoo-removal'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="import_mode"><?php _e('Import Mode', 'search-tattoo-removal'); ?></label>
+                        </th>
+                        <td>
+                            <select name="import_mode" id="import_mode">
+                                <option value="create"><?php _e('Create new technologies only', 'search-tattoo-removal'); ?></option>
+                                <option value="update"><?php _e('Update existing (match by title)', 'search-tattoo-removal'); ?></option>
+                                <option value="overwrite"><?php _e('Create or Update (overwrite existing)', 'search-tattoo-removal'); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p class="submit">
+                    <input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Import Laser Technologies', 'search-tattoo-removal'); ?>">
+                </p>
+            </form>
+        </div>
+
+        <div class="card" style="max-width: 800px; margin-top: 20px;">
+            <h2><?php _e('Download Template', 'search-tattoo-removal'); ?></h2>
+            <p><?php _e('Download the CSV template file with all required columns:', 'search-tattoo-removal'); ?></p>
+            <a href="<?php echo admin_url('admin-post.php?action=str_download_laser_tech_template'); ?>" class="button button-secondary">
+                <?php _e('Download CSV Template', 'search-tattoo-removal'); ?>
+            </a>
+        </div>
+
+        <div class="card" style="max-width: 800px; margin-top: 20px;">
+            <h2><?php _e('CSV Column Guide', 'search-tattoo-removal'); ?></h2>
+            <table class="widefat">
+                <thead>
+                    <tr>
+                        <th><?php _e('Column Name', 'search-tattoo-removal'); ?></th>
+                        <th><?php _e('Description', 'search-tattoo-removal'); ?></th>
+                        <th><?php _e('Example', 'search-tattoo-removal'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>title</strong></td>
+                        <td>Technology name (required)</td>
+                        <td>PicoWay Laser System</td>
+                    </tr>
+                    <tr>
+                        <td><strong>content</strong></td>
+                        <td>Full technology description</td>
+                        <td>Revolutionary picosecond laser technology for effective tattoo removal...</td>
+                    </tr>
+                    <tr>
+                        <td><strong>official_website</strong></td>
+                        <td>Official technology website URL</td>
+                        <td>https://www.picoway.com</td>
+                    </tr>
+                    <tr>
+                        <td><strong>short_description</strong></td>
+                        <td>Brief technology summary</td>
+                        <td>Picosecond laser for all skin types</td>
+                    </tr>
+                    <tr>
+                        <td><strong>technical_notes</strong></td>
+                        <td>Technical specifications and notes</td>
+                        <td>755nm, 1064nm, 532nm wavelengths. Safe for all skin types.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>laser_brand</strong></td>
+                        <td>Laser brand/manufacturer (comma-separated for multiple)</td>
+                        <td>Candela, Syneron Candela</td>
+                    </tr>
+                    <tr>
+                        <td><strong>laser_wavelength</strong></td>
+                        <td>Available wavelengths (comma-separated)</td>
+                        <td>532nm, 755nm, 1064nm</td>
+                    </tr>
+                    <tr>
+                        <td><strong>laser_pulse_type</strong></td>
+                        <td>Pulse duration types (comma-separated)</td>
+                        <td>Picosecond, Nanosecond</td>
+                    </tr>
+                    <tr>
+                        <td><strong>target_ink_color</strong></td>
+                        <td>Target ink colors (comma-separated)</td>
+                        <td>Black, Blue, Green, Red, Yellow</td>
+                    </tr>
+                    <tr>
+                        <td><strong>safe_skin_type</strong></td>
+                        <td>Safe for skin types (comma-separated)</td>
+                        <td>Type I, Type II, Type III, Type IV, Type V, Type VI</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * Process laser tech import
+ */
+function str_process_laser_tech_import() {
+    // Verify nonce and permissions
+    if (!isset($_POST['str_laser_tech_import_nonce']) || !wp_verify_nonce($_POST['str_laser_tech_import_nonce'], 'str_import_laser_tech')) {
+        wp_die(__('Security check failed', 'search-tattoo-removal'));
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+
+    // Check if file was uploaded
+    if (!isset($_FILES['laser_tech_file']) || $_FILES['laser_tech_file']['error'] !== UPLOAD_ERR_OK) {
+        wp_redirect(admin_url('edit.php?post_type=laser_tech&page=laser-tech-importer&import_error=' . urlencode('File upload failed')));
+        exit;
+    }
+
+    $file = $_FILES['laser_tech_file'];
+    $import_mode = isset($_POST['import_mode']) ? sanitize_text_field($_POST['import_mode']) : 'create';
+    
+    // Check file type
+    $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    
+    try {
+        if ($file_ext === 'csv') {
+            $imported = str_import_laser_tech_csv($file['tmp_name'], $import_mode);
+        } else {
+            throw new Exception('Only CSV files are supported.');
+        }
+
+        wp_redirect(admin_url('edit.php?post_type=laser_tech&page=laser-tech-importer&import_success=' . $imported));
+        exit;
+    } catch (Exception $e) {
+        wp_redirect(admin_url('edit.php?post_type=laser_tech&page=laser-tech-importer&import_error=' . urlencode($e->getMessage())));
+        exit;
+    }
+}
+add_action('admin_post_str_import_laser_tech', 'str_process_laser_tech_import');
+
+/**
+ * Import laser technologies from CSV file
+ */
+function str_import_laser_tech_csv($file_path, $import_mode) {
+    $handle = fopen($file_path, 'r');
+    if ($handle === false) {
+        throw new Exception('Could not open file');
+    }
+
+    // Read header row
+    $headers = fgetcsv($handle);
+    if ($headers === false) {
+        fclose($handle);
+        throw new Exception('Empty file or invalid format');
+    }
+
+    // Normalize headers (trim and lowercase)
+    $headers = array_map(function($h) {
+        return strtolower(trim($h));
+    }, $headers);
+
+    $imported = 0;
+    $row_number = 1;
+
+    // Process each row
+    while (($data = fgetcsv($handle)) !== false) {
+        $row_number++;
+        
+        // Skip empty rows
+        if (empty(array_filter($data))) {
+            continue;
+        }
+
+        // Combine headers with data
+        $row = array_combine($headers, $data);
+        
+        try {
+            str_import_single_laser_tech($row, $import_mode);
+            $imported++;
+        } catch (Exception $e) {
+            // Log error but continue with next row
+            error_log("Row $row_number import failed: " . $e->getMessage());
+        }
+    }
+
+    fclose($handle);
+    return $imported;
+}
+
+/**
+ * Import a single laser technology from row data
+ */
+function str_import_single_laser_tech($row, $import_mode) {
+    // Required field: title
+    if (empty($row['title'])) {
+        throw new Exception('Title is required');
+    }
+
+    $title = sanitize_text_field($row['title']);
+    
+    // Check if technology exists
+    $existing = get_page_by_title($title, OBJECT, 'laser_tech');
+    
+    if ($existing && $import_mode === 'create') {
+        // Skip if exists and mode is create only
+        return;
+    }
+
+    // Prepare post data
+    $post_data = array(
+        'post_title'   => $title,
+        'post_content' => isset($row['content']) ? wp_kses_post($row['content']) : '',
+        'post_status'  => 'publish',
+        'post_type'    => 'laser_tech',
+    );
+
+    if ($existing && ($import_mode === 'update' || $import_mode === 'overwrite')) {
+        $post_data['ID'] = $existing->ID;
+        $post_id = wp_update_post($post_data);
+    } else {
+        $post_id = wp_insert_post($post_data);
+    }
+
+    if (is_wp_error($post_id)) {
+        throw new Exception('Failed to create/update post: ' . $post_id->get_error_message());
+    }
+
+    // Set meta fields
+    $meta_fields = array(
+        'official_website' => 'official_website',
+        'short_description' => 'short_description',
+        'technical_notes' => 'technical_notes',
+    );
+
+    foreach ($meta_fields as $csv_field => $meta_key) {
+        if (isset($row[$csv_field]) && $row[$csv_field] !== '') {
+            if ($meta_key === 'short_description' || $meta_key === 'technical_notes') {
+                update_post_meta($post_id, '_' . $meta_key, sanitize_textarea_field($row[$csv_field]));
+            } else {
+                update_post_meta($post_id, '_' . $meta_key, sanitize_text_field($row[$csv_field]));
+            }
+        }
+    }
+
+    // Set taxonomies
+    $taxonomies = array(
+        'laser_brand',
+        'laser_wavelength',
+        'laser_pulse_type',
+        'target_ink_color',
+        'safe_skin_type',
+    );
+
+    foreach ($taxonomies as $taxonomy) {
+        if (isset($row[$taxonomy]) && !empty($row[$taxonomy])) {
+            // Split by comma for multiple terms
+            $terms = array_map('trim', explode(',', $row[$taxonomy]));
+            $term_ids = array();
+
+            foreach ($terms as $term_name) {
+                if (empty($term_name)) continue;
+
+                // Check if term exists
+                $term = term_exists($term_name, $taxonomy);
+
+                if (!$term) {
+                    // Create the term if it doesn't exist
+                    $term = wp_insert_term($term_name, $taxonomy);
+                }
+
+                if (!is_wp_error($term)) {
+                    $term_ids[] = is_array($term) ? $term['term_id'] : $term;
+                }
+            }
+
+            // Set the terms for this post
+            if (!empty($term_ids)) {
+                wp_set_object_terms($post_id, $term_ids, $taxonomy, false);
+            }
+        }
+    }
+
+    return $post_id;
+}
+
+/**
+ * Download laser tech CSV template
+ */
+function str_download_laser_tech_template() {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+
+    $filename = 'laser-tech-import-template.csv';
+    
+    // Set headers for download
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+
+    // Create CSV content
+    $output = fopen('php://output', 'w');
+    
+    // Add headers
+    $headers = array(
+        'title',
+        'content',
+        'official_website',
+        'short_description',
+        'technical_notes',
+        'laser_brand',
+        'laser_wavelength',
+        'laser_pulse_type',
+        'target_ink_color',
+        'safe_skin_type'
+    );
+    fputcsv($output, $headers);
+    
+    // Add sample data
+    $sample_data = array(
+        array(
+            'PicoWay Laser System',
+            'Revolutionary picosecond laser technology designed for effective tattoo removal. The PicoWay system delivers ultra-short pulses that shatter tattoo ink into tiny particles.',
+            'https://www.picoway.com',
+            'Picosecond laser for all skin types',
+            '755nm, 1064nm, 532nm wavelengths. Safe for all skin types. Minimal downtime.',
+            'Syneron Candela',
+            '532nm, 755nm, 1064nm',
+            'Picosecond',
+            'Black, Blue, Green, Red, Yellow, Orange',
+            'Type I, Type II, Type III, Type IV, Type V, Type VI'
+        ),
+        array(
+            'Enlighten III',
+            'Advanced picosecond and nanosecond laser platform for comprehensive tattoo removal treatments.',
+            'https://www.cutera.com/enlighten-iii',
+            'Dual-wavelength picosecond laser',
+            '1064nm and 532nm wavelengths. Both picosecond and nanosecond pulse durations.',
+            'Cutera',
+            '532nm, 1064nm',
+            'Picosecond, Nanosecond',
+            'Black, Blue, Green, Red',
+            'Type I, Type II, Type III, Type IV, Type V, Type VI'
+        ),
+        array(
+            'Q-Switch Nd:YAG',
+            'Traditional Q-switched laser technology for tattoo removal with proven effectiveness.',
+            'https://example.com',
+            'Classic Q-switched laser system',
+            '1064nm and 532nm wavelengths. Nanosecond pulse duration. Suitable for dark inks.',
+            'Various',
+            '532nm, 1064nm',
+            'Nanosecond',
+            'Black, Blue, Red',
+            'Type I, Type II, Type III, Type IV'
+        )
+    );
+    
+    foreach ($sample_data as $row) {
+        fputcsv($output, $row);
+    }
+    
+    fclose($output);
+    exit;
+}
+add_action('admin_post_str_download_laser_tech_template', 'str_download_laser_tech_template');
