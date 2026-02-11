@@ -439,7 +439,6 @@ function str_import_single_clinic($row, $import_mode) {
         'street' => 'street',
         'zip_code' => 'zip_code',
         'full_address' => 'full_address',
-        'operating_hours_raw' => 'operating_hours_raw',
         'min_price' => 'min_price',
         'max_price' => 'max_price',
         'consultation_price' => 'consultation_price',
@@ -452,8 +451,14 @@ function str_import_single_clinic($row, $import_mode) {
 
     foreach ($meta_fields as $csv_field => $meta_key) {
         if (isset($row[$csv_field]) && $row[$csv_field] !== '') {
-            update_post_meta($post_id, '_' . $meta_key, sanitize_text_field($row[$csv_field]));
+            update_post_meta($post_id, '_clinic_' . $meta_key, sanitize_text_field($row[$csv_field]));
         }
+    }
+
+    // Handle operating hours with special parsing
+    if (isset($row['operating_hours_raw']) && !empty($row['operating_hours_raw'])) {
+        $parsed_hours = str_parse_operating_hours($row['operating_hours_raw']);
+        update_post_meta($post_id, '_clinic_operating_hours_raw', sanitize_textarea_field($parsed_hours));
     }
 
     // Handle boolean fields
@@ -565,6 +570,58 @@ function str_set_clinic_location($post_id, $state_name, $city_name) {
 
     // Set the taxonomy term (only the city, as it implies the state)
     wp_set_object_terms($post_id, array($city_id), 'us_location', false);
+}
+
+/**
+ * Parse operating hours from various formats
+ */
+function str_parse_operating_hours($hours_string) {
+    // Check if it's already in readable format (contains newlines or multiple lines)
+    if (strpos($hours_string, "\n") !== false) {
+        return $hours_string; // Already formatted
+    }
+
+    // Check if it's in Python dictionary format
+    if (preg_match("/^['\"]?\{/", trim($hours_string))) {
+        // Replace single quotes with double quotes for JSON compatibility
+        $json_string = str_replace("'", '"', $hours_string);
+        
+        // Handle Unicode characters like \u202f (narrow no-break space)
+        $json_string = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function($match) {
+            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+        }, $json_string);
+        
+        // Try to decode as JSON
+        $decoded = json_decode($json_string, true);
+        
+        if (is_array($decoded)) {
+            $formatted_hours = array();
+            $day_order = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+            
+            foreach ($day_order as $day) {
+                if (isset($decoded[$day])) {
+                    $day_name = ucfirst($day);
+                    $time = $decoded[$day];
+                    
+                    // Clean up the time format
+                    $time = str_replace(array('\u202f', ' '), ' ', $time);
+                    $time = preg_replace('/\s+/', ' ', $time); // Normalize spaces
+                    
+                    // Handle "Closed" status
+                    if (strtolower($time) === 'closed') {
+                        $formatted_hours[] = "$day_name: Closed";
+                    } else {
+                        $formatted_hours[] = "$day_name: $time";
+                    }
+                }
+            }
+            
+            return implode("\n", $formatted_hours);
+        }
+    }
+    
+    // If neither format matches, return as-is
+    return $hours_string;
 }
 
 /**
