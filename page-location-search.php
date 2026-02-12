@@ -700,173 +700,188 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
     </div>
 </main>
 
-<script>
-// Remove a specific filter
-function removeFilter(filterName, value = null) {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (value) {
-        // Remove specific value from array filter (price, features)
-        const values = urlParams.getAll(filterName + '[]');
-        urlParams.delete(filterName + '[]');
-        values.filter(v => v !== value).forEach(v => urlParams.append(filterName + '[]', v));
-    } else {
-        // Remove entire filter parameter
-        urlParams.delete(filterName);
-    }
-    
-    urlParams.delete('paged');
-    window.location.search = urlParams.toString();
-}
-
-// Clear all filters but keep location
-function clearAllFilters() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const locationState = urlParams.get('location_state');
-    const locationCity = urlParams.get('location_city');
-    
-    const newParams = new URLSearchParams();
-    if (locationState) newParams.set('location_state', locationState);
-    if (locationCity) newParams.set('location_city', locationCity);
-    
-    window.location.search = newParams.toString();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Filter script loaded');
-    
-    // Mobile filter toggle
-    const mobileFilterToggle = document.getElementById('mobileFilterToggle');
-    const filterSidebar = document.getElementById('filterSidebar');
-    const filterCount = document.getElementById('filterCount');
-    const closeFilters = document.getElementById('closeFilters');
-    
-    console.log('Found elements:', {
-        priceButtons: document.querySelectorAll('[data-filter="price"]').length,
-        checkboxes: document.querySelectorAll('.filter-checkbox').length,
-        mobileToggle: !!mobileFilterToggle,
-        sidebar: !!filterSidebar
-    });
-    
-    function openMobileFilters() {
-        filterSidebar.classList.remove('hidden');
-        filterSidebar.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeMobileFilters() {
-        filterSidebar.classList.add('hidden');
-        filterSidebar.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
-        document.body.style.overflow = '';
-    }
-    
-    if (mobileFilterToggle && filterSidebar) {
-        mobileFilterToggle.addEventListener('click', openMobileFilters);
-    }
-    
-    if (closeFilters) {
-        closeFilters.addEventListener('click', closeMobileFilters);
-    }
-    
-    // Update filter count badge
-    function updateFilterCount() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const priceFilters = urlParams.getAll('price[]').length;
-        const featureFilters = urlParams.getAll('features[]').length;
-        const openNow = urlParams.has('open_now') ? 1 : 0;
-        const verified = urlParams.has('verified') ? 1 : 0;
-        const onlineBooking = urlParams.has('online_booking') ? 1 : 0;
-        const minRating = urlParams.has('min_rating') ? 1 : 0;
-        
-        const totalFilters = priceFilters + featureFilters + openNow + verified + onlineBooking + minRating;
-        
-        if (filterCount && totalFilters > 0) {
-            filterCount.textContent = totalFilters;
-            filterCount.classList.remove('hidden');
-        } else if (filterCount) {
-            filterCount.classList.add('hidden');
-        }
-    }
-    
-    updateFilterCount();
-    
-    // Price filter buttons
-    document.querySelectorAll('[data-filter="price"]').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Price filter clicked:', this.dataset.value);
-            const urlParams = new URLSearchParams(window.location.search);
-            const value = this.dataset.value;
-            const priceArray = urlParams.getAll('price[]');
-            
-            if (priceArray.includes(value)) {
-                // Remove this price
-                urlParams.delete('price[]');
-                priceArray.filter(p => p !== value).forEach(p => urlParams.append('price[]', p));
-            } else {
-                // Add this price
-                urlParams.append('price[]', value);
-            }
-            
-            // Reset to page 1
-            urlParams.delete('paged');
-            
-            // Build new URL
-            const newUrl = window.location.pathname + '?' + urlParams.toString();
-            console.log('Navigating to:', newUrl);
-            window.location.href = newUrl;
-        });
-    });
-    
-    // Checkbox filters (open_now, verified, online_booking, features)
-    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            console.log('Checkbox changed:', this.dataset.filter, this.checked);
-            const urlParams = new URLSearchParams(window.location.search);
-            const filter = this.dataset.filter;
-            const value = this.dataset.value;
-            
-            if (filter === 'features') {
-                // Handle array of features
-                if (this.checked) {
-                    urlParams.append('features[]', value);
-                } else {
-                    // Remove this feature
-                    const features = urlParams.getAll('features[]');
-                    urlParams.delete('features[]');
-                    features.filter(f => f !== value).forEach(f => urlParams.append('features[]', f));
-                }
-            } else if (filter === 'min_rating') {
-                // Handle rating filter (only one can be selected)
-                if (this.checked) {
-                    // Uncheck other rating checkboxes
-                    document.querySelectorAll('[data-filter="min_rating"]').forEach(cb => {
-                        if (cb !== this) cb.checked = false;
-                    });
-                    urlParams.set('min_rating', value);
-                } else {
-                    urlParams.delete('min_rating');
-                }
-            } else {
-                // Handle boolean filters (open_now, verified, online_booking)
-                if (this.checked) {
-                    urlParams.set(filter, '1');
-                } else {
-                    urlParams.delete(filter);
-                }
-            }
-            
-            // Reset to page 1
-            urlParams.delete('paged');
-            
-            // Build new URL
-            const newUrl = window.location.pathname + '?' + urlParams.toString();
-            console.log('Navigating to:', newUrl);
-            window.location.href = newUrl;
-        });
-    });
-});
-</script>
-
 <?php
+// Add inline JavaScript for filters
+add_action('wp_footer', function() {
+    ?>
+    <script>
+    console.log('Filter script starting...');
+    
+    // Remove a specific filter
+    function removeFilter(filterName, value = null) {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (value) {
+            // Remove specific value from array filter (price, features)
+            const values = urlParams.getAll(filterName + '[]');
+            urlParams.delete(filterName + '[]');
+            values.filter(v => v !== value).forEach(v => urlParams.append(filterName + '[]', v));
+        } else {
+            // Remove entire filter parameter
+            urlParams.delete(filterName);
+        }
+        
+        urlParams.delete('paged');
+        window.location.search = urlParams.toString();
+    }
+
+    // Clear all filters but keep location
+    function clearAllFilters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const locationState = urlParams.get('location_state');
+        const locationCity = urlParams.get('location_city');
+        
+        const newParams = new URLSearchParams();
+        if (locationState) newParams.set('location_state', locationState);
+        if (locationCity) newParams.set('location_city', locationCity);
+        
+        window.location.search = newParams.toString();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing filters...');
+        
+        // Mobile filter toggle
+        const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+        const filterSidebar = document.getElementById('filterSidebar');
+        const filterCount = document.getElementById('filterCount');
+        const closeFilters = document.getElementById('closeFilters');
+        
+        console.log('Found elements:', {
+            priceButtons: document.querySelectorAll('[data-filter="price"]').length,
+            checkboxes: document.querySelectorAll('.filter-checkbox').length,
+            mobileToggle: !!mobileFilterToggle,
+            sidebar: !!filterSidebar
+        });
+        
+        function openMobileFilters() {
+            filterSidebar.classList.remove('hidden');
+            filterSidebar.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMobileFilters() {
+            filterSidebar.classList.add('hidden');
+            filterSidebar.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
+            document.body.style.overflow = '';
+        }
+        
+        if (mobileFilterToggle && filterSidebar) {
+            mobileFilterToggle.addEventListener('click', openMobileFilters);
+        }
+        
+        if (closeFilters) {
+            closeFilters.addEventListener('click', closeMobileFilters);
+        }
+        
+        // Update filter count badge
+        function updateFilterCount() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const priceFilters = urlParams.getAll('price[]').length;
+            const featureFilters = urlParams.getAll('features[]').length;
+            const openNow = urlParams.has('open_now') ? 1 : 0;
+            const verified = urlParams.has('verified') ? 1 : 0;
+            const onlineBooking = urlParams.has('online_booking') ? 1 : 0;
+            const minRating = urlParams.has('min_rating') ? 1 : 0;
+            
+            const totalFilters = priceFilters + featureFilters + openNow + verified + onlineBooking + minRating;
+            
+            if (filterCount && totalFilters > 0) {
+                filterCount.textContent = totalFilters;
+                filterCount.classList.remove('hidden');
+            } else if (filterCount) {
+                filterCount.classList.add('hidden');
+            }
+        }
+        
+        updateFilterCount();
+        
+        // Price filter buttons
+        const priceButtons = document.querySelectorAll('[data-filter="price"]');
+        console.log('Attaching listeners to', priceButtons.length, 'price buttons');
+        
+        priceButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Price filter clicked:', this.dataset.value);
+                const urlParams = new URLSearchParams(window.location.search);
+                const value = this.dataset.value;
+                const priceArray = urlParams.getAll('price[]');
+                
+                if (priceArray.includes(value)) {
+                    // Remove this price
+                    urlParams.delete('price[]');
+                    priceArray.filter(p => p !== value).forEach(p => urlParams.append('price[]', p));
+                } else {
+                    // Add this price
+                    urlParams.append('price[]', value);
+                }
+                
+                // Reset to page 1
+                urlParams.delete('paged');
+                
+                // Build new URL
+                const newUrl = window.location.pathname + '?' + urlParams.toString();
+                console.log('Navigating to:', newUrl);
+                window.location.href = newUrl;
+            });
+        });
+        
+        // Checkbox filters (open_now, verified, online_booking, features)
+        const checkboxes = document.querySelectorAll('.filter-checkbox');
+        console.log('Attaching listeners to', checkboxes.length, 'checkboxes');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                console.log('Checkbox changed:', this.dataset.filter, this.checked);
+                const urlParams = new URLSearchParams(window.location.search);
+                const filter = this.dataset.filter;
+                const value = this.dataset.value;
+                
+                if (filter === 'features') {
+                    // Handle array of features
+                    if (this.checked) {
+                        urlParams.append('features[]', value);
+                    } else {
+                        // Remove this feature
+                        const features = urlParams.getAll('features[]');
+                        urlParams.delete('features[]');
+                        features.filter(f => f !== value).forEach(f => urlParams.append('features[]', f));
+                    }
+                } else if (filter === 'min_rating') {
+                    // Handle rating filter (only one can be selected)
+                    if (this.checked) {
+                        // Uncheck other rating checkboxes
+                        document.querySelectorAll('[data-filter="min_rating"]').forEach(cb => {
+                            if (cb !== this) cb.checked = false;
+                        });
+                        urlParams.set('min_rating', value);
+                    } else {
+                        urlParams.delete('min_rating');
+                    }
+                } else {
+                    // Handle boolean filters (open_now, verified, online_booking)
+                    if (this.checked) {
+                        urlParams.set(filter, '1');
+                    } else {
+                        urlParams.delete(filter);
+                    }
+                }
+                
+                // Reset to page 1
+                urlParams.delete('paged');
+                
+                // Build new URL
+                const newUrl = window.location.pathname + '?' + urlParams.toString();
+                console.log('Navigating to:', newUrl);
+                window.location.href = newUrl;
+            });
+        });
+        
+        console.log('Filter initialization complete');
+    });
+    </script>
+    <?php
+});
+
 get_footer();
