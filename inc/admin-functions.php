@@ -38,7 +38,7 @@ function str_clinic_column_content($column, $post_id) {
     switch ($column) {
         case 'rating':
             $rating = get_post_meta($post_id, '_clinic_rating', true);
-            echo $rating ? number_format($rating, 1) . ' ★' : '—';
+            echo $rating ? number_format((float)$rating, 1) . ' ★' : '—';
             break;
             
         case 'city':
