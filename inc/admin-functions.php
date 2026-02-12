@@ -429,12 +429,44 @@ function str_laser_tech_import_page() {
         <?php if (isset($_GET['import_success'])) : ?>
             <div class="notice notice-success is-dismissible">
                 <p><strong><?php echo intval($_GET['import_success']); ?> laser technologies imported successfully!</strong></p>
+                <?php if (isset($_GET['import_errors']) && intval($_GET['import_errors']) > 0) : ?>
+                    <p><?php echo sprintf(__('%d row(s) failed - see details below.', 'search-tattoo-removal'), intval($_GET['import_errors'])); ?></p>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 
         <?php if (isset($_GET['import_error'])) : ?>
             <div class="notice notice-error is-dismissible">
                 <p><strong>Error:</strong> <?php echo esc_html(urldecode($_GET['import_error'])); ?></p>
+            </div>
+        <?php endif; ?>
+        
+        <?php 
+        // Display detailed import errors if any
+        $import_errors = get_transient('str_laser_tech_import_errors');
+        if ($import_errors && !empty($import_errors)) :
+            delete_transient('str_laser_tech_import_errors');
+        ?>
+            <div class="notice notice-warning is-dismissible">
+                <p><strong><?php _e('Import completed with errors:', 'search-tattoo-removal'); ?></strong></p>
+                <table class="widefat" style="margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;"><?php _e('Row', 'search-tattoo-removal'); ?></th>
+                            <th style="width: 200px;"><?php _e('Title', 'search-tattoo-removal'); ?></th>
+                            <th><?php _e('Error Message', 'search-tattoo-removal'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($import_errors as $error) : ?>
+                            <tr>
+                                <td><?php echo esc_html($error['row']); ?></td>
+                                <td><?php echo esc_html($error['title']); ?></td>
+                                <td style="color: #d63638;"><?php echo esc_html($error['message']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         <?php endif; ?>
 
@@ -580,12 +612,24 @@ function str_process_laser_tech_import() {
     
     try {
         if ($file_ext === 'csv') {
-            $imported = str_import_laser_tech_csv($file['tmp_name'], $import_mode);
+            $result = str_import_laser_tech_csv($file['tmp_name'], $import_mode);
+            $imported = $result['imported'];
+            $errors = $result['errors'];
+            
+            // Store errors in transient if any
+            if (!empty($errors)) {
+                set_transient('str_laser_tech_import_errors', $errors, 60);
+            }
+            
+            $redirect_url = admin_url('edit.php?post_type=laser_tech&page=laser-tech-importer&import_success=' . $imported);
+            if (!empty($errors)) {
+                $redirect_url .= '&import_errors=' . count($errors);
+            }
         } else {
             throw new Exception('Only CSV files are supported.');
         }
 
-        wp_redirect(admin_url('edit.php?post_type=laser_tech&page=laser-tech-importer&import_success=' . $imported));
+        wp_redirect($redirect_url);
         exit;
     } catch (Exception $e) {
         wp_redirect(admin_url('edit.php?post_type=laser_tech&page=laser-tech-importer&import_error=' . urlencode($e->getMessage())));
@@ -616,6 +660,7 @@ function str_import_laser_tech_csv($file_path, $import_mode) {
     }, $headers);
 
     $imported = 0;
+    $errors = array();
     $row_number = 1;
 
     // Process each row
@@ -634,13 +679,22 @@ function str_import_laser_tech_csv($file_path, $import_mode) {
             str_import_single_laser_tech($row, $import_mode);
             $imported++;
         } catch (Exception $e) {
-            // Log error but continue with next row
+            // Collect error details
+            $errors[] = array(
+                'row' => $row_number,
+                'title' => isset($row['title']) ? $row['title'] : 'N/A',
+                'message' => $e->getMessage()
+            );
+            // Also log for server-side debugging
             error_log("Row $row_number import failed: " . $e->getMessage());
         }
     }
 
     fclose($handle);
-    return $imported;
+    return array(
+        'imported' => $imported,
+        'errors' => $errors
+    );
 }
 
 /**
@@ -649,17 +703,22 @@ function str_import_laser_tech_csv($file_path, $import_mode) {
 function str_import_single_laser_tech($row, $import_mode) {
     // Required field: title
     if (empty($row['title'])) {
-        throw new Exception('Title is required');
+        throw new Exception('Title is required - row has empty or missing title field');
     }
 
     $title = sanitize_text_field($row['title']);
+    
+    // Validate title is not just whitespace
+    if (empty(trim($title))) {
+        throw new Exception('Title contains only whitespace');
+    }
     
     // Check if technology exists
     $existing = get_page_by_title($title, OBJECT, 'laser_tech');
     
     if ($existing && $import_mode === 'create') {
         // Skip if exists and mode is create only
-        return;
+        throw new Exception('Already exists (skipped in create mode)');
     }
 
     // Prepare post data
@@ -690,7 +749,14 @@ function str_import_single_laser_tech($row, $import_mode) {
 
     foreach ($meta_fields as $csv_field => $meta_key) {
         if (isset($row[$csv_field]) && $row[$csv_field] !== '') {
-            if ($meta_key === 'short_description' || $meta_key === 'technical_notes') {
+            // Validate URL for official_website
+            if ($meta_key === 'official_website') {
+                $url = sanitize_text_field($row[$csv_field]);
+                if (!empty($url) && !filter_var($url, FILTER_VALIDATE_URL)) {
+                    throw new Exception("Invalid URL in official_website field: {$url}");
+                }
+                update_post_meta($post_id, '_' . $meta_key, $url);
+            } elseif ($meta_key === 'short_description' || $meta_key === 'technical_notes') {
                 update_post_meta($post_id, '_' . $meta_key, sanitize_textarea_field($row[$csv_field]));
             } else {
                 update_post_meta($post_id, '_' . $meta_key, sanitize_text_field($row[$csv_field]));
@@ -712,6 +778,7 @@ function str_import_single_laser_tech($row, $import_mode) {
             // Split by comma for multiple terms
             $terms = array_map('trim', explode(',', $row[$taxonomy]));
             $term_names = array();
+            $failed_terms = array();
 
             foreach ($terms as $term_name) {
                 if (empty($term_name)) continue;
@@ -731,6 +798,7 @@ function str_import_single_laser_tech($row, $import_mode) {
                     if (!is_wp_error($result)) {
                         $term_names[] = $term_name;
                     } else {
+                        $failed_terms[] = $term_name;
                         error_log("Failed to create term '$term_name' in taxonomy '$taxonomy': " . $result->get_error_message());
                     }
                 } else {
@@ -741,7 +809,15 @@ function str_import_single_laser_tech($row, $import_mode) {
 
             // Set the terms for this post using term names (more reliable than IDs)
             if (!empty($term_names)) {
-                wp_set_object_terms($post_id, $term_names, $taxonomy, false);
+                $set_result = wp_set_object_terms($post_id, $term_names, $taxonomy, false);
+                if (is_wp_error($set_result)) {
+                    throw new Exception("Failed to set {$taxonomy}: " . $set_result->get_error_message());
+                }
+            }
+            
+            // Report if some terms failed
+            if (!empty($failed_terms)) {
+                throw new Exception("Failed to create terms in {$taxonomy}: " . implode(', ', $failed_terms));
             }
         }
     }
