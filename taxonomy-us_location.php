@@ -236,10 +236,10 @@ $total_clinics = $clinics_query->found_posts;
                             $counter = 1;
                             while ($clinics_query->have_posts()) : $clinics_query->the_post();
                                 $clinic_id = get_the_ID();
-                                $rating = get_post_meta($clinic_id, '_rating', true) ?: 0;
-                                $review_count = get_post_meta($clinic_id, '_reviews_count', true) ?: 0;
-                                $city = get_post_meta($clinic_id, '_city', true);
-                                $price_range = get_post_meta($clinic_id, '_price_range_display', true);
+                                $rating = get_post_meta($clinic_id, '_clinic_rating', true) ?: 0;
+                                $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
+                                $city = get_post_meta($clinic_id, '_clinic_city', true);
+                                $price_range = get_post_meta($clinic_id, '_clinic_price_range_display', true);
                                 $thumbnail = str_get_clinic_thumbnail($clinic_id, 'large', 'https://placehold.co/400x300');
                             ?>
                                 <div class="flex flex-col md:flex-row gap-6 pb-10 border-b border-gray-light hover:bg-offwhite/30 transition-colors p-4 -m-4 rounded-2xl group cursor-pointer">

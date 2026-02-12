@@ -13,20 +13,21 @@ while (have_posts()) : the_post();
     $clinic_id = get_the_ID();
     
     // Get meta data
-    $rating = get_post_meta($clinic_id, '_rating', true) ?: 4.5;
-    $review_count = get_post_meta($clinic_id, '_reviews_count', true) ?: 0;
-    $phone = get_post_meta($clinic_id, '_phone', true);
-    $website = get_post_meta($clinic_id, '_website', true);
-    $is_verified = get_post_meta($clinic_id, '_is_verified', true);
-    $open_status = get_post_meta($clinic_id, '_open_status', true) ?: 'Open Now';
-    $min_price = get_post_meta($clinic_id, '_min_price', true) ?: 90;
-    $max_price = get_post_meta($clinic_id, '_max_price', true) ?: 250;
-    $street = get_post_meta($clinic_id, '_street', true);
-    $zip_code = get_post_meta($clinic_id, '_zip_code', true);
-    $full_address = get_post_meta($clinic_id, '_full_address', true);
-    $operating_hours = get_post_meta($clinic_id, '_operating_hours_raw', true);
-    $years_in_business = get_post_meta($clinic_id, '_years_in_business', true);
-    $reviews_summary = get_post_meta($clinic_id, '_reviews_summary', true);
+    $rating = get_post_meta($clinic_id, '_clinic_rating', true) ?: 4.5;
+    $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
+    $phone = get_post_meta($clinic_id, '_clinic_phone', true);
+    $website = get_post_meta($clinic_id, '_clinic_website', true);
+    $is_verified = get_post_meta($clinic_id, '_clinic_is_verified', true);
+    $open_status = get_post_meta($clinic_id, '_clinic_open_status', true) ?: 'Open Now';
+    $min_price = get_post_meta($clinic_id, '_clinic_min_price', true) ?: 90;
+    $max_price = get_post_meta($clinic_id, '_clinic_max_price', true) ?: 250;
+    $street = get_post_meta($clinic_id, '_clinic_street', true);
+    $zip_code = get_post_meta($clinic_id, '_clinic_zip_code', true);
+    $full_address = get_post_meta($clinic_id, '_clinic_full_address', true);
+    $operating_hours = get_post_meta($clinic_id, '_clinic_operating_hours_raw', true);
+    $years_in_business = get_post_meta($clinic_id, '_clinic_years_in_business', true);
+    $reviews_summary = get_post_meta($clinic_id, '_clinic_reviews_summary', true);
+    $google_maps_url = get_post_meta($clinic_id, '_clinic_google_maps_url', true);
     
     // Get location
     $locations = wp_get_post_terms($clinic_id, 'us_location');
@@ -388,7 +389,11 @@ while (have_posts()) : the_post();
                                 </div>
                             </div>
                             <div class="w-full md:w-1/2 aspect-video md:aspect-auto h-[300px] rounded-2xl overflow-hidden border border-gray-light shadow-inner relative group">
-                                <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=<?php echo urlencode($full_address ? $full_address : ($street . ', ' . $city . ', ' . $state_acronym . ' ' . $zip_code)); ?>" allowfullscreen class="grayscale group-hover:grayscale-0 transition-all duration-500" style="border: 0;"></iframe>
+                                <?php if ($google_maps_url) : ?>
+                                    <iframe width="100%" height="100%" frameborder="0" src="<?php echo esc_url($google_maps_url); ?>" allowfullscreen class="grayscale group-hover:grayscale-0 transition-all duration-500" style="border: 0;"></iframe>
+                                <?php else : ?>
+                                    <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=<?php echo urlencode($full_address ? $full_address : ($street . ', ' . $city . ', ' . $state_acronym . ' ' . $zip_code)); ?>" allowfullscreen class="grayscale group-hover:grayscale-0 transition-all duration-500" style="border: 0;"></iframe>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </section>
@@ -477,7 +482,7 @@ while (have_posts()) : the_post();
                                 
                                 $distances = array(4.1, 6.4, 8.7); // Sample distances
                                 foreach ($related as $idx => $rel_clinic) :
-                                    $rel_rating = get_post_meta($rel_clinic->ID, '_rating', true) ?: 4.5;
+                                    $rel_rating = get_post_meta($rel_clinic->ID, '_clinic_rating', true) ?: 4.5;
                                     $rel_thumb = str_get_clinic_thumbnail($rel_clinic->ID, 'thumbnail', 'https://picsum.photos/400/300?random=' . ($idx + 1));
                                 ?>
                                     <div class="group cursor-pointer">
