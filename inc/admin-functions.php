@@ -22,6 +22,7 @@ function str_clinic_columns($columns) {
         if ($key === 'title') {
             $new_columns['rating'] = __('Rating', 'search-tattoo-removal');
             $new_columns['phone'] = __('Phone', 'search-tattoo-removal');
+            $new_columns['laser_tech'] = __('Laser Technologies', 'search-tattoo-removal');
         }
     }
     
@@ -42,6 +43,23 @@ function str_clinic_column_content($column, $post_id) {
         case 'phone':
             $phone = get_post_meta($post_id, '_clinic_phone', true);
             echo $phone ? esc_html($phone) : '—';
+            break;
+            
+        case 'laser_tech':
+            $laser_tech_ids = get_post_meta($post_id, '_laser_technologies', true);
+            if ($laser_tech_ids) {
+                $tech_ids = array_map('intval', explode(',', $laser_tech_ids));
+                $tech_names = array();
+                foreach ($tech_ids as $tech_id) {
+                    $tech = get_post($tech_id);
+                    if ($tech && $tech->post_status === 'publish') {
+                        $tech_names[] = esc_html($tech->post_title);
+                    }
+                }
+                echo !empty($tech_names) ? implode(', ', $tech_names) : '—';
+            } else {
+                echo '—';
+            }
             break;
     }
 }

@@ -404,7 +404,7 @@ function str_clinic_business_callback($post) {
  */
 function str_clinic_laser_tech_callback($post) {
     $laser_technologies = get_post_meta($post->ID, '_laser_technologies', true);
-    $selected_ids = !empty($laser_technologies) ? explode(',', $laser_technologies) : array();
+    $selected_ids = !empty($laser_technologies) ? array_map('intval', explode(',', $laser_technologies)) : array();
     
     $laser_techs = get_posts(array(
         'post_type' => 'laser_tech',
