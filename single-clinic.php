@@ -406,6 +406,14 @@ while (have_posts()) : the_post();
                         
                         <!-- Contact Card -->
                         <div class="bg-white border border-gray-light rounded-2xl shadow-2xl p-8 space-y-8">
+                            <?php
+                            $logo = get_post_meta($clinic_id, '_clinic_logo', true);
+                            if ($logo) :
+                            ?>
+                            <div class="flex justify-center pb-6 border-b border-gray-light">
+                                <img src="<?php echo esc_url($logo); ?>" alt="<?php echo esc_attr(get_the_title()); ?> Logo" class="max-h-20 w-auto object-contain">
+                            </div>
+                            <?php endif; ?>
                             <div>
                                 <h3 class="text-[10px] font-black text-graphite uppercase tracking-[0.2em] mb-6">Contact & Location</h3>
                                 <div class="space-y-6">
