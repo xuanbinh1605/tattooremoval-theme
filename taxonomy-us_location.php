@@ -99,6 +99,23 @@ if (!empty($location_term_ids)) {
 // Query clinics
 $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
+
+// Debug information (remove after testing)
+if (current_user_can('administrator') && isset($_GET['debug'])) {
+    echo '<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 2px solid #333;">';
+    echo '<h3>Debug Information</h3>';
+    echo '<p><strong>Current Term:</strong> ' . ($current_term ? $current_term->name . ' (ID: ' . $current_term->term_id . ')' : 'None') . '</p>';
+    echo '<p><strong>Using URL Params:</strong> ' . ($using_url_params ? 'Yes' : 'No') . '</p>';
+    echo '<p><strong>Location Name:</strong> ' . esc_html($location_name) . '</p>';
+    echo '<p><strong>Is State:</strong> ' . ($is_state ? 'Yes' : 'No') . '</p>';
+    echo '<p><strong>Location Term IDs:</strong> ' . implode(', ', $location_term_ids) . '</p>';
+    echo '<p><strong>Total Clinics Found:</strong> ' . $total_clinics . '</p>';
+    echo '<p><strong>Query Args:</strong></p>';
+    echo '<pre>' . print_r($query_args, true) . '</pre>';
+    echo '<p><strong>SQL Query:</strong></p>';
+    echo '<pre>' . $clinics_query->request . '</pre>';
+    echo '</div>';
+}
 ?>
 
 <main class="flex-grow">

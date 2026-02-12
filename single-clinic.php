@@ -47,11 +47,24 @@ while (have_posts()) : the_post();
     // Get laser technologies
     $laser_tech_ids = get_post_meta($clinic_id, '_laser_technologies', true);
     $laser_techs = array();
+    
+    // DEBUG: Remove after testing
+    echo '<!-- DEBUG Laser Tech Meta Value: "' . esc_html($laser_tech_ids) . '" -->';
+    echo '<!-- DEBUG Clinic ID: ' . esc_html($clinic_id) . ' -->';
+    
     if ($laser_tech_ids) {
         $ids = array_map('trim', explode(',', $laser_tech_ids));
+        echo '<!-- DEBUG IDs Array: ' . esc_html(print_r($ids, true)) . ' -->';
+        
         foreach ($ids as $id) {
-            if (empty($id)) continue;
+            if (empty($id)) {
+                echo '<!-- DEBUG: Skipped empty ID -->';
+                continue;
+            }
+            
             $tech = get_post(intval($id));
+            echo '<!-- DEBUG ID ' . esc_html($id) . ': Post exists=' . ($tech ? 'yes' : 'no') . ', Status=' . ($tech ? esc_html($tech->post_status) : 'N/A') . ' -->';
+            
             if ($tech && $tech->post_status === 'publish') {
                 $laser_techs[] = array(
                     'id' => $id,
@@ -62,9 +75,14 @@ while (have_posts()) : the_post();
                     'image' => get_the_post_thumbnail_url($id, 'medium'),
                     'content' => $tech->post_content,
                 );
+                echo '<!-- DEBUG: Added laser tech "' . esc_html($tech->post_title) . '" -->';
             }
         }
+    } else {
+        echo '<!-- DEBUG: No laser tech IDs found in meta -->';
     }
+    
+    echo '<!-- DEBUG Total Laser Techs Found: ' . count($laser_techs) . ' -->';
     
     // Get gallery images
     $gallery_ids = get_post_meta($clinic_id, '_before_after_gallery', true);
