@@ -367,10 +367,32 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
 
         <!-- Main Content Area -->
         <div class="max-w-[1440px] mx-auto px-4 md:px-8 py-8">
+            <!-- Mobile Filter Toggle Button -->
+            <div class="lg:hidden mb-6">
+                <button id="mobileFilterToggle" class="w-full flex items-center justify-center gap-2 bg-white border-2 border-gray-light rounded-xl px-6 py-3 font-black text-charcoal hover:border-brand transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span class="text-sm uppercase tracking-widest">Filters</span>
+                    <span id="filterCount" class="hidden ml-1 bg-brand text-white text-xs font-black px-2 py-0.5 rounded-full"></span>
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 <!-- Filters Sidebar -->
-                <div class="hidden lg:block lg:col-span-2 space-y-8 pr-4 border-r border-gray-light">
+                <div id="filterSidebar" class="hidden lg:block lg:col-span-2 space-y-8 pr-4 border-r border-gray-light">
+                    <!-- Mobile Close Button -->
+                    <div class="lg:hidden flex justify-between items-center mb-6 pb-4 border-b border-gray-light">
+                        <h2 class="text-lg font-black text-charcoal">Filters</h2>
+                        <button id="closeFilters" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
                     <div>
                         <h2 class="text-sm font-black text-charcoal mb-4">Filters</h2>
                         <div class="space-y-6">
@@ -711,6 +733,54 @@ function clearAllFilters() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Mobile filter toggle
+    const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+    const filterSidebar = document.getElementById('filterSidebar');
+    const filterCount = document.getElementById('filterCount');
+    const closeFilters = document.getElementById('closeFilters');
+    
+    function openMobileFilters() {
+        filterSidebar.classList.remove('hidden');
+        filterSidebar.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeMobileFilters() {
+        filterSidebar.classList.add('hidden');
+        filterSidebar.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
+        document.body.style.overflow = '';
+    }
+    
+    if (mobileFilterToggle && filterSidebar) {
+        mobileFilterToggle.addEventListener('click', openMobileFilters);
+    }
+    
+    if (closeFilters) {
+        closeFilters.addEventListener('click', closeMobileFilters);
+    }
+    
+    // Update filter count badge
+    function updateFilterCount() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const priceFilters = urlParams.getAll('price[]').length;
+        const featureFilters = urlParams.getAll('features[]').length;
+        const openNow = urlParams.has('open_now') ? 1 : 0;
+        const verified = urlParams.has('verified') ? 1 : 0;
+        const onlineBooking = urlParams.has('online_booking') ? 1 : 0;
+        const minRating = urlParams.has('min_rating') ? 1 : 0;
+        
+        const totalFilters = priceFilters + featureFilters + openNow + verified + onlineBooking + minRating;
+        
+        if (filterCount && totalFilters > 0) {
+            filterCount.textContent = totalFilters;
+            filterCount.classList.remove('hidden');
+        } else if (filterCount) {
+            filterCount.classList.add('hidden');
+        }
+    }
+    
+    updateFilterCount();
+    
     // Price filter buttons
     document.querySelectorAll('[data-filter="price"]').forEach(button => {
         button.addEventListener('click', function(e) {
