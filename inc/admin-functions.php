@@ -834,26 +834,8 @@ add_action('admin_post_str_download_laser_tech_template', 'str_download_laser_te
 
 /**
  * Add Delete All Clinics button to admin page
+ * Note: Button creation moved to str_delete_all_admin_scripts() to ensure jQuery is loaded
  */
-function str_add_delete_all_button() {
-    $screen = get_current_screen();
-    
-    if ($screen && $screen->post_type === 'clinic' && $screen->id === 'edit-clinic') {
-        ?>
-        <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            // Add button after the page title
-            $('.wrap h1.wp-heading-inline').after(
-                '<button type="button" class="page-title-action str-delete-all-clinics" style="background: #dc3232; border-color: #dc3232; color: #fff;">' +
-                '<?php _e('Delete All Clinics', 'search-tattoo-removal'); ?>' +
-                '</button>'
-            );
-        });
-        </script>
-        <?php
-    }
-}
-add_action('admin_head', 'str_add_delete_all_button');
 
 /**
  * AJAX handler to delete all clinics
@@ -901,10 +883,64 @@ function str_delete_all_admin_scripts($hook) {
         return;
     }
     
-    // Inline JavaScript for modal and AJAX
+    // Ensure jQuery is loaded
+    wp_enqueue_script('jquery');
+    
+    // Output inline script and styles
+    add_action('admin_footer', 'str_output_delete_all_script_and_modal');
+}
+add_action('admin_enqueue_scripts', 'str_delete_all_admin_scripts');
+
+/**
+ * Output delete all button script and modal HTML
+ */
+function str_output_delete_all_script_and_modal() {
     ?>
     <script type="text/javascript">
     jQuery(document).ready(function($) {
+        console.log('=== Delete All Clinics Script Started ===');
+        console.log('jQuery version:', $.fn.jquery);
+        
+        // Add button after the page title with multiple selector fallbacks
+        console.log('Looking for title element...');
+        console.log('.wrap h1.wp-heading-inline elements:', $('.wrap h1.wp-heading-inline').length);
+        console.log('.wrap > h1 elements:', $('.wrap > h1').length);
+        console.log('.wrap h1 elements:', $('.wrap h1').length);
+        console.log('All .wrap elements:', $('.wrap').length);
+        
+        var $title = $('.wrap h1.wp-heading-inline');
+        if ($title.length === 0) {
+            console.log('Fallback to .wrap > h1');
+            $title = $('.wrap > h1').first();
+        }
+        if ($title.length === 0) {
+            console.log('Fallback to .wrap h1');
+            $title = $('.wrap h1').first();
+        }
+        
+        if ($title.length > 0) {
+            console.log('Title element found:', $title.text());
+            var buttonHtml = '<button type="button" class="page-title-action str-delete-all-clinics" style="background: #dc3232; border-color: #dc3232; color: #fff;">' +
+                '<?php _e('Delete All Clinics', 'search-tattoo-removal'); ?>' +
+                '</button>';
+            console.log('Inserting button after title...');
+            $title.after(buttonHtml);
+            
+            // Verify button was added
+            setTimeout(function() {
+                var buttonCount = $('.str-delete-all-clinics').length;
+                console.log('Delete All button count after insertion:', buttonCount);
+                if (buttonCount > 0) {
+                    console.log('Button successfully added!');
+                } else {
+                    console.log('ERROR: Button was not added to DOM');
+                }
+            }, 100);
+        } else {
+            console.log('ERROR: Could not find page title element');
+            console.log('Page HTML structure:', $('.wrap').html());
+        }
+        
         // Add modal HTML to body
         $('body').append(`
             <div id="str-delete-all-modal" class="str-modal" style="display: none;">
@@ -1122,4 +1158,3 @@ function str_delete_all_admin_scripts($hook) {
     </style>
     <?php
 }
-add_action('admin_enqueue_scripts', 'str_delete_all_admin_scripts');
