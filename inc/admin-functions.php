@@ -395,6 +395,15 @@ function str_add_laser_tech_import_menu() {
         'laser-tech-importer',
         'str_laser_tech_import_page'
     );
+    
+    add_submenu_page(
+        'edit.php?post_type=laser_tech',
+        __('Export Laser Technologies', 'search-tattoo-removal'),
+        __('Export', 'search-tattoo-removal'),
+        'manage_options',
+        'laser-tech-exporter',
+        'str_laser_tech_export_page'
+    );
 }
 add_action('admin_menu', 'str_add_laser_tech_import_menu');
 
@@ -894,6 +903,206 @@ function str_download_laser_tech_template() {
     exit;
 }
 add_action('admin_post_str_download_laser_tech_template', 'str_download_laser_tech_template');
+
+/**
+ * Laser Tech Export Page
+ */
+function str_laser_tech_export_page() {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+    
+    // Get laser tech count
+    $laser_tech_count = wp_count_posts('laser_tech');
+    $total = $laser_tech_count->publish + $laser_tech_count->draft + $laser_tech_count->pending + $laser_tech_count->private;
+    
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Export Laser Technologies to CSV', 'search-tattoo-removal'); ?></h1>
+        
+        <div class="card" style="max-width: 800px;">
+            <h2><?php _e('Export Current Laser Technologies', 'search-tattoo-removal'); ?></h2>
+            
+            <p><?php echo sprintf(__('Total laser technologies in database: <strong>%d</strong>', 'search-tattoo-removal'), $total); ?></p>
+            
+            <p><?php _e('This will export all laser technology posts with complete data including:', 'search-tattoo-removal'); ?></p>
+            <ul style="list-style: disc; margin-left: 20px;">
+                <li><?php _e('Post ID (for reference)', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Title and content', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('All meta fields (official_website, short_description, technical_notes)', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('All taxonomy terms (brands, wavelengths, pulse types, ink colors, skin types)', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Post status (publish, draft, etc.)', 'search-tattoo-removal'); ?></li>
+            </ul>
+            
+            <p><strong><?php _e('Use this export to:', 'search-tattoo-removal'); ?></strong></p>
+            <ul style="list-style: disc; margin-left: 20px;">
+                <li><?php _e('Compare with your import file to find missing records', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Backup your current data', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Review all imported technologies', 'search-tattoo-removal'); ?></li>
+            </ul>
+            
+            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                <input type="hidden" name="action" value="str_export_laser_tech">
+                <?php wp_nonce_field('str_export_laser_tech', 'str_export_nonce'); ?>
+                
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="export_status"><?php _e('Export Posts With Status', 'search-tattoo-removal'); ?></label>
+                        </th>
+                        <td>
+                            <select name="export_status" id="export_status">
+                                <option value="any"><?php _e('All statuses', 'search-tattoo-removal'); ?></option>
+                                <option value="publish"><?php _e('Published only', 'search-tattoo-removal'); ?></option>
+                                <option value="draft"><?php _e('Draft only', 'search-tattoo-removal'); ?></option>
+                                <option value="pending"><?php _e('Pending only', 'search-tattoo-removal'); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="include_post_id"><?php _e('Include Post ID Column', 'search-tattoo-removal'); ?></label>
+                        </th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="include_post_id" id="include_post_id" value="1" checked>
+                                <?php _e('Include post ID for comparison (recommended)', 'search-tattoo-removal'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p class="submit">
+                    <button type="submit" class="button button-primary button-large">
+                        <?php _e('📥 Download Export CSV', 'search-tattoo-removal'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+        
+        <div class="card" style="max-width: 800px; margin-top: 20px;">
+            <h2><?php _e('Finding Missing Posts', 'search-tattoo-removal'); ?></h2>
+            <p><?php _e('To find the 3 missing posts:', 'search-tattoo-removal'); ?></p>
+            <ol>
+                <li><?php _e('Download the export CSV using the button above', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Open both your import CSV and the export CSV in Excel or Google Sheets', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Compare the titles in both files', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Look for titles in the import file that are NOT in the export file', 'search-tattoo-removal'); ?></li>
+            </ol>
+            <p><strong><?php _e('Possible reasons for missing posts:', 'search-tattoo-removal'); ?></strong></p>
+            <ul style="list-style: disc; margin-left: 20px;">
+                <li><?php _e('Duplicate titles: The import might have updated existing posts instead of creating new ones', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Empty titles: Rows with missing titles were skipped', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Import errors: Check if error messages appeared during import', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Post status: Posts might be in draft or trash status', 'search-tattoo-removal'); ?></li>
+            </ul>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * Export laser technologies to CSV
+ */
+function str_export_laser_tech() {
+    // Verify nonce and permissions
+    if (!isset($_POST['str_export_nonce']) || !wp_verify_nonce($_POST['str_export_nonce'], 'str_export_laser_tech')) {
+        wp_die(__('Security check failed', 'search-tattoo-removal'));
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+    
+    $export_status = isset($_POST['export_status']) ? sanitize_text_field($_POST['export_status']) : 'any';
+    $include_post_id = isset($_POST['include_post_id']);
+    
+    // Get all laser tech posts
+    $args = array(
+        'post_type' => 'laser_tech',
+        'posts_per_page' => -1,
+        'post_status' => $export_status,
+        'orderby' => 'ID',
+        'order' => 'ASC'
+    );
+    
+    $posts = get_posts($args);
+    
+    // Set headers for download
+    $filename = 'laser-tech-export-' . date('Y-m-d-His') . '.csv';
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    
+    // Create output stream
+    $output = fopen('php://output', 'w');
+    
+    // Add BOM for UTF-8
+    fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+    
+    // Prepare headers
+    $headers = array();
+    if ($include_post_id) {
+        $headers[] = 'post_id';
+    }
+    $headers = array_merge($headers, array(
+        'title',
+        'content',
+        'official_website',
+        'short_description',
+        'technical_notes',
+        'laser_brand',
+        'laser_wavelength',
+        'laser_pulse_type',
+        'target_ink_color',
+        'safe_skin_type',
+        'post_status'
+    ));
+    
+    fputcsv($output, $headers);
+    
+    // Export each post
+    foreach ($posts as $post) {
+        $row = array();
+        
+        if ($include_post_id) {
+            $row[] = $post->ID;
+        }
+        
+        // Basic fields
+        $row[] = $post->post_title;
+        $row[] = $post->post_content;
+        
+        // Meta fields
+        $row[] = get_post_meta($post->ID, '_official_website', true);
+        $row[] = get_post_meta($post->ID, '_short_description', true);
+        $row[] = get_post_meta($post->ID, '_technical_notes', true);
+        
+        // Taxonomy fields
+        $taxonomies = array(
+            'laser_brand',
+            'laser_wavelength',
+            'laser_pulse_type',
+            'target_ink_color',
+            'safe_skin_type'
+        );
+        
+        foreach ($taxonomies as $taxonomy) {
+            $terms = wp_get_post_terms($post->ID, $taxonomy, array('fields' => 'names'));
+            $row[] = is_array($terms) ? implode(', ', $terms) : '';
+        }
+        
+        // Post status
+        $row[] = $post->post_status;
+        
+        fputcsv($output, $row);
+    }
+    
+    fclose($output);
+    exit;
+}
+add_action('admin_post_str_export_laser_tech', 'str_export_laser_tech');
 
 /**
  * Add Delete All Clinics button to admin page
