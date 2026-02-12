@@ -48,10 +48,11 @@ while (have_posts()) : the_post();
     $laser_tech_ids = get_post_meta($clinic_id, '_laser_technologies', true);
     $laser_techs = array();
     if ($laser_tech_ids) {
-        $ids = explode(',', $laser_tech_ids);
+        $ids = array_map('trim', explode(',', $laser_tech_ids));
         foreach ($ids as $id) {
-            $tech = get_post($id);
-            if ($tech) {
+            if (empty($id)) continue;
+            $tech = get_post(intval($id));
+            if ($tech && $tech->post_status === 'publish') {
                 $laser_techs[] = array(
                     'id' => $id,
                     'title' => $tech->post_title,
