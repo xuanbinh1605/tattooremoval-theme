@@ -303,6 +303,10 @@ function str_process_clinic_import() {
         wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
     }
 
+    // Remove time limit and increase memory for large imports
+    set_time_limit(0);
+    ini_set('memory_limit', '512M');
+
     // Check if file was uploaded
     if (!isset($_FILES['clinic_file']) || $_FILES['clinic_file']['error'] !== UPLOAD_ERR_OK) {
         wp_redirect(admin_url('edit.php?post_type=clinic&page=clinic-importer&import_error=' . urlencode('File upload failed')));
@@ -335,6 +339,9 @@ add_action('admin_post_str_import_clinics', 'str_process_clinic_import');
  * Import clinics from CSV file
  */
 function str_import_csv($file_path, $import_mode) {
+    // Ensure we have enough time and memory for large imports
+    set_time_limit(0);
+    
     $handle = fopen($file_path, 'r');
     if ($handle === false) {
         throw new Exception('Could not open file');
