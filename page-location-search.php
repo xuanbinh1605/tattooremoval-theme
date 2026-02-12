@@ -785,6 +785,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('[data-filter="price"]').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Price filter clicked:', this.dataset.value);
             const urlParams = new URLSearchParams(window.location.search);
             const value = this.dataset.value;
             const priceArray = urlParams.getAll('price[]');
@@ -800,13 +801,18 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Reset to page 1
             urlParams.delete('paged');
-            window.location.search = urlParams.toString();
+            
+            // Build new URL
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            console.log('Navigating to:', newUrl);
+            window.location.href = newUrl;
         });
     });
     
     // Checkbox filters (open_now, verified, online_booking, features)
     document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
+            console.log('Checkbox changed:', this.dataset.filter, this.checked);
             const urlParams = new URLSearchParams(window.location.search);
             const filter = this.dataset.filter;
             const value = this.dataset.value;
@@ -843,7 +849,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Reset to page 1
             urlParams.delete('paged');
-            window.location.search = urlParams.toString();
+            
+            // Build new URL
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            console.log('Navigating to:', newUrl);
+            window.location.href = newUrl;
         });
     });
 });
