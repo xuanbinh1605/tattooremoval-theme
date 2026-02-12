@@ -444,6 +444,210 @@ while (have_posts()) : the_post();
                             </button>
                         </div>
 
+                        <!-- Payment & Services -->
+                        <?php
+                        // Get payment & service meta data
+                        $accepts_credit_cards = get_post_meta($clinic_id, '_clinic_accepts_credit_cards', true);
+                        $accepts_debit_cards = get_post_meta($clinic_id, '_clinic_accepts_debit_cards', true);
+                        $cash_only = get_post_meta($clinic_id, '_clinic_cash_only', true);
+                        $accepts_checks = get_post_meta($clinic_id, '_clinic_accepts_checks', true);
+                        $accepts_mobile_payments = get_post_meta($clinic_id, '_clinic_accepts_mobile_payments', true);
+                        $financing = get_post_meta($clinic_id, '_clinic_financing', true);
+                        $consultation_price = get_post_meta($clinic_id, '_clinic_consultation_price', true);
+                        $medical_supervision = get_post_meta($clinic_id, '_clinic_medical_supervision', true);
+                        $offers_packages = get_post_meta($clinic_id, '_clinic_offers_packages', true);
+                        $online_scheduling = get_post_meta($clinic_id, '_clinic_online_scheduling', true);
+                        $military_discount = get_post_meta($clinic_id, '_clinic_military_discount', true);
+                        $wheelchair_accessible = get_post_meta($clinic_id, '_clinic_wheelchair_accessible', true);
+                        
+                        // Check if any payment/service data exists
+                        $has_payment_info = $accepts_credit_cards || $accepts_debit_cards || $cash_only || $accepts_checks || $accepts_mobile_payments || $financing;
+                        $has_service_info = $consultation_price || $medical_supervision || $offers_packages || $online_scheduling || $military_discount;
+                        
+                        if ($has_payment_info || $has_service_info) :
+                        ?>
+                        <div class="bg-white border border-gray-light rounded-2xl shadow-sm p-8 space-y-6">
+                            <?php if ($has_payment_info) : ?>
+                            <div>
+                                <h3 class="text-[10px] font-black text-graphite uppercase tracking-[0.2em] mb-6">Payment Options</h3>
+                                <div class="space-y-4">
+                                    <div class="flex flex-wrap gap-3">
+                                        <?php if ($accepts_credit_cards) : ?>
+                                        <div class="flex items-center px-3 py-2 bg-offwhite rounded-lg border border-gray-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card w-4 h-4 text-brand mr-2" aria-hidden="true">
+                                                <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                                                <line x1="2" x2="22" y1="10" y2="10"></line>
+                                            </svg>
+                                            <span class="text-xs font-black text-charcoal">Credit Card</span>
+                                        </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($accepts_debit_cards) : ?>
+                                        <div class="flex items-center px-3 py-2 bg-offwhite rounded-lg border border-gray-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card w-4 h-4 text-brand mr-2" aria-hidden="true">
+                                                <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                                                <line x1="2" x2="22" y1="10" y2="10"></line>
+                                            </svg>
+                                            <span class="text-xs font-black text-charcoal">Debit Card</span>
+                                        </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($cash_only || (!$accepts_credit_cards && !$accepts_debit_cards && !$accepts_checks && !$accepts_mobile_payments)) : ?>
+                                        <div class="flex items-center px-3 py-2 bg-offwhite rounded-lg border border-gray-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-banknote w-4 h-4 text-brand mr-2" aria-hidden="true">
+                                                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                                                <circle cx="12" cy="12" r="2"></circle>
+                                                <path d="M6 12h.01M18 12h.01"></path>
+                                            </svg>
+                                            <span class="text-xs font-black text-charcoal"><?php echo $cash_only ? 'Cash Only' : 'Cash'; ?></span>
+                                        </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($accepts_checks) : ?>
+                                        <div class="flex items-center px-3 py-2 bg-offwhite rounded-lg border border-gray-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark w-4 h-4 text-brand mr-2" aria-hidden="true">
+                                                <line x1="3" x2="21" y1="22" y2="22"></line>
+                                                <line x1="6" x2="6" y1="18" y2="11"></line>
+                                                <line x1="10" x2="10" y1="18" y2="11"></line>
+                                                <line x1="14" x2="14" y1="18" y2="11"></line>
+                                                <line x1="18" x2="18" y1="18" y2="11"></line>
+                                                <polygon points="12 2 20 7 4 7"></polygon>
+                                            </svg>
+                                            <span class="text-xs font-black text-charcoal">Check</span>
+                                        </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($accepts_mobile_payments) : ?>
+                                        <div class="flex items-center px-3 py-2 bg-offwhite rounded-lg border border-gray-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone w-4 h-4 text-brand mr-2" aria-hidden="true">
+                                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
+                                                <path d="M12 18h.01"></path>
+                                            </svg>
+                                            <span class="text-xs font-black text-charcoal">Mobile Pay</span>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    
+                                    <?php if ($financing) : ?>
+                                    <div class="bg-teal/5 border border-teal/20 rounded-xl p-4 mt-4">
+                                        <div class="flex items-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign w-5 h-5 text-teal mr-3 mt-0.5 flex-shrink-0" aria-hidden="true">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                                                <path d="M12 18V6"></path>
+                                            </svg>
+                                            <div>
+                                                <p class="text-xs font-black text-teal uppercase tracking-wider mb-1">Financing Available</p>
+                                                <p class="text-xs text-graphite font-medium leading-relaxed">Flexible payment plans to fit your budget</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <div class="<?php echo $has_payment_info ? 'border-t border-gray-light pt-6' : ''; ?>">
+                                <h3 class="text-[10px] font-black text-graphite uppercase tracking-[0.2em] mb-4">Services Offered</h3>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <div class="bg-brand/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-brand" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Laser Tattoo Removal</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="bg-brand/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-brand" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Color Tattoo Removal</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="bg-brand/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-brand" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Tattoo Lightening</span>
+                                    </div>
+                                    <?php if ($consultation_price && (stripos($consultation_price, 'free') !== false || $consultation_price === '0')) : ?>
+                                    <div class="flex items-center">
+                                        <div class="bg-brand/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-brand" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Free Consultation</span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <?php if ($medical_supervision || $offers_packages || $online_scheduling || $military_discount || $wheelchair_accessible) : ?>
+                                <div class="mt-4 pt-4 border-t border-gray-light space-y-2">
+                                    <?php if ($medical_supervision) : ?>
+                                    <div class="flex items-center">
+                                        <div class="bg-teal/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-teal" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Medical Supervision</span>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($offers_packages) : ?>
+                                    <div class="flex items-center">
+                                        <div class="bg-teal/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-teal" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Package Deals Available</span>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($online_scheduling) : ?>
+                                    <div class="flex items-center">
+                                        <div class="bg-teal/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-teal" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Online Scheduling</span>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($military_discount) : ?>
+                                    <div class="flex items-center">
+                                        <div class="bg-teal/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-teal" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Military Discount</span>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($wheelchair_accessible) : ?>
+                                    <div class="flex items-center">
+                                        <div class="bg-teal/10 p-1 rounded-full mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-3 h-3 text-teal" aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xs font-bold text-charcoal">Wheelchair Accessible</span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
                         <!-- Nearby Clinics -->
                         <div class="bg-white border border-gray-light rounded-3xl p-6 shadow-sm overflow-hidden">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Top Rated Tattoo Removal Clinics Near <?php echo $city ? esc_html($city) : 'You'; ?></h3>
