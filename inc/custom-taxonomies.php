@@ -240,7 +240,7 @@ function str_register_laser_technology_taxonomy() {
         'rewrite'           => array('slug' => 'laser-technology', 'with_front' => false),
     );
 
-    register_taxonomy('laser_technology', array('clinic', 'laser_tech'), $args);
+    register_taxonomy('laser_technology', array('laser_tech'), $args);
 }
 add_action('init', 'str_register_laser_technology_taxonomy', 0);
 

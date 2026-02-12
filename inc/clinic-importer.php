@@ -508,33 +508,43 @@ function str_import_single_clinic($row, $import_mode) {
         }
     }
 
-    // Handle laser technology taxonomy
+    // Handle laser technology - use laser_tech posts instead of taxonomy
     if (isset($row['laser_tech']) && !empty($row['laser_tech'])) {
-        // Split by comma for multiple technologies
+        $tech_ids = array();
         $technologies = array_map('trim', explode(',', $row['laser_tech']));
-        $term_names = array();
 
         foreach ($technologies as $tech_name) {
             if (empty($tech_name)) continue;
 
-            // Check if term exists
-            $existing_term = term_exists($tech_name, 'laser_technology');
+            // Check if laser_tech post exists by title
+            $existing_tech = get_posts(array(
+                'post_type' => 'laser_tech',
+                'title' => $tech_name,
+                'posts_per_page' => 1,
+                'post_status' => 'publish'
+            ));
 
-            if (!$existing_term) {
-                // Create the term if it doesn't exist
-                $result = wp_insert_term($tech_name, 'laser_technology');
-                
-                if (!is_wp_error($result)) {
-                    $term_names[] = $tech_name;
-                }
+            if (!empty($existing_tech)) {
+                // Use existing laser_tech post
+                $tech_ids[] = $existing_tech[0]->ID;
             } else {
-                $term_names[] = $tech_name;
+                // Create new laser_tech post
+                $new_tech_id = wp_insert_post(array(
+                    'post_title' => $tech_name,
+                    'post_type' => 'laser_tech',
+                    'post_status' => 'publish',
+                    'post_content' => '',
+                ));
+                
+                if (!is_wp_error($new_tech_id) && $new_tech_id) {
+                    $tech_ids[] = $new_tech_id;
+                }
             }
         }
 
-        // Set the terms for this post
-        if (!empty($term_names)) {
-            wp_set_object_terms($post_id, $term_names, 'laser_technology', false);
+        // Save as comma-separated IDs in meta field
+        if (!empty($tech_ids)) {
+            update_post_meta($post_id, '_laser_technologies', implode(',', $tech_ids));
         }
     }
 
