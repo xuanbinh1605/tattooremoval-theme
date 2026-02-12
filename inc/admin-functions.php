@@ -1162,6 +1162,15 @@ function str_add_delete_all_clinics_menu() {
         'delete-all-clinics',
         'str_delete_all_clinics_page'
     );
+    
+    add_submenu_page(
+        'edit.php?post_type=clinic',
+        __('Export Clinics', 'search-tattoo-removal'),
+        __('Export', 'search-tattoo-removal'),
+        'manage_options',
+        'clinic-exporter',
+        'str_clinic_export_page'
+    );
 }
 add_action('admin_menu', 'str_add_delete_all_clinics_menu');
 
@@ -1283,3 +1292,210 @@ function str_delete_all_clinics_page() {
     </div>
     <?php
 }
+
+/**
+ * Clinic Export Page
+ */
+function str_clinic_export_page() {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+    
+    // Get clinic count
+    $clinic_count = wp_count_posts('clinic');
+    $total = $clinic_count->publish + $clinic_count->draft + $clinic_count->pending + $clinic_count->private;
+    
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Export Clinics to CSV', 'search-tattoo-removal'); ?></h1>
+        
+        <div class="card" style="max-width: 800px;">
+            <h2><?php _e('Export Current Clinics', 'search-tattoo-removal'); ?></h2>
+            
+            <p><?php echo sprintf(__('Total clinics in database: <strong>%d</strong>', 'search-tattoo-removal'), $total); ?></p>
+            
+            <p><?php _e('This will export all clinic posts with complete data including:', 'search-tattoo-removal'); ?></p>
+            <ul style="list-style: disc; margin-left: 20px;">
+                <li><?php _e('Post ID (for reference)', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Title and content', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('All meta fields (rating, phone, address, pricing, etc.)', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Location taxonomies (state and city)', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Clinic features', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Post status (publish, draft, etc.)', 'search-tattoo-removal'); ?></li>
+            </ul>
+            
+            <p><strong><?php _e('Use this export to:', 'search-tattoo-removal'); ?></strong></p>
+            <ul style="list-style: disc; margin-left: 20px;">
+                <li><?php _e('Backup your current clinic data', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Review all clinics in spreadsheet format', 'search-tattoo-removal'); ?></li>
+                <li><?php _e('Compare with import files to find discrepancies', 'search-tattoo-removal'); ?></li>
+            </ul>
+            
+            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                <input type="hidden" name="action" value="str_export_clinics">
+                <?php wp_nonce_field('str_export_clinics', 'str_export_clinics_nonce'); ?>
+                
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="export_status"><?php _e('Export Posts With Status', 'search-tattoo-removal'); ?></label>
+                        </th>
+                        <td>
+                            <select name="export_status" id="export_status">
+                                <option value="any"><?php _e('All statuses', 'search-tattoo-removal'); ?></option>
+                                <option value="publish"><?php _e('Published only', 'search-tattoo-removal'); ?></option>
+                                <option value="draft"><?php _e('Draft only', 'search-tattoo-removal'); ?></option>
+                                <option value="pending"><?php _e('Pending only', 'search-tattoo-removal'); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="include_post_id"><?php _e('Include Post ID Column', 'search-tattoo-removal'); ?></label>
+                        </th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="include_post_id" id="include_post_id" value="1" checked>
+                                <?php _e('Include post ID for reference (recommended)', 'search-tattoo-removal'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p class="submit">
+                    <button type="submit" class="button button-primary button-large">
+                        <?php _e('📥 Download Export CSV', 'search-tattoo-removal'); ?>
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * Export clinics to CSV
+ */
+function str_export_clinics() {
+    // Verify nonce and permissions
+    if (!isset($_POST['str_export_clinics_nonce']) || !wp_verify_nonce($_POST['str_export_clinics_nonce'], 'str_export_clinics')) {
+        wp_die(__('Security check failed', 'search-tattoo-removal'));
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+    
+    $export_status = isset($_POST['export_status']) ? sanitize_text_field($_POST['export_status']) : 'any';
+    $include_post_id = isset($_POST['include_post_id']);
+    
+    // Get all clinic posts
+    $args = array(
+        'post_type' => 'clinic',
+        'posts_per_page' => -1,
+        'post_status' => $export_status,
+        'orderby' => 'ID',
+        'order' => 'ASC'
+    );
+    
+    $posts = get_posts($args);
+    
+    // Set headers for download
+    $filename = 'clinics-export-' . date('Y-m-d-His') . '.csv';
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    
+    // Create output stream
+    $output = fopen('php://output', 'w');
+    
+    // Add BOM for UTF-8
+    fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+    
+    // Prepare headers
+    $headers = array();
+    if ($include_post_id) {
+        $headers[] = 'post_id';
+    }
+    $headers = array_merge($headers, array(
+        'title',
+        'content',
+        'rating',
+        'reviews_count',
+        'phone',
+        'city',
+        'state',
+        'street',
+        'zip_code',
+        'full_address',
+        'website',
+        'is_verified',
+        'open_status',
+        'operating_hours_raw',
+        'min_price',
+        'max_price',
+        'consultation_price',
+        'price_range_display',
+        'years_in_business',
+        'is_featured',
+        'reviews_summary',
+        'thumbnail_url',
+        'us_location',
+        'clinic_features',
+        'post_status'
+    ));
+    
+    fputcsv($output, $headers);
+    
+    // Export each post
+    foreach ($posts as $post) {
+        $row = array();
+        
+        if ($include_post_id) {
+            $row[] = $post->ID;
+        }
+        
+        // Basic fields
+        $row[] = $post->post_title;
+        $row[] = $post->post_content;
+        
+        // Meta fields
+        $row[] = get_post_meta($post->ID, '_clinic_rating', true);
+        $row[] = get_post_meta($post->ID, '_clinic_reviews_count', true);
+        $row[] = get_post_meta($post->ID, '_clinic_phone', true);
+        $row[] = get_post_meta($post->ID, '_clinic_city', true);
+        $row[] = get_post_meta($post->ID, '_clinic_state', true);
+        $row[] = get_post_meta($post->ID, '_clinic_street', true);
+        $row[] = get_post_meta($post->ID, '_clinic_zip_code', true);
+        $row[] = get_post_meta($post->ID, '_clinic_full_address', true);
+        $row[] = get_post_meta($post->ID, '_clinic_website', true);
+        $row[] = get_post_meta($post->ID, '_clinic_is_verified', true);
+        $row[] = get_post_meta($post->ID, '_clinic_open_status', true);
+        $row[] = get_post_meta($post->ID, '_clinic_operating_hours_raw', true);
+        $row[] = get_post_meta($post->ID, '_clinic_min_price', true);
+        $row[] = get_post_meta($post->ID, '_clinic_max_price', true);
+        $row[] = get_post_meta($post->ID, '_clinic_consultation_price', true);
+        $row[] = get_post_meta($post->ID, '_clinic_price_range_display', true);
+        $row[] = get_post_meta($post->ID, '_clinic_years_in_business', true);
+        $row[] = get_post_meta($post->ID, '_clinic_is_featured', true);
+        $row[] = get_post_meta($post->ID, '_clinic_reviews_summary', true);
+        $row[] = get_post_meta($post->ID, '_clinic_thumbnail_url', true);
+        
+        // Taxonomy fields
+        $locations = wp_get_post_terms($post->ID, 'us_location', array('fields' => 'names'));
+        $row[] = is_array($locations) ? implode(', ', $locations) : '';
+        
+        $features = wp_get_post_terms($post->ID, 'clinic_feature', array('fields' => 'names'));
+        $row[] = is_array($features) ? implode(', ', $features) : '';
+        
+        // Post status
+        $row[] = $post->post_status;
+        
+        fputcsv($output, $row);
+    }
+    
+    fclose($output);
+    exit;
+}
+add_action('admin_post_str_export_clinics', 'str_export_clinics');
