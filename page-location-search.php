@@ -711,13 +711,11 @@ function clearAllFilters() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Get current URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    
     // Price filter buttons
     document.querySelectorAll('[data-filter="price"]').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            const urlParams = new URLSearchParams(window.location.search);
             const value = this.dataset.value;
             const priceArray = urlParams.getAll('price[]');
             
@@ -739,6 +737,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Checkbox filters (open_now, verified, online_booking, features)
     document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
+            const urlParams = new URLSearchParams(window.location.search);
             const filter = this.dataset.filter;
             const value = this.dataset.value;
             
