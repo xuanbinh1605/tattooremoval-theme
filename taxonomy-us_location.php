@@ -240,7 +240,7 @@ $total_clinics = $clinics_query->found_posts;
                                 $review_count = get_post_meta($clinic_id, '_reviews_count', true) ?: 0;
                                 $city = get_post_meta($clinic_id, '_city', true);
                                 $price_range = get_post_meta($clinic_id, '_price_range_display', true);
-                                $thumbnail = get_the_post_thumbnail_url($clinic_id, 'large') ?: 'https://placehold.co/400x300';
+                                $thumbnail = str_get_clinic_thumbnail($clinic_id, 'large', 'https://placehold.co/400x300');
                             ?>
                                 <div class="flex flex-col md:flex-row gap-6 pb-10 border-b border-gray-light hover:bg-offwhite/30 transition-colors p-4 -m-4 rounded-2xl group cursor-pointer">
                                     <!-- Clinic Image -->

@@ -162,6 +162,40 @@ function str_pagination() {
 }
 
 /**
+ * Get clinic thumbnail URL with priority
+ * 
+ * Priority order:
+ * 1. Custom thumbnail URL from meta field (_clinic_thumbnail_url)
+ * 2. Featured image
+ * 3. Default placeholder
+ * 
+ * @param int $clinic_id Clinic post ID
+ * @param string $size Image size (default: 'large')
+ * @param string $default Default placeholder URL
+ * @return string Thumbnail URL
+ */
+function str_get_clinic_thumbnail($clinic_id, $size = 'large', $default = '') {
+    // Priority 1: Check for custom thumbnail URL
+    $thumbnail_url = get_post_meta($clinic_id, '_clinic_thumbnail_url', true);
+    if (!empty($thumbnail_url)) {
+        return esc_url($thumbnail_url);
+    }
+    
+    // Priority 2: Check for featured image
+    $featured_image = get_the_post_thumbnail_url($clinic_id, $size);
+    if ($featured_image) {
+        return esc_url($featured_image);
+    }
+    
+    // Priority 3: Return default or generic placeholder
+    if (!empty($default)) {
+        return esc_url($default);
+    }
+    
+    return 'https://placehold.co/400x300?text=No+Image';
+}
+
+/**
  * Custom menu item class for Tailwind styling
  */
 function str_menu_item_classes($classes, $item, $args, $depth) {

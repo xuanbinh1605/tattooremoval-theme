@@ -75,7 +75,7 @@ while (have_posts()) : the_post();
     // Fallback images
     if (empty($gallery_images)) {
         $gallery_images = array(
-            get_the_post_thumbnail_url($clinic_id, 'large') ?: 'https://placehold.co/800x600',
+            str_get_clinic_thumbnail($clinic_id, 'large', 'https://placehold.co/800x600'),
         );
     }
     
@@ -478,7 +478,7 @@ while (have_posts()) : the_post();
                                 $distances = array(4.1, 6.4, 8.7); // Sample distances
                                 foreach ($related as $idx => $rel_clinic) :
                                     $rel_rating = get_post_meta($rel_clinic->ID, '_rating', true) ?: 4.5;
-                                    $rel_thumb = get_the_post_thumbnail_url($rel_clinic->ID, 'thumbnail') ?: 'https://picsum.photos/400/300?random=' . ($idx + 1);
+                                    $rel_thumb = str_get_clinic_thumbnail($rel_clinic->ID, 'thumbnail', 'https://picsum.photos/400/300?random=' . ($idx + 1));
                                 ?>
                                     <div class="group cursor-pointer">
                                         <a href="<?php echo esc_url(get_permalink($rel_clinic->ID)); ?>" class="flex gap-4 items-start">

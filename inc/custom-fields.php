@@ -357,13 +357,19 @@ function str_clinic_payment_services_callback($post) {
  * Media & Branding Meta Box
  */
 function str_clinic_media_callback($post) {
+    $thumbnail_url = get_post_meta($post->ID, '_clinic_thumbnail_url', true);
     $logo = get_post_meta($post->ID, '_clinic_logo', true);
     $before_after_gallery = get_post_meta($post->ID, '_clinic_before_after_gallery', true);
     ?>
     <p>
+        <label for="thumbnail_url"><strong><?php _e('Thumbnail Image URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="thumbnail_url" name="thumbnail_url" value="<?php echo esc_attr($thumbnail_url); ?>" style="width: 100%;" placeholder="https://example.com/thumbnail.jpg">
+        <span class="description"><?php _e('Primary thumbnail image (takes priority over Featured Image)', 'search-tattoo-removal'); ?></span>
+    </p>
+    <p>
         <label for="logo"><strong><?php _e('Logo URL:', 'search-tattoo-removal'); ?></strong></label><br>
         <input type="url" id="logo" name="logo" value="<?php echo esc_attr($logo); ?>" style="width: 100%;" placeholder="https://example.com/logo.png">
-        <span class="description"><?php _e('Or use Featured Image for clinic thumbnail', 'search-tattoo-removal'); ?></span>
+        <span class="description"><?php _e('Clinic logo image', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
         <label for="before_after_gallery"><strong><?php _e('Before/After Gallery IDs:', 'search-tattoo-removal'); ?></strong></label><br>
@@ -482,7 +488,7 @@ function str_save_clinic_meta($post_id) {
         'website', 'phone', 'google_maps_url', 'rating', 'reviews_count',
         'street', 'zip_code', 'full_address', 'operating_hours_raw',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
-        'logo', 'before_after_gallery', 'years_in_business', 'open_status'
+        'thumbnail_url', 'logo', 'before_after_gallery', 'years_in_business', 'open_status'
     );
 
     foreach ($fields as $field) {

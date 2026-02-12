@@ -128,11 +128,8 @@ get_header();
                         $min_price = get_post_meta($clinic_id, '_clinic_min_price', true);
                         $equipment = get_post_meta($clinic_id, '_clinic_equipment', true);
                         
-                        // Get thumbnail or use placeholder
-                        $thumbnail = get_the_post_thumbnail_url($clinic_id, 'str-clinic-card');
-                        if (!$thumbnail) {
-                            $thumbnail = 'https://picsum.photos/400/300?random=' . $clinic_id;
-                        }
+                        // Get thumbnail with priority: custom URL > featured image > placeholder
+                        $thumbnail = str_get_clinic_thumbnail($clinic_id, 'str-clinic-card', 'https://picsum.photos/400/300?random=' . $clinic_id);
                         
                         // Get clinic features (limit to 3)
                         $features = wp_get_post_terms($clinic_id, 'clinic_feature', array('number' => 3));
