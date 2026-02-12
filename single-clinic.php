@@ -170,6 +170,23 @@ while (have_posts()) : the_post();
                             $<?php echo esc_html($min_price); ?> <?php if ($max_price) : ?>- $<?php echo esc_html($max_price); ?><?php endif; ?> <?php echo ($min_price && !$max_price) ? 'min' : ''; ?> per session
                         </div>
                     </div>
+                    
+                    <!-- Laser Technologies Names -->
+                    <?php if (!empty($laser_techs)) : ?>
+                    <div class="mt-6 pt-4 border-t border-gray-light">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <span class="text-[10px] font-black text-graphite uppercase tracking-widest">Technologies:</span>
+                            <?php foreach ($laser_techs as $tech) : ?>
+                                <span class="inline-flex items-center px-3 py-1.5 bg-brand/10 text-brand rounded-full text-[10px] font-black uppercase tracking-wider border border-brand/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap mr-1.5" aria-hidden="true">
+                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                    </svg>
+                                    <?php echo esc_html($tech['title']); ?>
+                                </span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -531,6 +548,23 @@ while (have_posts()) : the_post();
                             <button class="w-full bg-brand text-white py-5 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-brand-hover transition-all shadow-xl shadow-brand/20">
                                 Request A Quote
                             </button>
+                            
+                            <!-- Laser Technologies in Sidebar -->
+                            <?php if (!empty($laser_techs)) : ?>
+                            <div class="pt-6 border-t border-gray-light">
+                                <h4 class="text-[10px] font-black text-graphite uppercase tracking-[0.2em] mb-3">Laser Systems Used</h4>
+                                <div class="space-y-2">
+                                    <?php foreach ($laser_techs as $tech) : ?>
+                                        <div class="flex items-center text-xs font-bold text-charcoal bg-offwhite px-3 py-2 rounded-lg border border-gray-light">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-brand mr-2 flex-shrink-0" aria-hidden="true">
+                                                <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                            </svg>
+                                            <span class="truncate"><?php echo esc_html($tech['title']); ?></span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Payment & Services -->
