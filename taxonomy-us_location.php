@@ -79,7 +79,7 @@ $query_args = array(
     'post_type'      => 'clinic',
     'posts_per_page' => 10,
     'paged'          => $paged,
-    'meta_key'       => '_rating',
+    'meta_key'       => '_clinic_rating',
     'orderby'        => 'meta_value_num',
     'order'          => 'DESC',
 );

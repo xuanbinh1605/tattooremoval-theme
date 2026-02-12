@@ -57,7 +57,7 @@ $query_args = array(
     'post_type'      => 'clinic',
     'posts_per_page' => 10,
     'paged'          => $paged,
-    'meta_key'       => '_rating',
+    'meta_key'       => '_clinic_rating',
     'orderby'        => 'meta_value_num',
     'order'          => 'DESC',
 );
@@ -157,9 +157,9 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
     }
     
     echo '<h3>6. Meta Key Test</h3>';
-    echo '<p><strong>Query uses meta_key:</strong> _rating</p>';
+    echo '<p><strong>Query uses meta_key:</strong> _clinic_rating</p>';
     echo '<p><strong>Template reads:</strong> _clinic_rating</p>';
-    echo '<p style="color: red;"><strong>⚠ If _rating is empty but _clinic_rating has values, this is a META KEY MISMATCH!</strong></p>';
+    echo '<p style="color: green;"><strong>✓ Meta keys are consistent!</strong></p>';
     
     echo '</div>';
 }
