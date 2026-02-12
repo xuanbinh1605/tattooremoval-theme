@@ -733,11 +733,20 @@ function clearAllFilters() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Filter script loaded');
+    
     // Mobile filter toggle
     const mobileFilterToggle = document.getElementById('mobileFilterToggle');
     const filterSidebar = document.getElementById('filterSidebar');
     const filterCount = document.getElementById('filterCount');
     const closeFilters = document.getElementById('closeFilters');
+    
+    console.log('Found elements:', {
+        priceButtons: document.querySelectorAll('[data-filter="price"]').length,
+        checkboxes: document.querySelectorAll('.filter-checkbox').length,
+        mobileToggle: !!mobileFilterToggle,
+        sidebar: !!filterSidebar
+    });
     
     function openMobileFilters() {
         filterSidebar.classList.remove('hidden');
