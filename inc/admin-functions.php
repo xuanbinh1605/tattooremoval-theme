@@ -831,3 +831,295 @@ function str_download_laser_tech_template() {
     exit;
 }
 add_action('admin_post_str_download_laser_tech_template', 'str_download_laser_tech_template');
+
+/**
+ * Add Delete All Clinics button to admin page
+ */
+function str_add_delete_all_button() {
+    $screen = get_current_screen();
+    
+    if ($screen && $screen->post_type === 'clinic' && $screen->id === 'edit-clinic') {
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // Add button after the page title
+            $('.wrap h1.wp-heading-inline').after(
+                '<button type="button" class="page-title-action str-delete-all-clinics" style="background: #dc3232; border-color: #dc3232; color: #fff;">' +
+                '<?php _e('Delete All Clinics', 'search-tattoo-removal'); ?>' +
+                '</button>'
+            );
+        });
+        </script>
+        <?php
+    }
+}
+add_action('admin_head', 'str_add_delete_all_button');
+
+/**
+ * AJAX handler to delete all clinics
+ */
+function str_delete_all_clinics_ajax() {
+    // Check nonce
+    check_ajax_referer('str_delete_all_clinics', 'nonce');
+    
+    // Check permissions
+    if (!current_user_can('delete_posts')) {
+        wp_send_json_error(array('message' => __('You do not have permission to delete clinics.', 'search-tattoo-removal')));
+    }
+    
+    // Get all clinic posts
+    $args = array(
+        'post_type'      => 'clinic',
+        'posts_per_page' => -1,
+        'post_status'    => 'any',
+        'fields'         => 'ids'
+    );
+    
+    $clinic_ids = get_posts($args);
+    $deleted_count = 0;
+    
+    // Delete each clinic post
+    foreach ($clinic_ids as $clinic_id) {
+        if (wp_delete_post($clinic_id, true)) {
+            $deleted_count++;
+        }
+    }
+    
+    wp_send_json_success(array(
+        'message' => sprintf(__('%d clinics have been permanently deleted.', 'search-tattoo-removal'), $deleted_count),
+        'count' => $deleted_count
+    ));
+}
+add_action('wp_ajax_str_delete_all_clinics', 'str_delete_all_clinics_ajax');
+
+/**
+ * Enqueue admin scripts and styles for delete all functionality
+ */
+function str_delete_all_admin_scripts($hook) {
+    // Only load on clinic edit page
+    if ($hook !== 'edit.php' || !isset($_GET['post_type']) || $_GET['post_type'] !== 'clinic') {
+        return;
+    }
+    
+    // Inline JavaScript for modal and AJAX
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Add modal HTML to body
+        $('body').append(`
+            <div id="str-delete-all-modal" class="str-modal" style="display: none;">
+                <div class="str-modal-content">
+                    <div class="str-modal-header">
+                        <h2><?php _e('Delete All Clinics', 'search-tattoo-removal'); ?></h2>
+                        <span class="str-modal-close">&times;</span>
+                    </div>
+                    <div class="str-modal-body">
+                        <p style="font-size: 16px; margin-bottom: 15px;">
+                            <strong><?php _e('Warning: This action cannot be undone!', 'search-tattoo-removal'); ?></strong>
+                        </p>
+                        <p style="margin-bottom: 20px;">
+                            <?php _e('Are you sure you want to permanently delete ALL clinic posts? This will remove all clinic data, including:', 'search-tattoo-removal'); ?>
+                        </p>
+                        <ul style="list-style: disc; margin-left: 30px; margin-bottom: 20px;">
+                            <li><?php _e('All clinic information', 'search-tattoo-removal'); ?></li>
+                            <li><?php _e('All custom fields and meta data', 'search-tattoo-removal'); ?></li>
+                            <li><?php _e('All taxonomy associations', 'search-tattoo-removal'); ?></li>
+                            <li><?php _e('All featured images', 'search-tattoo-removal'); ?></li>
+                        </ul>
+                        <p style="color: #d63638; font-weight: bold;">
+                            <?php _e('This action is PERMANENT and cannot be reversed!', 'search-tattoo-removal'); ?>
+                        </p>
+                    </div>
+                    <div class="str-modal-footer">
+                        <button type="button" class="button button-large str-modal-cancel">
+                            <?php _e('Cancel', 'search-tattoo-removal'); ?>
+                        </button>
+                        <button type="button" class="button button-primary button-large str-confirm-delete" style="background: #dc3232; border-color: #dc3232;">
+                            <?php _e('Yes, Delete All Clinics', 'search-tattoo-removal'); ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `);
+        
+        // Open modal when delete button clicked
+        $(document).on('click', '.str-delete-all-clinics', function(e) {
+            e.preventDefault();
+            $('#str-delete-all-modal').fadeIn(300);
+        });
+        
+        // Close modal
+        $(document).on('click', '.str-modal-close, .str-modal-cancel', function() {
+            $('#str-delete-all-modal').fadeOut(300);
+        });
+        
+        // Close modal when clicking outside
+        $(document).on('click', '#str-delete-all-modal', function(e) {
+            if (e.target.id === 'str-delete-all-modal') {
+                $(this).fadeOut(300);
+            }
+        });
+        
+        // Confirm delete action
+        $(document).on('click', '.str-confirm-delete', function() {
+            var $button = $(this);
+            var originalText = $button.text();
+            
+            // Disable buttons during deletion
+            $button.prop('disabled', true).text('<?php _e('Deleting...', 'search-tattoo-removal'); ?>');
+            $('.str-modal-cancel').prop('disabled', true);
+            
+            // Send AJAX request
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'str_delete_all_clinics',
+                    nonce: '<?php echo wp_create_nonce('str_delete_all_clinics'); ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Close modal
+                        $('#str-delete-all-modal').fadeOut(300);
+                        
+                        // Show success message
+                        $('.wrap h1.wp-heading-inline').after(
+                            '<div class="notice notice-success is-dismissible" style="margin: 15px 0;"><p><strong>' + 
+                            response.data.message + 
+                            '</strong></p></div>'
+                        );
+                        
+                        // Reload page after 2 seconds
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        alert('<?php _e('Error:', 'search-tattoo-removal'); ?> ' + response.data.message);
+                        $button.prop('disabled', false).text(originalText);
+                        $('.str-modal-cancel').prop('disabled', false);
+                    }
+                },
+                error: function() {
+                    alert('<?php _e('An error occurred. Please try again.', 'search-tattoo-removal'); ?>');
+                    $button.prop('disabled', false).text(originalText);
+                    $('.str-modal-cancel').prop('disabled', false);
+                }
+            });
+        });
+    });
+    </script>
+    
+    <style type="text/css">
+    /* Modal Styles */
+    .str-modal {
+        position: fixed;
+        z-index: 100000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
+        animation: fadeIn 0.3s;
+    }
+    
+    .str-modal-content {
+        position: relative;
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 0;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        animation: slideIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .str-modal-header {
+        padding: 20px 25px;
+        background: #f0f0f1;
+        border-bottom: 1px solid #dcdcde;
+        border-radius: 4px 4px 0 0;
+        position: relative;
+    }
+    
+    .str-modal-header h2 {
+        margin: 0;
+        padding: 0;
+        font-size: 22px;
+        line-height: 1.4;
+        color: #1d2327;
+    }
+    
+    .str-modal-close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 32px;
+        font-weight: 300;
+        color: #646970;
+        cursor: pointer;
+        line-height: 20px;
+        transition: color 0.2s;
+    }
+    
+    .str-modal-close:hover,
+    .str-modal-close:focus {
+        color: #d63638;
+    }
+    
+    .str-modal-body {
+        padding: 25px;
+        line-height: 1.6;
+        color: #2c3338;
+    }
+    
+    .str-modal-body ul {
+        margin: 15px 0 15px 30px;
+    }
+    
+    .str-modal-body li {
+        margin-bottom: 8px;
+    }
+    
+    .str-modal-footer {
+        padding: 20px 25px;
+        background: #f0f0f1;
+        border-top: 1px solid #dcdcde;
+        text-align: right;
+        border-radius: 0 0 4px 4px;
+    }
+    
+    .str-modal-footer .button {
+        margin-left: 10px;
+    }
+    
+    .str-confirm-delete:hover {
+        background: #c92020 !important;
+        border-color: #c92020 !important;
+    }
+    
+    .str-delete-all-clinics:hover {
+        background: #c92020 !important;
+        border-color: #c92020 !important;
+    }
+    </style>
+    <?php
+}
+add_action('admin_enqueue_scripts', 'str_delete_all_admin_scripts');
