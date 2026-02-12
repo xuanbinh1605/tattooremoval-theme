@@ -257,7 +257,9 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
                                 $city = get_post_meta($clinic_id, '_clinic_city', true);
                                 $price_range = get_post_meta($clinic_id, '_clinic_price_range_display', true);
-                                $thumbnail = str_get_clinic_thumbnail($clinic_id, 'large', 'https://placehold.co/400x300');
+                                $open_status = get_post_meta($clinic_id, '_clinic_open_status', true) ?: 'Open Now';
+                                $years_in_business = get_post_meta($clinic_id, '_clinic_years_in_business', true);
+                                $thumbnail = str_get_clinic_thumbnail($clinic_id, 'large', 'https://picsum.photos/400/300?random=' . $counter);
                             ?>
                                 <div class="flex flex-col md:flex-row gap-6 pb-10 border-b border-gray-light hover:bg-offwhite/30 transition-colors p-4 -m-4 rounded-2xl group cursor-pointer">
                                     <!-- Clinic Image -->
@@ -265,61 +267,88 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                         <img alt="<?php echo esc_attr(get_the_title()); ?>" 
                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                                              src="<?php echo esc_url($thumbnail); ?>">
-                                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest text-charcoal border border-gray-light shadow-sm">
-                                            <?php echo $counter; ?>
-                                        </div>
                                     </div>
 
                                     <!-- Clinic Info -->
-                                    <div class="flex-1 flex flex-col min-w-0">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h2 class="text-xl font-black text-charcoal group-hover:text-brand transition-colors">
-                                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                                </h2>
-                                                <div class="flex items-center gap-2 mt-1">
-                                                    <div class="flex text-brand">
-                                                        <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-4 h-4 <?php echo $i <= round((float)$rating) ? 'fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
-                                                                <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                                                            </svg>
-                                                        <?php endfor; ?>
-                                                    </div>
-                                                    <span class="text-sm font-black text-charcoal"><?php echo number_format((float)$rating, 1); ?></span>
-                                                    <span class="text-sm text-graphite font-bold">(<?php echo $review_count; ?> reviews)</span>
+                                    <div class="flex-1 flex flex-col min-w-0 pt-4 px-4 pb-1">
+                                        <div class="mb-4 space-y-2">
+                                            <h2 class="text-xl font-black text-charcoal group-hover:text-brand transition-colors">
+                                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                            </h2>
+                                            
+                                            <div class="flex items-center gap-2">
+                                                <div class="flex text-amber">
+                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-4 h-4 <?php echo $i <= round((float)$rating) ? 'fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
+                                                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                                        </svg>
+                                                    <?php endfor; ?>
                                                 </div>
+                                                <span class="text-sm font-black text-charcoal"><?php echo number_format((float)$rating, 1); ?></span>
+                                                <span class="text-sm text-graphite font-bold">(<?php echo $review_count; ?> reviews)</span>
+                                            </div>
+                                            
+                                            <div class="flex items-center text-sm font-bold text-charcoal">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin w-4 h-4 mr-1.5 text-gray-light" aria-hidden="true">
+                                                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                                    <circle cx="12" cy="10" r="3"></circle>
+                                                </svg>
+                                                <span><?php echo esc_html($city ?: $location_name); ?></span>
+                                                <span class="mx-3 text-gray-light">•</span>
+                                                <span class="<?php echo (strpos(strtolower($open_status), 'closed') !== false) ? 'text-red-500' : 'text-teal'; ?>">
+                                                    <?php echo esc_html($open_status); ?>
+                                                </span>
                                             </div>
                                         </div>
 
-                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-bold text-graphite mb-4">
-                                            <span>•</span>
-                            <span><?php echo esc_html($city ?: $location_name); ?></span>
-                                        </div>
-
-                                        <!-- Features -->
-                                        <?php 
-                                        $clinic_features = wp_get_post_terms($clinic_id, 'clinic_feature', array('number' => 2));
-                                        if (!empty($clinic_features)) :
-                                        ?>
-                                            <div class="flex flex-wrap gap-2 mb-4">
-                                                <?php foreach ($clinic_features as $feature) : ?>
-                                                    <span class="bg-offwhite text-graphite px-2 py-1 rounded text-[10px] font-black uppercase border border-gray-light tracking-widest">
-                                                        <?php echo esc_html($feature->name); ?>
-                                                    </span>
-                                                <?php endforeach; ?>
+                                        <div class="flex flex-col space-y-5 py-0.5">
+                                            <div class="text-charcoal font-black tracking-widest uppercase text-[10px]"><?php echo $price_range ?: 'CONTACT FOR'; ?> PRICING</div>
+                                            
+                                            <div class="flex items-center text-xs font-black text-charcoal uppercase tracking-wider">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-3.5 h-3.5 mr-2 text-teal" aria-hidden="true">
+                                                    <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                                </svg>
+                                                Advanced Laser Technology
                                             </div>
-                                        <?php endif; ?>
-
-                                        <!-- Portfolio Images -->
-                                        <div class="flex gap-2 mt-auto">
-                                            <?php for ($i = 1; $i <= 4; $i++) : ?>
-                                                <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-light bg-offwhite flex-shrink-0 relative group/thumb">
-                                                    <img alt="Portfolio" class="w-full h-full object-cover grayscale group-hover/thumb:grayscale-0 transition-all" src="https://placehold.co/100x100">
-                                                    <?php if ($i === 4) : ?>
-                                                        <div class="absolute inset-0 bg-charcoal/40 flex items-center justify-center text-[8px] font-black text-white uppercase tracking-tighter">See All</div>
+                                            
+                                            <?php 
+                                            $clinic_features = wp_get_post_terms($clinic_id, 'clinic_feature', array('number' => 3));
+                                            if (!empty($clinic_features)) :
+                                            ?>
+                                                <div class="flex flex-wrap gap-x-6 gap-y-2 border-t border-offwhite pt-3">
+                                                    <?php if ($years_in_business) : ?>
+                                                        <div class="flex items-center gap-2">
+                                                            <div class="w-4.5 h-4.5 rounded-full bg-teal/10 flex items-center justify-center shrink-0">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-2.5 h-2.5 text-teal" aria-hidden="true">
+                                                                    <path d="M20 6 9 17l-5-5"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <span class="text-[10px] font-black text-charcoal uppercase tracking-widest leading-none"><?php echo esc_html($years_in_business); ?> years in business</span>
+                                                        </div>
                                                     <?php endif; ?>
+                                                    <?php foreach ($clinic_features as $feature) : ?>
+                                                        <div class="flex items-center gap-2">
+                                                            <div class="w-4.5 h-4.5 rounded-full bg-teal/10 flex items-center justify-center shrink-0">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-2.5 h-2.5 text-teal" aria-hidden="true">
+                                                                    <path d="M20 6 9 17l-5-5"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <span class="text-[10px] font-black text-charcoal uppercase tracking-widest leading-none"><?php echo esc_html($feature->name); ?></span>
+                                                        </div>
+                                                    <?php endforeach; ?>
                                                 </div>
-                                            <?php endfor; ?>
+                                            <?php endif; ?>
+                                        </div>
+
+                                        <div class="mt-4 pt-4 border-t border-offwhite">
+                                            <a href="<?php the_permalink(); ?>" class="flex items-center text-[10px] font-black text-charcoal uppercase tracking-widest hover:text-brand transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image w-4 h-4 mr-2" aria-hidden="true">
+                                                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                                                    <circle cx="9" cy="9" r="2"></circle>
+                                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                                                </svg>
+                                                See Portfolio
+                                            </a>
                                         </div>
                                     </div>
 
