@@ -57,7 +57,7 @@ $query_args = array(
     'post_type'      => 'clinic',
     'posts_per_page' => 10,
     'paged'          => $paged,
-    'meta_key'       => '_clinic_rating',
+    'meta_key'       => '_rating',
     'orderby'        => 'meta_value_num',
     'order'          => 'DESC',
 );
@@ -77,6 +77,92 @@ if (!empty($location_term_ids)) {
 // Query clinics
 $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
+
+// DEBUG MODE - Add ?debug=1 to URL to see this
+if (current_user_can('administrator') && isset($_GET['debug'])) {
+    echo '<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 2px solid #333; font-family: monospace; font-size: 12px;">';
+    echo '<h2 style="margin-top: 0;">🔍 DEBUG INFORMATION</h2>';
+    
+    echo '<h3>1. URL Parameters</h3>';
+    echo '<p><strong>location_state:</strong> ' . esc_html($location_state ?: '(empty)') . '</p>';
+    echo '<p><strong>location_city:</strong> ' . esc_html($location_city ?: '(empty)') . '</p>';
+    
+    echo '<h3>2. Query Setup</h3>';
+    echo '<p><strong>Location Name:</strong> ' . esc_html($location_name ?: '(empty)') . '</p>';
+    echo '<p><strong>Is State:</strong> ' . ($is_state ? 'Yes' : 'No') . '</p>';
+    echo '<p><strong>Location Term IDs:</strong> ' . (!empty($location_term_ids) ? implode(', ', $location_term_ids) : '(none)') . '</p>';
+    
+    if (!empty($location_state)) {
+        $state_term = get_term_by('name', $location_state, 'us_location');
+        if ($state_term) {
+            echo '<p><strong>State Term Found:</strong> ' . $state_term->name . ' (ID: ' . $state_term->term_id . ')</p>';
+            
+            $cities = get_terms(array(
+                'taxonomy' => 'us_location',
+                'hide_empty' => false,
+                'parent' => $state_term->term_id,
+            ));
+            echo '<p><strong>Cities in State:</strong> ' . count($cities) . '</p>';
+            if (!empty($cities)) {
+                echo '<ul style="margin: 5px 0;">';
+                foreach (array_slice($cities, 0, 10) as $city) {
+                    echo '<li>' . esc_html($city->name) . ' (ID: ' . $city->term_id . ')</li>';
+                }
+                if (count($cities) > 10) echo '<li>... and ' . (count($cities) - 10) . ' more</li>';
+                echo '</ul>';
+            }
+        } else {
+            echo '<p style="color: red;"><strong>State Term NOT FOUND:</strong> ' . esc_html($location_state) . '</p>';
+        }
+    }
+    
+    echo '<h3>3. Query Results</h3>';
+    echo '<p><strong>Total Clinics Found:</strong> ' . $total_clinics . '</p>';
+    
+    echo '<h3>4. SQL Query</h3>';
+    echo '<pre style="background: white; padding: 10px; overflow-x: auto; font-size: 11px;">' . esc_html($clinics_query->request) . '</pre>';
+    
+    echo '<h3>5. All Published Clinics (Sample Check)</h3>';
+    $all_clinics = get_posts(array(
+        'post_type' => 'clinic',
+        'posts_per_page' => 5,
+        'post_status' => 'publish',
+    ));
+    
+    if (empty($all_clinics)) {
+        echo '<p style="color: red;"><strong>NO CLINICS EXIST IN DATABASE!</strong></p>';
+    } else {
+        echo '<p>Found ' . count($all_clinics) . ' clinics (showing first 5):</p>';
+        echo '<table style="width: 100%; border-collapse: collapse; background: white;" border="1">';
+        echo '<tr><th>Clinic</th><th>Locations</th><th>_rating</th><th>_clinic_rating</th></tr>';
+        foreach ($all_clinics as $clinic) {
+            $locations = wp_get_post_terms($clinic->ID, 'us_location');
+            $location_names = array();
+            foreach ($locations as $loc) {
+                $parent = $loc->parent ? get_term($loc->parent, 'us_location') : null;
+                $location_names[] = $loc->name . ($parent ? ' (' . $parent->name . ')' : ' [STATE]');
+            }
+            
+            $rating = get_post_meta($clinic->ID, '_rating', true);
+            $clinic_rating = get_post_meta($clinic->ID, '_clinic_rating', true);
+            
+            echo '<tr>';
+            echo '<td>' . esc_html($clinic->post_title) . ' (ID: ' . $clinic->ID . ')</td>';
+            echo '<td>' . (!empty($location_names) ? implode(', ', $location_names) : '<span style="color: red;">NONE!</span>') . '</td>';
+            echo '<td>' . ($rating ? $rating : '<span style="color: orange;">empty</span>') . '</td>';
+            echo '<td>' . ($clinic_rating ? $clinic_rating : '<span style="color: orange;">empty</span>') . '</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+    }
+    
+    echo '<h3>6. Meta Key Test</h3>';
+    echo '<p><strong>Query uses meta_key:</strong> _rating</p>';
+    echo '<p><strong>Template reads:</strong> _clinic_rating</p>';
+    echo '<p style="color: red;"><strong>⚠ If _rating is empty but _clinic_rating has values, this is a META KEY MISMATCH!</strong></p>';
+    
+    echo '</div>';
+}
 ?>
 
 <main class="flex-grow">
