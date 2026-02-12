@@ -219,6 +219,11 @@ function str_importer_page() {
                         <td>https://example.com/clinic-photo.jpg</td>
                     </tr>
                     <tr>
+                        <td><strong>thumbnail_url</strong></td>
+                        <td>Direct thumbnail URL (takes priority over featured image)</td>
+                        <td>https://example.com/direct-thumb.jpg</td>
+                    </tr>
+                    <tr>
                         <td><strong>laser_tech</strong></td>
                         <td>Laser technologies (comma-separated)</td>
                         <td>PicoWay, Enlighten III</td>
@@ -454,6 +459,7 @@ function str_import_single_clinic($row, $import_mode) {
         'before_after_gallery' => 'before_after_gallery',
         'years_in_business' => 'years_in_business',
         'open_status' => 'open_status',
+        'thumbnail_url' => 'thumbnail_url',
     );
 
     foreach ($meta_fields as $csv_field => $meta_key) {
@@ -706,7 +712,7 @@ function str_download_template() {
         'website', 'google_maps_url', 'rating', 'reviews_count', 'reviews_summary',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
         'operating_hours_raw', 'open_status', 'years_in_business', 'is_verified', 
-        'is_featured', 'logo', 'thumbnail', 'laser_tech',
+        'is_featured', 'logo', 'thumbnail', 'thumbnail_url', 'laser_tech',
         'appointment_required', 'online_scheduling', 'offers_packages', 'military_discount',
         'financing', 'cash_only', 'accepts_credit_cards', 'accepts_debit_cards',
         'accepts_mobile_payments', 'accepts_checks', 'wheelchair_accessible', 'medical_supervision'
@@ -739,6 +745,7 @@ function str_download_template() {
         '0',
         'https://example.com/logo.png',
         'https://example.com/clinic-thumbnail.jpg',
+        'https://example.com/direct-thumbnail.jpg',
         'PicoWay, Enlighten III',
         'TRUE',
         'FALSE',
