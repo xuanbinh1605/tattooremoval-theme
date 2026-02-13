@@ -359,7 +359,7 @@ function str_clinic_payment_services_callback($post) {
 function str_clinic_media_callback($post) {
     $thumbnail_url = get_post_meta($post->ID, '_clinic_thumbnail_url', true);
     $logo = get_post_meta($post->ID, '_clinic_logo', true);
-    $before_after_gallery = get_post_meta($post->ID, '_clinic_before_after_gallery', true);
+    $before_after_gallery_url = get_post_meta($post->ID, '_clinic_before_after_gallery_url', true);
     ?>
     <p>
         <label for="thumbnail_url"><strong><?php _e('Thumbnail Image URL:', 'search-tattoo-removal'); ?></strong></label><br>
@@ -372,9 +372,9 @@ function str_clinic_media_callback($post) {
         <span class="description"><?php _e('Clinic logo image', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
-        <label for="before_after_gallery"><strong><?php _e('Before/After Gallery IDs:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="text" id="before_after_gallery" name="before_after_gallery" value="<?php echo esc_attr($before_after_gallery); ?>" style="width: 100%;" placeholder="123,456,789">
-        <span class="description"><?php _e('Comma-separated image IDs from Media Library', 'search-tattoo-removal'); ?></span>
+        <label for="before_after_gallery_url"><strong><?php _e('Before/After Gallery URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="before_after_gallery_url" name="before_after_gallery_url" value="<?php echo esc_attr($before_after_gallery_url); ?>" style="width: 100%;" placeholder="https://example.com/gallery">
+        <span class="description"><?php _e('Link to webpage with before/after images. Displays: "Want to know what tattoo removal looks like before and after sessions at {Clinic name}? Open these links to check out before & after images." (Fallback: picsum placeholder images)', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
@@ -479,7 +479,7 @@ function str_save_clinic_meta($post_id) {
         'website', 'phone', 'google_maps_url', 'rating', 'reviews_count',
         'street', 'zip_code', 'full_address', 'operating_hours_raw',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
-        'thumbnail_url', 'logo', 'before_after_gallery', 'years_in_business', 'open_status'
+        'thumbnail_url', 'logo', 'before_after_gallery_url', 'years_in_business', 'open_status'
     );
 
     foreach ($fields as $field) {
