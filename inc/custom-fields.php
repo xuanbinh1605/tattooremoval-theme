@@ -449,21 +449,12 @@ add_action('add_meta_boxes', 'str_add_laser_tech_meta_boxes');
 function str_laser_tech_info_callback($post) {
     wp_nonce_field('str_save_laser_tech_meta', 'str_laser_tech_meta_nonce');
     
-    $official_website = get_post_meta($post->ID, '_official_website', true);
-    $short_description = get_post_meta($post->ID, '_short_description', true);
-    $technical_notes = get_post_meta($post->ID, '_technical_notes', true);
+    $description = get_post_meta($post->ID, '_description', true);
     ?>
     <p>
-        <label for="official_website"><strong><?php _e('Official Website:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="official_website" name="official_website" value="<?php echo esc_attr($official_website); ?>" style="width: 100%;">
-    </p>
-    <p>
-        <label for="short_description"><strong><?php _e('Short Description:', 'search-tattoo-removal'); ?></strong></label><br>
-        <textarea id="short_description" name="short_description" rows="3" style="width: 100%;"><?php echo esc_textarea($short_description); ?></textarea>
-    </p>
-    <p>
-        <label for="technical_notes"><strong><?php _e('Technical Notes:', 'search-tattoo-removal'); ?></strong></label><br>
-        <textarea id="technical_notes" name="technical_notes" rows="6" style="width: 100%;"><?php echo esc_textarea($technical_notes); ?></textarea>
+        <label for="description"><strong><?php _e('Description:', 'search-tattoo-removal'); ?></strong></label><br>
+        <textarea id="description" name="description" rows="6" style="width: 100%;"><?php echo esc_textarea($description); ?></textarea>
+        <span class="description"><?php _e('Describe this laser technology and its features.', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
@@ -557,12 +548,8 @@ function str_save_laser_tech_meta($post_id) {
         return;
     }
 
-    $fields = array('official_website', 'short_description', 'technical_notes');
-
-    foreach ($fields as $field) {
-        if (isset($_POST[$field])) {
-            update_post_meta($post_id, '_' . $field, sanitize_text_field($_POST[$field]));
-        }
+    if (isset($_POST['description'])) {
+        update_post_meta($post_id, '_description', sanitize_textarea_field($_POST['description']));
     }
 }
 add_action('save_post_laser_tech', 'str_save_laser_tech_meta');
