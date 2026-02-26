@@ -14,6 +14,14 @@ $current_term = get_queried_object();
 $location_state = isset($_GET['location_state']) ? sanitize_text_field($_GET['location_state']) : '';
 $location_city = isset($_GET['location_city']) ? sanitize_text_field($_GET['location_city']) : '';
 
+// Get filter parameters from URL
+$price_filters = isset($_GET['price']) ? array_map('intval', (array)$_GET['price']) : array();
+$open_now = isset($_GET['open_now']) ? (bool)$_GET['open_now'] : false;
+$verified = isset($_GET['verified']) ? (bool)$_GET['verified'] : false;
+$online_booking = isset($_GET['online_booking']) ? (bool)$_GET['online_booking'] : false;
+$min_rating = isset($_GET['min_rating']) ? intval($_GET['min_rating']) : 0;
+$feature_filters = isset($_GET['features']) ? array_map('intval', (array)$_GET['features']) : array();
+
 // Determine if using URL parameters or taxonomy routing
 $using_url_params = !empty($location_state) || !empty($location_city);
 
@@ -84,36 +92,127 @@ $query_args = array(
     'order'          => 'DESC',
 );
 
-// Add taxonomy query if we have location terms
+// Build tax_query array
+$tax_query = array('relation' => 'AND');
+
+// Add location taxonomy query if we have location terms
 if (!empty($location_term_ids)) {
-    $query_args['tax_query'] = array(
-        array(
-            'taxonomy' => 'us_location',
-            'field'    => 'term_id',
-            'terms'    => $location_term_ids,
-            'operator' => 'IN',
-        ),
+    $tax_query[] = array(
+        'taxonomy' => 'us_location',
+        'field'    => 'term_id',
+        'terms'    => $location_term_ids,
+        'operator' => 'IN',
     );
+}
+
+// Add feature filters
+if (!empty($feature_filters)) {
+    $tax_query[] = array(
+        'taxonomy' => 'clinic_feature',
+        'field'    => 'term_id',
+        'terms'    => $feature_filters,
+        'operator' => 'IN',
+    );
+}
+
+if (count($tax_query) > 1) {
+    $query_args['tax_query'] = $tax_query;
+}
+
+// Build meta_query array
+$meta_query = array('relation' => 'AND');
+
+// Add rating filter
+if ($min_rating > 0) {
+    $meta_query[] = array(
+        'key'     => '_clinic_rating',
+        'value'   => $min_rating,
+        'compare' => '>=',
+        'type'    => 'NUMERIC',
+    );
+}
+
+// Add price filter
+if (!empty($price_filters)) {
+    $meta_query[] = array(
+        'key'     => '_clinic_price_range',
+        'value'   => $price_filters,
+        'compare' => 'IN',
+        'type'    => 'NUMERIC',
+    );
+}
+
+// Add open now filter
+if ($open_now) {
+    $meta_query[] = array(
+        'key'     => '_clinic_open_status',
+        'value'   => 'Open Now',
+        'compare' => '=',
+    );
+}
+
+// Add verified license filter
+if ($verified) {
+    $meta_query[] = array(
+        'key'     => '_clinic_verified',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+// Add online booking filter
+if ($online_booking) {
+    $meta_query[] = array(
+        'key'     => '_clinic_online_booking',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if (count($meta_query) > 1) {
+    $query_args['meta_query'] = $meta_query;
 }
 
 // Query clinics
 $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
 
+// Check if any filters are active
+$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters);
+
 // Debug information (remove after testing)
 if (current_user_can('administrator') && isset($_GET['debug'])) {
-    echo '<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 2px solid #333;">';
-    echo '<h3>Debug Information</h3>';
+    echo '<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 2px solid #333; font-family: monospace; font-size: 12px;">';
+    echo '<h2 style="margin-top: 0;">🔍 DEBUG INFORMATION</h2>';
+    echo '<h3>1. URL Parameters</h3>';
     echo '<p><strong>Current Term:</strong> ' . ($current_term ? $current_term->name . ' (ID: ' . $current_term->term_id . ')' : 'None') . '</p>';
     echo '<p><strong>Using URL Params:</strong> ' . ($using_url_params ? 'Yes' : 'No') . '</p>';
     echo '<p><strong>Location Name:</strong> ' . esc_html($location_name) . '</p>';
     echo '<p><strong>Is State:</strong> ' . ($is_state ? 'Yes' : 'No') . '</p>';
     echo '<p><strong>Location Term IDs:</strong> ' . implode(', ', $location_term_ids) . '</p>';
+    echo '<p><strong>Raw $_GET:</strong></p>';
+    echo '<pre style="background: white; padding: 10px; overflow-x: auto;">' . esc_html(print_r($_GET, true)) . '</pre>';
+    echo '<p><strong>price_filters:</strong> ' . (!empty($price_filters) ? implode(', ', $price_filters) : '(empty)') . '</p>';
+    echo '<p><strong>open_now:</strong> ' . ($open_now ? 'true' : 'false') . '</p>';
+    echo '<p><strong>verified:</strong> ' . ($verified ? 'true' : 'false') . '</p>';
+    echo '<p><strong>online_booking:</strong> ' . ($online_booking ? 'true' : 'false') . '</p>';
+    echo '<p><strong>min_rating:</strong> ' . ($min_rating ?: '0') . '</p>';
+    echo '<p><strong>feature_filters:</strong> ' . (!empty($feature_filters) ? implode(', ', $feature_filters) : '(empty)') . '</p>';
+    echo '<h3>2. Query Results</h3>';
     echo '<p><strong>Total Clinics Found:</strong> ' . $total_clinics . '</p>';
-    echo '<p><strong>Query Args:</strong></p>';
-    echo '<pre>' . print_r($query_args, true) . '</pre>';
-    echo '<p><strong>SQL Query:</strong></p>';
-    echo '<pre>' . $clinics_query->request . '</pre>';
+    echo '<p><strong>Has Filters Applied:</strong> ' . ($has_filters ? 'Yes' : 'No') . '</p>';
+    echo '<p><strong>tax_query count:</strong> ' . (isset($query_args['tax_query']) ? count($query_args['tax_query']) - 1 : '0') . ' conditions</p>';
+    echo '<p><strong>meta_query count:</strong> ' . (isset($query_args['meta_query']) ? count($query_args['meta_query']) - 1 : '0') . ' conditions</p>';
+    if (isset($query_args['tax_query'])) {
+        echo '<p><strong>tax_query details:</strong></p>';
+        echo '<pre style="background: white; padding: 10px; overflow-x: auto; font-size: 11px;">' . esc_html(print_r($query_args['tax_query'], true)) . '</pre>';
+    }
+    if (isset($query_args['meta_query'])) {
+        echo '<p><strong>meta_query details:</strong></p>';
+        echo '<pre style="background: white; padding: 10px; overflow-x: auto; font-size: 11px;">' . esc_html(print_r($query_args['meta_query'], true)) . '</pre>';
+    }
+    echo '<h3>3. SQL Query</h3>';
+    echo '<pre style="background: white; padding: 10px; overflow-x: auto; font-size: 11px;">' . esc_html($clinics_query->request) . '</pre>';
     echo '</div>';
 }
 ?>
@@ -157,12 +256,101 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
             </div>
         </div>
 
+        <?php 
+        if ($has_filters) : 
+        ?>
+            <div class="border-b border-gray-light bg-offwhite/50 py-3">
+                <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-black text-graphite uppercase tracking-widest">Active Filters:</span>
+                        
+                        <?php if (!empty($price_filters)) : ?>
+                            <?php foreach ($price_filters as $price) : ?>
+                                <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                    <?php echo str_repeat('$', $price); ?>
+                                    <button onclick="removeFilter('price', '<?php echo $price; ?>')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                                </span>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        
+                        <?php if ($open_now) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Open Now
+                                <button onclick="removeFilter('open_now')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($verified) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Verified License
+                                <button onclick="removeFilter('verified')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($online_booking) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Online Booking
+                                <button onclick="removeFilter('online_booking')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($min_rating > 0) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                <?php echo $min_rating; ?>+ Stars
+                                <button onclick="removeFilter('min_rating')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($feature_filters)) : ?>
+                            <?php foreach ($feature_filters as $feature_id) : 
+                                $feature_term = get_term($feature_id, 'clinic_feature');
+                                if ($feature_term && !is_wp_error($feature_term)) :
+                            ?>
+                                <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                    <?php echo esc_html($feature_term->name); ?>
+                                    <button onclick="removeFilter('features', '<?php echo $feature_id; ?>')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                                </span>
+                            <?php 
+                                endif;
+                            endforeach; ?>
+                        <?php endif; ?>
+                        
+                        <button onclick="clearAllFilters()" class="ml-2 text-[10px] font-black text-brand uppercase tracking-widest hover:text-brand-hover">
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Main Content Area -->
         <div class="max-w-[1440px] mx-auto px-4 md:px-8 py-8">
+            <!-- Mobile Filter Toggle Button -->
+            <div class="lg:hidden mb-6">
+                <button id="mobileFilterToggle" class="w-full flex items-center justify-center gap-2 bg-white border-2 border-gray-light rounded-xl px-6 py-3 font-black text-charcoal hover:border-brand transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span class="text-sm uppercase tracking-widest">Filters</span>
+                    <span id="filterCount" class="hidden ml-1 bg-brand text-white text-xs font-black px-2 py-0.5 rounded-full"></span>
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 <!-- Filters Sidebar -->
-                <div class="hidden lg:block lg:col-span-2 space-y-8 pr-4 border-r border-gray-light">
+                <div id="filterSidebar" class="hidden lg:block lg:col-span-2 space-y-8 pr-4 border-r border-gray-light">
+                    <!-- Mobile Close Button -->
+                    <div class="lg:hidden flex justify-between items-center mb-6 pb-4 border-b border-gray-light">
+                        <h2 class="text-lg font-black text-charcoal">F ilters</h2>
+                        <button id="closeFilters" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
                     <div>
                         <h2 class="text-sm font-black text-charcoal mb-4">Filters</h2>
                         <div class="space-y-6">
@@ -171,10 +359,12 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                             <div>
                                 <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Price</h3>
                                 <div class="flex bg-offwhite p-1 rounded-xl border border-gray-light">
-                                    <button class="flex-1 py-1.5 text-xs font-black rounded-lg transition-all text-graphite hover:text-charcoal">$</button>
-                                    <button class="flex-1 py-1.5 text-xs font-black rounded-lg transition-all text-graphite hover:text-charcoal">$$</button>
-                                    <button class="flex-1 py-1.5 text-xs font-black rounded-lg transition-all text-graphite hover:text-charcoal">$$$</button>
-                                    <button class="flex-1 py-1.5 text-xs font-black rounded-lg transition-all text-graphite hover:text-charcoal">$$$$</button>
+                                    <?php for ($p = 1; $p <= 4; $p++) : 
+                                        $is_active = in_array($p, $price_filters);
+                                        $price_symbol = str_repeat('$', $p);
+                                    ?>
+                                        <button data-filter="price" data-value="<?php echo $p; ?>" class="flex-1 py-1.5 text-xs font-black rounded-lg transition-all <?php echo $is_active ? 'bg-brand text-white' : 'text-graphite hover:text-charcoal'; ?>"><?php echo $price_symbol; ?></button>
+                                    <?php endfor; ?>
                                 </div>
                             </div>
 
@@ -183,15 +373,15 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Suggested</h3>
                                 <div class="space-y-2.5">
                                     <label class="flex items-center group cursor-pointer">
-                                        <input class="w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="open_now" <?php checked($open_now); ?>>
                                         <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Open Now</span>
                                     </label>
                                     <label class="flex items-center group cursor-pointer">
-                                        <input class="w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="verified" <?php checked($verified); ?>>
                                         <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Verified License</span>
                                     </label>
                                     <label class="flex items-center group cursor-pointer">
-                                        <input class="w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="online_booking" <?php checked($online_booking); ?>>
                                         <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Online Booking</span>
                                     </label>
                                 </div>
@@ -203,7 +393,7 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 <div class="space-y-2.5">
                                     <?php for ($i = 5; $i >= 3; $i--) : ?>
                                         <label class="flex items-center group cursor-pointer">
-                                            <input class="w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox">
+                                            <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="min_rating" data-value="<?php echo $i; ?>" <?php checked($min_rating, $i); ?>>
                                             <div class="ml-3 flex items-center">
                                                 <?php for ($s = 1; $s <= 5; $s++) : ?>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3 h-3 <?php echo $s <= $i ? 'text-amber fill-current' : 'text-gray-light'; ?>" aria-hidden="true">
@@ -229,9 +419,10 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                     ));
                                     if (!empty($features)) :
                                         foreach ($features as $feature) :
+                                            $is_active = in_array($feature->term_id, $feature_filters);
                                     ?>
                                         <label class="flex items-center group cursor-pointer">
-                                            <input class="w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox">
+                                            <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="features" data-value="<?php echo $feature->term_id; ?>" <?php checked($is_active); ?>>
                                             <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors"><?php echo esc_html($feature->name); ?></span>
                                         </label>
                                     <?php 
@@ -455,4 +646,7 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
 </main>
 
 <?php
+// Filter functionality is handled by assets/js/location-search-filters.js
+// which is enqueued in functions.php for taxonomy archives
+
 get_footer();

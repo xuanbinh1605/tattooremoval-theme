@@ -156,8 +156,8 @@ function str_scripts() {
         'nonce'   => wp_create_nonce('str_nonce'),
     ));
     
-    // Location Search Filters (only on Location Search template)
-    if (is_page_template('page-location-search.php')) {
+    // Location Search Filters (for page template and taxonomy archives)
+    if (is_page_template('page-location-search.php') || is_tax('us_location')) {
         wp_enqueue_script('str-location-filters', STR_URI . '/assets/js/location-search-filters.js', array(), STR_VERSION, true);
     }
 
