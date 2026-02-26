@@ -16,7 +16,6 @@ $location_city = isset($_GET['location_city']) ? sanitize_text_field($_GET['loca
 
 // Get filter parameters from URL
 $price_filters = isset($_GET['price']) ? array_map('intval', (array)$_GET['price']) : array();
-$open_now = isset($_GET['open_now']) ? (bool)$_GET['open_now'] : false;
 $verified = isset($_GET['verified']) ? (bool)$_GET['verified'] : false;
 $online_booking = isset($_GET['online_booking']) ? (bool)$_GET['online_booking'] : false;
 $min_rating = isset($_GET['min_rating']) ? intval($_GET['min_rating']) : 0;
@@ -154,15 +153,6 @@ if (!empty($price_filters)) {
     );
 }
 
-// Add open now filter
-if ($open_now) {
-    $meta_query[] = array(
-        'key'     => '_clinic_open_status',
-        'value'   => 'Open Now',
-        'compare' => '=',
-    );
-}
-
 // Add verified license filter
 if ($verified) {
     $meta_query[] = array(
@@ -256,7 +246,7 @@ $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
 
 // Check if any filters are active
-$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters) || $accepts_credit_cards || $accepts_debit_cards || $accepts_mobile_payments || $cash_only || $financing || $military_discount || $online_scheduling || $wheelchair_accessible;
+$has_filters = !empty($price_filters) || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters) || $accepts_credit_cards || $accepts_debit_cards || $accepts_mobile_payments || $cash_only || $financing || $military_discount || $online_scheduling || $wheelchair_accessible;
 
 // Debug information (remove after testing)
 if (current_user_can('administrator') && isset($_GET['debug'])) {
@@ -271,7 +261,6 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
     echo '<p><strong>Raw $_GET:</strong></p>';
     echo '<pre style="background: white; padding: 10px; overflow-x: auto;">' . esc_html(print_r($_GET, true)) . '</pre>';
     echo '<p><strong>price_filters:</strong> ' . (!empty($price_filters) ? implode(', ', $price_filters) : '(empty)') . '</p>';
-    echo '<p><strong>open_now:</strong> ' . ($open_now ? 'true' : 'false') . '</p>';
     echo '<p><strong>verified:</strong> ' . ($verified ? 'true' : 'false') . '</p>';
     echo '<p><strong>online_booking:</strong> ' . ($online_booking ? 'true' : 'false') . '</p>';
     echo '<p><strong>min_rating:</strong> ' . ($min_rating ?: '0') . '</p>';
@@ -349,13 +338,6 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                     <button onclick="removeFilter('price', '<?php echo $price; ?>')" class="ml-2 text-graphite hover:text-red-500">×</button>
                                 </span>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                        
-                        <?php if ($open_now) : ?>
-                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
-                                Open Now
-                                <button onclick="removeFilter('open_now')" class="ml-2 text-graphite hover:text-red-500">×</button>
-                            </span>
                         <?php endif; ?>
                         
                         <?php if ($verified) : ?>
@@ -502,25 +484,6 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 </div>
                             </div>
 
-                            <!-- Suggested Filters -->
-                            <div>
-                                <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Suggested</h3>
-                                <div class="space-y-2.5">
-                                    <label class="flex items-center group cursor-pointer">
-                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="open_now" <?php checked($open_now); ?>>
-                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Open Now</span>
-                                    </label>
-                                    <label class="flex items-center group cursor-pointer">
-                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="verified" <?php checked($verified); ?>>
-                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Verified License</span>
-                                    </label>
-                                    <label class="flex items-center group cursor-pointer">
-                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="online_booking" <?php checked($online_booking); ?>>
-                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Online Booking</span>
-                                    </label>
-                                </div>
-                            </div>
-
                             <!-- Rating Filter -->
                             <div>
                                 <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Rating</h3>
@@ -628,7 +591,6 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
                                 $city = get_post_meta($clinic_id, '_clinic_city', true);
                                 $price_range = get_post_meta($clinic_id, '_clinic_price_range_display', true);
-                                $open_status = get_post_meta($clinic_id, '_clinic_open_status', true) ?: 'Open Now';
                                 $years_in_business = get_post_meta($clinic_id, '_clinic_years_in_business', true);
                                 $thumbnail = str_get_clinic_thumbnail($clinic_id, 'large', 'https://picsum.photos/400/300?random=' . $counter);
                             ?>
@@ -665,10 +627,6 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                                     <circle cx="12" cy="10" r="3"></circle>
                                                 </svg>
                                                 <span><?php echo esc_html($city ?: $location_name); ?></span>
-                                                <span class="mx-3 text-gray-light">•</span>
-                                                <span class="<?php echo (strpos(strtolower($open_status), 'closed') !== false) ? 'text-red-500' : 'text-teal'; ?>">
-                                                    <?php echo esc_html($open_status); ?>
-                                                </span>
                                             </div>
                                         </div>
 

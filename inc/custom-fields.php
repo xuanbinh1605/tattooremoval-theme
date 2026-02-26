@@ -160,7 +160,6 @@ function str_clinic_rating_callback($post) {
  */
 function str_clinic_status_verification_callback($post) {
     $is_verified = get_post_meta($post->ID, '_clinic_is_verified', true);
-    $open_status = get_post_meta($post->ID, '_clinic_open_status', true);
     ?>
     <p>
         <label>
@@ -168,11 +167,6 @@ function str_clinic_status_verification_callback($post) {
             <strong><?php _e('Verified Clinic', 'search-tattoo-removal'); ?></strong>
         </label>
         <br><span class="description"><?php _e('Shows "Verified" badge on clinic card', 'search-tattoo-removal'); ?></span>
-    </p>
-    <p>
-        <label for="open_status"><strong><?php _e('Open Status:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="text" id="open_status" name="open_status" value="<?php echo esc_attr($open_status); ?>" style="width: 100%;" placeholder="Open Now, Closed until 9am tomorrow, etc.">
-        <span class="description"><?php _e('Display text for current operating status (e.g., "Open Now", "Closed until 9am tomorrow")', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
@@ -479,7 +473,7 @@ function str_save_clinic_meta($post_id) {
         'website', 'phone', 'google_maps_url', 'rating', 'reviews_count',
         'street', 'zip_code', 'full_address', 'operating_hours_raw',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
-        'thumbnail_url', 'logo', 'before_after_gallery_url', 'years_in_business', 'open_status'
+        'thumbnail_url', 'logo', 'before_after_gallery_url', 'years_in_business'
     );
 
     foreach ($fields as $field) {
