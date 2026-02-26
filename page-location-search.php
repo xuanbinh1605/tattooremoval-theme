@@ -155,6 +155,9 @@ if (count($meta_query) > 1) {
 $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
 
+// Check if any filters are active
+$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters);
+
 // DEBUG MODE - Add ?debug=1 to URL to see this
 if (current_user_can('administrator') && isset($_GET['debug'])) {
     echo '<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 2px solid #333; font-family: monospace; font-size: 12px;">';
@@ -163,6 +166,14 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
     echo '<h3>1. URL Parameters</h3>';
     echo '<p><strong>location_state:</strong> ' . esc_html($location_state ?: '(empty)') . '</p>';
     echo '<p><strong>location_city:</strong> ' . esc_html($location_city ?: '(empty)') . '</p>';
+    echo '<p><strong>Raw $_GET:</strong></p>';
+    echo '<pre style="background: white; padding: 10px; overflow-x: auto;">' . esc_html(print_r($_GET, true)) . '</pre>';
+    echo '<p><strong>price_filters:</strong> ' . (!empty($price_filters) ? implode(', ', $price_filters) : '(empty)') . '</p>';
+    echo '<p><strong>open_now:</strong> ' . ($open_now ? 'true' : 'false') . '</p>';
+    echo '<p><strong>verified:</strong> ' . ($verified ? 'true' : 'false') . '</p>';
+    echo '<p><strong>online_booking:</strong> ' . ($online_booking ? 'true' : 'false') . '</p>';
+    echo '<p><strong>min_rating:</strong> ' . ($min_rating ?: '0') . '</p>';
+    echo '<p><strong>feature_filters:</strong> ' . (!empty($feature_filters) ? implode(', ', $feature_filters) : '(empty)') . '</p>';
     
     echo '<h3>2. Query Setup</h3>';
     echo '<p><strong>Location Name:</strong> ' . esc_html($location_name ?: '(empty)') . '</p>';
@@ -191,6 +202,22 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
         } else {
             echo '<p style="color: red;"><strong>State Term NOT FOUND:</strong> ' . esc_html($location_state) . '</p>';
         }
+    }
+    
+    echo '<h3>3. Query Results</h3>';
+    echo '<p><strong>Total Clinics Found:</strong> ' . $total_clinics . '</p>';
+    echo '<p><strong>Has Filters Applied:</strong> ' . ($has_filters ? 'Yes' : 'No') . '</p>';
+    echo '<p><strong>tax_query count:</strong> ' . (isset($query_args['tax_query']) ? count($query_args['tax_query']) - 1 : '0') . ' conditions</p>';
+    echo '<p><strong>meta_query count:</strong> ' . (isset($query_args['meta_query']) ? count($query_args['meta_query']) - 1 : '0') . ' conditions</p>';
+    
+    if (isset($query_args['tax_query'])) {
+        echo '<p><strong>tax_query details:</strong></p>';
+        echo '<pre style="background: white; padding: 10px; overflow-x: auto; font-size: 11px;">' . esc_html(print_r($query_args['tax_query'], true)) . '</pre>';
+    }
+    
+    if (isset($query_args['meta_query'])) {
+        echo '<p><strong>meta_query details:</strong></p>';
+        echo '<pre style="background: white; padding: 10px; overflow-x: auto; font-size: 11px;">' . esc_html(print_r($query_args['meta_query'], true)) . '</pre>';
     }
     
     echo '<h3>3. Query Results</h3>';
@@ -298,7 +325,6 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
 
         <!-- Active Filters Display -->
         <?php 
-        $has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters);
         if ($has_filters && !empty($location_name)) : 
         ?>
             <div class="border-b border-gray-light bg-offwhite/50 py-3">
@@ -701,187 +727,7 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
 </main>
 
 <?php
-// Add inline JavaScript for filters
-add_action('wp_footer', function() {
-    ?>
-    <script>
-    console.log('Filter script starting...');
-    
-    // Remove a specific filter
-    function removeFilter(filterName, value = null) {
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        if (value) {
-            // Remove specific value from array filter (price, features)
-            const values = urlParams.getAll(filterName + '[]');
-            urlParams.delete(filterName + '[]');
-            values.filter(v => v !== value).forEach(v => urlParams.append(filterName + '[]', v));
-        } else {
-            // Remove entire filter parameter
-            urlParams.delete(filterName);
-        }
-        
-        urlParams.delete('paged');
-        window.location.search = urlParams.toString();
-    }
-
-    // Clear all filters but keep location
-    function clearAllFilters() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const locationState = urlParams.get('location_state');
-        const locationCity = urlParams.get('location_city');
-        
-        const newParams = new URLSearchParams();
-        if (locationState) newParams.set('location_state', locationState);
-        if (locationCity) newParams.set('location_city', locationCity);
-        
-        window.location.search = newParams.toString();
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, initializing filters...');
-        
-        // Mobile filter toggle
-        const mobileFilterToggle = document.getElementById('mobileFilterToggle');
-        const filterSidebar = document.getElementById('filterSidebar');
-        const filterCount = document.getElementById('filterCount');
-        const closeFilters = document.getElementById('closeFilters');
-        
-        console.log('Found elements:', {
-            priceButtons: document.querySelectorAll('[data-filter="price"]').length,
-            checkboxes: document.querySelectorAll('.filter-checkbox').length,
-            mobileToggle: !!mobileFilterToggle,
-            sidebar: !!filterSidebar
-        });
-        
-        function openMobileFilters() {
-            filterSidebar.classList.remove('hidden');
-            filterSidebar.classList.add('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeMobileFilters() {
-            filterSidebar.classList.add('hidden');
-            filterSidebar.classList.remove('fixed', 'inset-0', 'z-50', 'bg-white', 'p-8', 'overflow-y-auto');
-            document.body.style.overflow = '';
-        }
-        
-        if (mobileFilterToggle && filterSidebar) {
-            mobileFilterToggle.addEventListener('click', openMobileFilters);
-        }
-        
-        if (closeFilters) {
-            closeFilters.addEventListener('click', closeMobileFilters);
-        }
-        
-        // Update filter count badge
-        function updateFilterCount() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const priceFilters = urlParams.getAll('price[]').length;
-            const featureFilters = urlParams.getAll('features[]').length;
-            const openNow = urlParams.has('open_now') ? 1 : 0;
-            const verified = urlParams.has('verified') ? 1 : 0;
-            const onlineBooking = urlParams.has('online_booking') ? 1 : 0;
-            const minRating = urlParams.has('min_rating') ? 1 : 0;
-            
-            const totalFilters = priceFilters + featureFilters + openNow + verified + onlineBooking + minRating;
-            
-            if (filterCount && totalFilters > 0) {
-                filterCount.textContent = totalFilters;
-                filterCount.classList.remove('hidden');
-            } else if (filterCount) {
-                filterCount.classList.add('hidden');
-            }
-        }
-        
-        updateFilterCount();
-        
-        // Price filter buttons
-        const priceButtons = document.querySelectorAll('[data-filter="price"]');
-        console.log('Attaching listeners to', priceButtons.length, 'price buttons');
-        
-        priceButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Price filter clicked:', this.dataset.value);
-                const urlParams = new URLSearchParams(window.location.search);
-                const value = this.dataset.value;
-                const priceArray = urlParams.getAll('price[]');
-                
-                if (priceArray.includes(value)) {
-                    // Remove this price
-                    urlParams.delete('price[]');
-                    priceArray.filter(p => p !== value).forEach(p => urlParams.append('price[]', p));
-                } else {
-                    // Add this price
-                    urlParams.append('price[]', value);
-                }
-                
-                // Reset to page 1
-                urlParams.delete('paged');
-                
-                // Build new URL
-                const newUrl = window.location.pathname + '?' + urlParams.toString();
-                console.log('Navigating to:', newUrl);
-                window.location.href = newUrl;
-            });
-        });
-        
-        // Checkbox filters (open_now, verified, online_booking, features)
-        const checkboxes = document.querySelectorAll('.filter-checkbox');
-        console.log('Attaching listeners to', checkboxes.length, 'checkboxes');
-        
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                console.log('Checkbox changed:', this.dataset.filter, this.checked);
-                const urlParams = new URLSearchParams(window.location.search);
-                const filter = this.dataset.filter;
-                const value = this.dataset.value;
-                
-                if (filter === 'features') {
-                    // Handle array of features
-                    if (this.checked) {
-                        urlParams.append('features[]', value);
-                    } else {
-                        // Remove this feature
-                        const features = urlParams.getAll('features[]');
-                        urlParams.delete('features[]');
-                        features.filter(f => f !== value).forEach(f => urlParams.append('features[]', f));
-                    }
-                } else if (filter === 'min_rating') {
-                    // Handle rating filter (only one can be selected)
-                    if (this.checked) {
-                        // Uncheck other rating checkboxes
-                        document.querySelectorAll('[data-filter="min_rating"]').forEach(cb => {
-                            if (cb !== this) cb.checked = false;
-                        });
-                        urlParams.set('min_rating', value);
-                    } else {
-                        urlParams.delete('min_rating');
-                    }
-                } else {
-                    // Handle boolean filters (open_now, verified, online_booking)
-                    if (this.checked) {
-                        urlParams.set(filter, '1');
-                    } else {
-                        urlParams.delete(filter);
-                    }
-                }
-                
-                // Reset to page 1
-                urlParams.delete('paged');
-                
-                // Build new URL
-                const newUrl = window.location.pathname + '?' + urlParams.toString();
-                console.log('Navigating to:', newUrl);
-                window.location.href = newUrl;
-            });
-        });
-        
-        console.log('Filter initialization complete');
-    });
-    </script>
-    <?php
-});
+// Filter functionality is handled by assets/js/location-search-filters.js
+// which is enqueued in functions.php for this template
 
 get_footer();

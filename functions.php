@@ -155,6 +155,11 @@ function str_scripts() {
         'ajaxurl' => admin_url('admin-ajax.php'),
         'nonce'   => wp_create_nonce('str_nonce'),
     ));
+    
+    // Location Search Filters (only on Location Search template)
+    if (is_page_template('page-location-search.php')) {
+        wp_enqueue_script('str-location-filters', STR_URI . '/assets/js/location-search-filters.js', array(), STR_VERSION, true);
+    }
 
     // Comment reply script
     if (is_singular() && comments_open() && get_option('thread_comments')) {
