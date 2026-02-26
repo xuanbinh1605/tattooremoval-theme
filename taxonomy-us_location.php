@@ -21,7 +21,18 @@ $verified = isset($_GET['verified']) ? (bool)$_GET['verified'] : false;
 $online_booking = isset($_GET['online_booking']) ? (bool)$_GET['online_booking'] : false;
 $min_rating = isset($_GET['min_rating']) ? intval($_GET['min_rating']) : 0;
 $feature_filters = isset($_GET['features']) ? array_map('intval', (array)$_GET['features']) : array();
-$payment_filters = isset($_GET['payments']) ? array_map('intval', (array)$_GET['payments']) : array();
+
+// Payment method filters
+$accepts_credit_cards = isset($_GET['accepts_credit_cards']) ? (bool)$_GET['accepts_credit_cards'] : false;
+$accepts_debit_cards = isset($_GET['accepts_debit_cards']) ? (bool)$_GET['accepts_debit_cards'] : false;
+$accepts_mobile_payments = isset($_GET['accepts_mobile_payments']) ? (bool)$_GET['accepts_mobile_payments'] : false;
+$cash_only = isset($_GET['cash_only']) ? (bool)$_GET['cash_only'] : false;
+
+// Services filters
+$financing = isset($_GET['financing']) ? (bool)$_GET['financing'] : false;
+$military_discount = isset($_GET['military_discount']) ? (bool)$_GET['military_discount'] : false;
+$online_scheduling = isset($_GET['online_scheduling']) ? (bool)$_GET['online_scheduling'] : false;
+$wheelchair_accessible = isset($_GET['wheelchair_accessible']) ? (bool)$_GET['wheelchair_accessible'] : false;
 
 // Determine if using URL parameters or taxonomy routing
 $using_url_params = !empty($location_state) || !empty($location_city);
@@ -116,16 +127,6 @@ if (!empty($feature_filters)) {
     );
 }
 
-// Add payment filters
-if (!empty($payment_filters)) {
-    $tax_query[] = array(
-        'taxonomy' => 'clinic_feature',
-        'field'    => 'term_id',
-        'terms'    => $payment_filters,
-        'operator' => 'IN',
-    );
-}
-
 if (count($tax_query) > 1) {
     $query_args['tax_query'] = $tax_query;
 }
@@ -180,6 +181,72 @@ if ($online_booking) {
     );
 }
 
+// Add payment method filters
+if ($accepts_credit_cards) {
+    $meta_query[] = array(
+        'key'     => '_clinic_accepts_credit_cards',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if ($accepts_debit_cards) {
+    $meta_query[] = array(
+        'key'     => '_clinic_accepts_debit_cards',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if ($accepts_mobile_payments) {
+    $meta_query[] = array(
+        'key'     => '_clinic_accepts_mobile_payments',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if ($cash_only) {
+    $meta_query[] = array(
+        'key'     => '_clinic_cash_only',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+// Add services filters
+if ($financing) {
+    $meta_query[] = array(
+        'key'     => '_clinic_financing',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if ($military_discount) {
+    $meta_query[] = array(
+        'key'     => '_clinic_military_discount',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if ($online_scheduling) {
+    $meta_query[] = array(
+        'key'     => '_clinic_online_scheduling',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
+if ($wheelchair_accessible) {
+    $meta_query[] = array(
+        'key'     => '_clinic_wheelchair_accessible',
+        'value'   => '1',
+        'compare' => '=',
+    );
+}
+
 if (count($meta_query) > 1) {
     $query_args['meta_query'] = $meta_query;
 }
@@ -189,7 +256,7 @@ $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
 
 // Check if any filters are active
-$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters) || !empty($payment_filters);
+$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters) || $accepts_credit_cards || $accepts_debit_cards || $accepts_mobile_payments || $cash_only || $financing || $military_discount || $online_scheduling || $wheelchair_accessible;
 
 // Debug information (remove after testing)
 if (current_user_can('administrator') && isset($_GET['debug'])) {
@@ -326,18 +393,60 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                             endforeach; ?>
                         <?php endif; ?>
                         
-                        <?php if (!empty($payment_filters)) : ?>
-                            <?php foreach ($payment_filters as $payment_id) : 
-                                $payment_term = get_term($payment_id, 'clinic_feature');
-                                if ($payment_term && !is_wp_error($payment_term)) :
-                            ?>
-                                <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
-                                    <?php echo esc_html($payment_term->name); ?>
-                                    <button onclick="removeFilter('payments', '<?php echo $payment_id; ?>')" class="ml-2 text-graphite hover:text-red-500">×</button>
-                                </span>
-                            <?php 
-                                endif;
-                            endforeach; ?>
+                        <?php if ($accepts_credit_cards) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Credit Cards
+                                <button onclick="removeFilter('accepts_credit_cards')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($accepts_debit_cards) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Debit Cards
+                                <button onclick="removeFilter('accepts_debit_cards')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($accepts_mobile_payments) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Mobile Payments
+                                <button onclick="removeFilter('accepts_mobile_payments')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($cash_only) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Cash Only
+                                <button onclick="removeFilter('cash_only')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($financing) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Financing Available
+                                <button onclick="removeFilter('financing')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($military_discount) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Military Discount
+                                <button onclick="removeFilter('military_discount')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($online_scheduling) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Online Scheduling
+                                <button onclick="removeFilter('online_scheduling')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if ($wheelchair_accessible) : ?>
+                            <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                Wheelchair Accessible
+                                <button onclick="removeFilter('wheelchair_accessible')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                            </span>
                         <?php endif; ?>
                         
                         <button onclick="clearAllFilters()" class="ml-2 text-[10px] font-black text-brand uppercase tracking-widest hover:text-brand-hover">
@@ -432,43 +541,15 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 </div>
                             </div>
 
-                            <!-- Payment Services Filter -->
-                            <div>
-                                <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Payment Services</h3>
-                                <div class="space-y-2.5">
-                                    <?php
-                                    // Get payment method terms from clinic_feature taxonomy
-                                    $payment_terms = get_terms(array(
-                                        'taxonomy'   => 'clinic_feature',
-                                        'hide_empty' => false,
-                                        'slug'       => array('cash-only', 'accepts-credit-cards', 'accepts-debit-cards', 'accepts-mobile-payments', 'accepts-checks'),
-                                    ));
-                                    if (!empty($payment_terms)) :
-                                        foreach ($payment_terms as $payment) :
-                                            $is_active = in_array($payment->term_id, $payment_filters);
-                                    ?>
-                                        <label class="flex items-center group cursor-pointer">
-                                            <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="payments" data-value="<?php echo $payment->term_id; ?>" <?php checked($is_active); ?>>
-                                            <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors"><?php echo esc_html($payment->name); ?></span>
-                                        </label>
-                                    <?php 
-                                        endforeach;
-                                    endif;
-                                    ?>
-                                </div>
-                            </div>
-
                             <!-- Features Filter -->
                             <div>
                                 <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Features</h3>
                                 <div class="space-y-2.5">
                                     <?php
-                                    // Get non-payment feature terms
                                     $features = get_terms(array(
                                         'taxonomy'   => 'clinic_feature',
                                         'hide_empty' => false,
                                         'number'     => 5,
-                                        'slug__not_in' => array('cash-only', 'accepts-credit-cards', 'accepts-debit-cards', 'accepts-mobile-payments', 'accepts-checks'),
                                     ));
                                     if (!empty($features)) :
                                         foreach ($features as $feature) :
@@ -482,6 +563,52 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                         endforeach;
                                     endif;
                                     ?>
+                                </div>
+                            </div>
+
+                            <!-- Payment Methods Filter -->
+                            <div>
+                                <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Payment Methods</h3>
+                                <div class="space-y-2.5">
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="accepts_credit_cards" <?php checked($accepts_credit_cards); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Credit Cards</span>
+                                    </label>
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="accepts_debit_cards" <?php checked($accepts_debit_cards); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Debit Cards</span>
+                                    </label>
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="accepts_mobile_payments" <?php checked($accepts_mobile_payments); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Mobile Payments</span>
+                                    </label>
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="cash_only" <?php checked($cash_only); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Cash Only</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Services Filter -->
+                            <div>
+                                <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Services</h3>
+                                <div class="space-y-2.5">
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="financing" <?php checked($financing); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Financing Available</span>
+                                    </label>
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="military_discount" <?php checked($military_discount); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Military Discount</span>
+                                    </label>
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="online_scheduling" <?php checked($online_scheduling); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Online Scheduling</span>
+                                    </label>
+                                    <label class="flex items-center group cursor-pointer">
+                                        <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="wheelchair_accessible" <?php checked($wheelchair_accessible); ?>>
+                                        <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors">Wheelchair Accessible</span>
+                                    </label>
                                 </div>
                             </div>
 

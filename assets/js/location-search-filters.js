@@ -39,7 +39,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         
         if (value) {
-            // Remove specific value from array filter (price[], features[], payments[])
+            // Remove specific value from array filter (price[], features[])
             const values = urlParams.getAll(filterName + '[]');
             urlParams.delete(filterName + '[]');
             values.filter(v => v !== value).forEach(v => urlParams.append(filterName + '[]', v));
@@ -115,13 +115,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             const priceFilters = urlParams.getAll('price[]').length;
             const featureFilters = urlParams.getAll('features[]').length;
-            const paymentFilters = urlParams.getAll('payments[]').length;
             const openNow = urlParams.has('open_now') ? 1 : 0;
             const verified = urlParams.has('verified') ? 1 : 0;
             const onlineBooking = urlParams.has('online_booking') ? 1 : 0;
             const minRating = urlParams.has('min_rating') ? 1 : 0;
             
-            const totalFilters = priceFilters + featureFilters + paymentFilters + openNow + verified + onlineBooking + minRating;
+            const totalFilters = priceFilters + featureFilters + openNow + verified + onlineBooking + minRating;
             
             if (filterCount && totalFilters > 0) {
                 filterCount.textContent = totalFilters;
@@ -174,7 +173,7 @@
             });
         });
         
-        // Checkbox filters (open_now, verified, online_booking, features, payments, min_rating)
+        // Checkbox filters (open_now, verified, online_booking, features, min_rating)
         const checkboxes = document.querySelectorAll('.filter-checkbox');
         console.log('Attaching listeners to', checkboxes.length, 'checkboxes');
         
@@ -186,17 +185,17 @@
                 const filter = this.dataset.filter;
                 const value = this.dataset.value;
                 
-                if (filter === 'features' || filter === 'payments') {
-                    // Handle array of features or payments
+                if (filter === 'features') {
+                    // Handle array of features
                     if (this.checked) {
-                        console.log('Adding', filter, ':', value);
-                        urlParams.append(filter + '[]', value);
+                        console.log('Adding feature:', value);
+                        urlParams.append('features[]', value);
                     } else {
-                        console.log('Removing', filter, ':', value);
-                        const items = urlParams.getAll(filter + '[]');
-                        urlParams.delete(filter + '[]');
-                        items.filter(f => f !== value).forEach(f => {
-                            urlParams.append(filter + '[]', f);
+                        console.log('Removing feature:', value);
+                        const features = urlParams.getAll('features[]');
+                        urlParams.delete('features[]');
+                        features.filter(f => f !== value).forEach(f => {
+                            urlParams.append('features[]', f);
                         });
                     }
                 } else if (filter === 'min_rating') {
