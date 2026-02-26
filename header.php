@@ -92,7 +92,6 @@
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-6 flex-shrink-0 ml-4">
-                    <a class="text-sm font-semibold text-graphite hover:text-brand transition-colors" href="<?php echo esc_url(home_url('/for-business')); ?>">For Business</a>
                     <a class="text-sm font-semibold text-graphite hover:text-brand transition-colors" href="<?php echo esc_url(home_url('/states')); ?>">Browse States</a>
                     <a class="bg-charcoal text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-brand transition-all shadow-sm" href="<?php echo esc_url(home_url('/add-clinic')); ?>">Add Clinic</a>
                 </div>
