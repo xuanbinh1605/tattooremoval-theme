@@ -584,7 +584,7 @@ get_header();
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- New York -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/new-york/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">New York</h3>
@@ -599,10 +599,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Los Angeles -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/california/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Los Angeles</h3>
@@ -617,10 +617,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Chicago -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/illinois/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Chicago</h3>
@@ -635,10 +635,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Houston -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/texas/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Houston</h3>
@@ -653,10 +653,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Phoenix -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/arizona/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Phoenix</h3>
@@ -671,10 +671,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Philadelphia -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/pennsylvania/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Philadelphia</h3>
@@ -689,10 +689,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- San Antonio -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/texas/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">San Antonio</h3>
@@ -707,10 +707,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- San Diego -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/california/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">San Diego</h3>
@@ -725,10 +725,10 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Dallas -->
-                    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
+                    <a href="/us-location/texas/" class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-light hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full min-h-[160px]">
                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-light/40 rounded-full group-hover:bg-brand-light transition-colors pointer-events-none"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-black text-charcoal mb-0.5 tracking-tight">Dallas</h3>
@@ -743,7 +743,7 @@ get_header();
                                 <path d="m9 18 6-6-6-6"></path>
                             </svg>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </section>
