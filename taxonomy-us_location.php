@@ -21,6 +21,7 @@ $verified = isset($_GET['verified']) ? (bool)$_GET['verified'] : false;
 $online_booking = isset($_GET['online_booking']) ? (bool)$_GET['online_booking'] : false;
 $min_rating = isset($_GET['min_rating']) ? intval($_GET['min_rating']) : 0;
 $feature_filters = isset($_GET['features']) ? array_map('intval', (array)$_GET['features']) : array();
+$payment_filters = isset($_GET['payments']) ? array_map('intval', (array)$_GET['payments']) : array();
 
 // Determine if using URL parameters or taxonomy routing
 $using_url_params = !empty($location_state) || !empty($location_city);
@@ -115,6 +116,16 @@ if (!empty($feature_filters)) {
     );
 }
 
+// Add payment filters
+if (!empty($payment_filters)) {
+    $tax_query[] = array(
+        'taxonomy' => 'clinic_feature',
+        'field'    => 'term_id',
+        'terms'    => $payment_filters,
+        'operator' => 'IN',
+    );
+}
+
 if (count($tax_query) > 1) {
     $query_args['tax_query'] = $tax_query;
 }
@@ -178,7 +189,7 @@ $clinics_query = new WP_Query($query_args);
 $total_clinics = $clinics_query->found_posts;
 
 // Check if any filters are active
-$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters);
+$has_filters = !empty($price_filters) || $open_now || $verified || $online_booking || $min_rating > 0 || !empty($feature_filters) || !empty($payment_filters);
 
 // Debug information (remove after testing)
 if (current_user_can('administrator') && isset($_GET['debug'])) {
@@ -315,6 +326,20 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                             endforeach; ?>
                         <?php endif; ?>
                         
+                        <?php if (!empty($payment_filters)) : ?>
+                            <?php foreach ($payment_filters as $payment_id) : 
+                                $payment_term = get_term($payment_id, 'clinic_feature');
+                                if ($payment_term && !is_wp_error($payment_term)) :
+                            ?>
+                                <span class="inline-flex items-center bg-white border border-gray-light rounded-lg px-3 py-1 text-[10px] font-black text-charcoal">
+                                    <?php echo esc_html($payment_term->name); ?>
+                                    <button onclick="removeFilter('payments', '<?php echo $payment_id; ?>')" class="ml-2 text-graphite hover:text-red-500">×</button>
+                                </span>
+                            <?php 
+                                endif;
+                            endforeach; ?>
+                        <?php endif; ?>
+                        
                         <button onclick="clearAllFilters()" class="ml-2 text-[10px] font-black text-brand uppercase tracking-widest hover:text-brand-hover">
                             Clear All
                         </button>
@@ -407,15 +432,43 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 </div>
                             </div>
 
+                            <!-- Payment Services Filter -->
+                            <div>
+                                <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Payment Services</h3>
+                                <div class="space-y-2.5">
+                                    <?php
+                                    // Get payment method terms from clinic_feature taxonomy
+                                    $payment_terms = get_terms(array(
+                                        'taxonomy'   => 'clinic_feature',
+                                        'hide_empty' => false,
+                                        'slug'       => array('cash-only', 'accepts-credit-cards', 'accepts-debit-cards', 'accepts-mobile-payments', 'accepts-checks'),
+                                    ));
+                                    if (!empty($payment_terms)) :
+                                        foreach ($payment_terms as $payment) :
+                                            $is_active = in_array($payment->term_id, $payment_filters);
+                                    ?>
+                                        <label class="flex items-center group cursor-pointer">
+                                            <input class="filter-checkbox w-4 h-4 rounded border-gray-light text-brand focus:ring-brand cursor-pointer" type="checkbox" data-filter="payments" data-value="<?php echo $payment->term_id; ?>" <?php checked($is_active); ?>>
+                                            <span class="ml-3 text-xs font-bold text-charcoal group-hover:text-brand transition-colors"><?php echo esc_html($payment->name); ?></span>
+                                        </label>
+                                    <?php 
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
+                            </div>
+
                             <!-- Features Filter -->
                             <div>
                                 <h3 class="text-[11px] font-black text-graphite uppercase tracking-widest mb-3">Features</h3>
                                 <div class="space-y-2.5">
                                     <?php
+                                    // Get non-payment feature terms
                                     $features = get_terms(array(
                                         'taxonomy'   => 'clinic_feature',
                                         'hide_empty' => false,
                                         'number'     => 5,
+                                        'slug__not_in' => array('cash-only', 'accepts-credit-cards', 'accepts-debit-cards', 'accepts-mobile-payments', 'accepts-checks'),
                                     ));
                                     if (!empty($features)) :
                                         foreach ($features as $feature) :
