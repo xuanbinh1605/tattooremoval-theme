@@ -18,9 +18,8 @@ while (have_posts()) : the_post();
     $phone = get_post_meta($clinic_id, '_clinic_phone', true);
     $website = get_post_meta($clinic_id, '_clinic_website', true);
     $is_verified = get_post_meta($clinic_id, '_clinic_is_verified', true);
-    $open_status = get_post_meta($clinic_id, '_clinic_open_status', true) ?: 'Open Now';
-    $min_price = get_post_meta($clinic_id, '_clinic_min_price', true) ?: 90;
-    $max_price = get_post_meta($clinic_id, '_clinic_max_price', true) ?: 250;
+    $min_price = get_post_meta($clinic_id, '_clinic_min_price', true);
+    $max_price = get_post_meta($clinic_id, '_clinic_max_price', true);
     $street = get_post_meta($clinic_id, '_clinic_street', true);
     $zip_code = get_post_meta($clinic_id, '_clinic_zip_code', true);
     $full_address = get_post_meta($clinic_id, '_clinic_full_address', true);
@@ -160,17 +159,6 @@ while (have_posts()) : the_post();
                             <span class="ml-1 text-graphite font-bold">(<?php echo esc_html($review_count); ?> reviews)</span>
                         </div>
                         
-                        <span class="text-gray-light">|</span>
-                        
-                        <!-- Open Status -->
-                        <div class="flex items-center font-bold text-teal">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-4 h-4 mr-2" aria-hidden="true">
-                                <path d="M12 6v6l4 2"></path>
-                                <circle cx="12" cy="12" r="10"></circle>
-                            </svg>
-                            <?php echo esc_html($open_status); ?>
-                        </div>
-                        
                         <?php if ($is_verified) : ?>
                             <span class="text-gray-light">|</span>
                             <div class="flex items-center font-bold text-teal">
@@ -182,12 +170,18 @@ while (have_posts()) : the_post();
                             </div>
                         <?php endif; ?>
                         
-                        <span class="text-gray-light">|</span>
-                        
-                        <!-- Price Range -->
-                        <div class="font-bold text-charcoal uppercase tracking-widest text-[11px]">
-                            $<?php echo esc_html($min_price); ?> <?php if ($max_price) : ?>- $<?php echo esc_html($max_price); ?><?php endif; ?> <?php echo ($min_price && !$max_price) ? 'min' : ''; ?> per session
-                        </div>
+                        <?php if ($min_price || $max_price) : ?>
+                            <span class="text-gray-light">|</span>
+                            
+                            <!-- Price Range -->
+                            <div class="font-bold text-charcoal uppercase tracking-widest text-[11px]">
+                                <?php if ($min_price) : ?>$<?php echo esc_html($min_price); ?><?php endif; ?>
+                                <?php if ($min_price && $max_price) : ?> - <?php endif; ?>
+                                <?php if ($max_price && $min_price != $max_price) : ?>$<?php echo esc_html($max_price); ?><?php endif; ?>
+                                <?php if ($min_price && !$max_price) : ?> min<?php endif; ?>
+                                per session
+                            </div>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Laser Technologies Names -->
@@ -477,10 +471,6 @@ while (have_posts()) : the_post();
                                 </svg>
                                 Working Hours
                             </h2>
-                            <div class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-[0.15em] border flex items-center bg-teal/10 border-teal text-teal">
-                                <span class="w-2 h-2 rounded-full mr-2 bg-teal animate-pulse"></span>
-                                <?php echo esc_html($open_status); ?>
-                            </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-12">
                             <div class="flex-1 space-y-3">
