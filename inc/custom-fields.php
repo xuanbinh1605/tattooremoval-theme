@@ -96,6 +96,15 @@ function str_add_clinic_meta_boxes() {
     );
 
     add_meta_box(
+        'clinic_featured',
+        __('Featured Clinic', 'search-tattoo-removal'),
+        'str_clinic_featured_callback',
+        'clinic',
+        'side',
+        'high'
+    );
+
+    add_meta_box(
         'clinic_laser_tech',
         __('Laser Technologies', 'search-tattoo-removal'),
         'str_clinic_laser_tech_callback',
@@ -277,10 +286,32 @@ function str_clinic_pricing_callback($post) {
         <input type="number" id="max_price" name="max_price" value="<?php echo esc_attr($max_price); ?>" step="0.01" min="0" style="width: 100%;" placeholder="500.00">
     </p>
     <p>
-        <label for="consultation_price"><strong><?php _e('Consultation Price:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="text" id="consultation_price" name="consultation_price" value="<?php echo esc_attr($consultation_price); ?>" style="width: 100%;" placeholder="Free, $50, Varies, etc.">
-        <span class="description"><?php _e('Can be text like "Free", "$50", "Varies", etc.', 'search-tattoo-removal'); ?></span>
+        <label for="consultation_type"><strong><?php _e('Consultation Type:', 'search-tattoo-removal'); ?></strong></label><br>
+        <select id="consultation_type" name="consultation_type" style="width: 100%;">
+            <?php 
+            $consultation_type = get_post_meta($post->ID, '_clinic_consultation_type', true) ?: 'free';
+            $is_free = ($consultation_price === '0' || $consultation_price === 'Free' || empty($consultation_price) || $consultation_type === 'free');
+            ?>
+            <option value="free" <?php selected($is_free, true); ?>><?php _e('Free Consultation', 'search-tattoo-removal'); ?></option>
+            <option value="paid" <?php selected($is_free, false); ?>><?php _e('Paid Consultation', 'search-tattoo-removal'); ?></option>
+        </select>
     </p>
+    <p id="consultation_price_field" style="<?php echo $is_free ? 'display:none;' : ''; ?>">
+        <label for="consultation_price"><strong><?php _e('Consultation Price ($):', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="number" id="consultation_price" name="consultation_price" value="<?php echo $is_free ? '' : esc_attr($consultation_price); ?>" step="0.01" min="0" style="width: 100%;" placeholder="50.00">
+    </p>
+    <script>
+    jQuery(document).ready(function($) {
+        $('#consultation_type').change(function() {
+            if ($(this).val() === 'free') {
+                $('#consultation_price_field').hide();
+                $('#consultation_price').val('');
+            } else {
+                $('#consultation_price_field').show();
+            }
+        });
+    });
+    </script>
     <p>
         <label for="price_range_display"><strong><?php _e('Price Range Display (for card):', 'search-tattoo-removal'); ?></strong></label><br>
         <input type="text" id="price_range_display" name="price_range_display" value="<?php echo esc_attr($price_range_display); ?>" style="width: 100%;" placeholder="$90 range, $150 range, Consultation range, etc.">
@@ -425,17 +456,27 @@ function str_clinic_media_callback($post) {
  */
 function str_clinic_business_callback($post) {
     $years_in_business = get_post_meta($post->ID, '_clinic_years_in_business', true);
-    $is_featured = get_post_meta($post->ID, '_clinic_is_featured', true);
     ?>
     <p>
         <label for="years_in_business"><strong><?php _e('Years in Business:', 'search-tattoo-removal'); ?></strong></label><br>
         <input type="number" id="years_in_business" name="years_in_business" value="<?php echo esc_attr($years_in_business); ?>" min="0" style="width: 100%;">
     </p>
+    <?php
+}
+
+/**
+ * Featured Clinic Meta Box
+ */
+function str_clinic_featured_callback($post) {
+    $is_featured = get_post_meta($post->ID, '_clinic_is_featured', true);
+    ?>
     <p>
         <label>
             <input type="checkbox" name="is_featured" value="1" <?php checked($is_featured, '1'); ?>>
-            <strong><?php _e('Featured Clinic', 'search-tattoo-removal'); ?></strong>
+            <strong><?php _e('Mark as Featured Clinic', 'search-tattoo-removal'); ?></strong>
         </label>
+        <br>
+        <span class="description"><?php _e('Featured clinics appear in the homepage featured section.', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
@@ -519,13 +560,25 @@ function str_save_clinic_meta($post_id) {
     $fields = array(
         'website', 'phone', 'google_maps_url', 'rating', 'reviews_count',
         'street', 'zip_code', 'full_address', 'operating_hours_raw',
-        'min_price', 'max_price', 'consultation_price', 'price_range_display',
+        'min_price', 'max_price', 'price_range_display',
         'thumbnail_url', 'logo', 'before_after_gallery_url', 'years_in_business'
     );
 
     foreach ($fields as $field) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, '_clinic_' . $field, sanitize_text_field($_POST[$field]));
+        }
+    }
+
+    // Handle consultation price based on type
+    if (isset($_POST['consultation_type'])) {
+        $consultation_type = sanitize_text_field($_POST['consultation_type']);
+        update_post_meta($post_id, '_clinic_consultation_type', $consultation_type);
+        
+        if ($consultation_type === 'free') {
+            update_post_meta($post_id, '_clinic_consultation_price', '0');
+        } elseif (isset($_POST['consultation_price'])) {
+            update_post_meta($post_id, '_clinic_consultation_price', sanitize_text_field($_POST['consultation_price']));
         }
     }
 
