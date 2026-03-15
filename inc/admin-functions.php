@@ -1517,3 +1517,160 @@ function str_export_clinics() {
     exit;
 }
 add_action('admin_post_str_export_clinics', 'str_export_clinics');
+
+/**
+ * Add "Auto-Fill Hours" tool to Clinics submenu
+ */
+function str_add_hours_tool_menu() {
+    add_submenu_page(
+        'edit.php?post_type=clinic',
+        __('Auto-Fill Hours & Timezone', 'search-tattoo-removal'),
+        __('Auto-Fill Hours', 'search-tattoo-removal'),
+        'manage_options',
+        'clinic-autofill-hours',
+        'str_autofill_hours_page'
+    );
+}
+add_action('admin_menu', 'str_add_hours_tool_menu');
+
+/**
+ * Auto-Fill Hours & Timezone admin page
+ */
+function str_autofill_hours_page() {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Insufficient permissions', 'search-tattoo-removal'));
+    }
+
+    $results = null;
+    if (isset($_POST['str_run_autofill']) && check_admin_referer('str_autofill_hours', 'str_autofill_hours_nonce')) {
+        $overwrite = !empty($_POST['overwrite_existing']);
+        $results = str_run_autofill_hours($overwrite);
+    }
+
+    // Gather stats for the preview
+    $all_clinics = get_posts(array('post_type' => 'clinic', 'posts_per_page' => -1, 'post_status' => 'any', 'fields' => 'ids'));
+    $total = count($all_clinics);
+    $has_structured = 0;
+    $has_timezone = 0;
+    $has_raw_hours = 0;
+    foreach ($all_clinics as $cid) {
+        if (get_post_meta($cid, '_clinic_structured_hours', true)) $has_structured++;
+        if (get_post_meta($cid, '_clinic_timezone', true)) $has_timezone++;
+        if (get_post_meta($cid, '_clinic_operating_hours_raw', true)) $has_raw_hours++;
+    }
+    ?>
+    <div class="wrap">
+        <h1><?php _e('Auto-Fill Structured Hours & Timezone', 'search-tattoo-removal'); ?></h1>
+
+        <?php if ($results) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong><?php _e('Done!', 'search-tattoo-removal'); ?></strong></p>
+                <ul style="list-style:disc; margin-left:20px;">
+                    <li><?php printf(__('Clinics processed: %d', 'search-tattoo-removal'), $results['processed']); ?></li>
+                    <li><?php printf(__('Structured hours generated: %d', 'search-tattoo-removal'), $results['hours_filled']); ?></li>
+                    <li><?php printf(__('Timezones assigned: %d', 'search-tattoo-removal'), $results['tz_filled']); ?></li>
+                    <li><?php printf(__('Skipped (no raw hours text): %d', 'search-tattoo-removal'), $results['skipped_no_raw']); ?></li>
+                    <li><?php printf(__('Skipped (could not parse): %d', 'search-tattoo-removal'), $results['skipped_no_parse']); ?></li>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <div class="card" style="max-width: 800px;">
+            <h2><?php _e('Current Status', 'search-tattoo-removal'); ?></h2>
+            <table class="widefat striped" style="max-width:500px;">
+                <tbody>
+                    <tr><td><strong>Total clinics</strong></td><td><?php echo $total; ?></td></tr>
+                    <tr><td>Have raw hours text</td><td><?php echo $has_raw_hours; ?></td></tr>
+                    <tr><td>Have structured hours (JSON)</td><td><?php echo $has_structured; ?></td></tr>
+                    <tr><td>Have timezone set</td><td><?php echo $has_timezone; ?></td></tr>
+                    <tr>
+                        <td><strong>Need auto-fill</strong></td>
+                        <td><strong><?php echo ($total - $has_structured); ?> hours / <?php echo ($total - $has_timezone); ?> timezones</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 style="margin-top:20px;"><?php _e('What This Tool Does', 'search-tattoo-removal'); ?></h2>
+            <ol style="list-style:decimal; margin-left:20px;">
+                <li>Reads each clinic's <strong>raw hours text</strong> (e.g. "Mon-Fri: 9 AM - 5 PM")</li>
+                <li>Parses it into <strong>structured JSON</strong> (per-day open/close in 24h format)</li>
+                <li>Auto-detects <strong>timezone</strong> from the clinic's state taxonomy</li>
+                <li>Saves both fields so the real-time <em>Open Now / Closed</em> badge works</li>
+            </ol>
+
+            <form method="post" action="" style="margin-top: 20px;">
+                <?php wp_nonce_field('str_autofill_hours', 'str_autofill_hours_nonce'); ?>
+                <p>
+                    <label>
+                        <input type="checkbox" name="overwrite_existing" value="1">
+                        <?php _e('Overwrite clinics that already have structured hours / timezone', 'search-tattoo-removal'); ?>
+                    </label>
+                </p>
+                <p>
+                    <button type="submit" name="str_run_autofill" class="button button-primary button-large">
+                        <?php _e('Run Auto-Fill Now', 'search-tattoo-removal'); ?>
+                    </button>
+                </p>
+            </form>
+            <p class="description"><?php _e('Safe to run multiple times. Without the overwrite checkbox, it only fills in clinics that are missing data.', 'search-tattoo-removal'); ?></p>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * Process all clinics: parse raw hours → structured JSON, detect timezone from state.
+ */
+function str_run_autofill_hours($overwrite = false) {
+    $clinics = get_posts(array(
+        'post_type'      => 'clinic',
+        'posts_per_page' => -1,
+        'post_status'    => 'any',
+    ));
+
+    $stats = array(
+        'processed'       => 0,
+        'hours_filled'    => 0,
+        'tz_filled'       => 0,
+        'skipped_no_raw'  => 0,
+        'skipped_no_parse' => 0,
+    );
+
+    foreach ($clinics as $clinic) {
+        $stats['processed']++;
+        $cid = $clinic->ID;
+
+        // --- Structured hours ---
+        $existing_hours = get_post_meta($cid, '_clinic_structured_hours', true);
+        if (!$overwrite && $existing_hours) {
+            // already has structured hours, skip
+        } else {
+            $raw = get_post_meta($cid, '_clinic_operating_hours_raw', true);
+            if (empty($raw)) {
+                $stats['skipped_no_raw']++;
+            } else {
+                $structured = str_hours_text_to_structured($raw);
+                if (!empty($structured)) {
+                    update_post_meta($cid, '_clinic_structured_hours', wp_json_encode($structured));
+                    $stats['hours_filled']++;
+                } else {
+                    $stats['skipped_no_parse']++;
+                }
+            }
+        }
+
+        // --- Timezone ---
+        $existing_tz = get_post_meta($cid, '_clinic_timezone', true);
+        if (!$overwrite && $existing_tz) {
+            // already has timezone, skip
+        } else {
+            $tz = str_get_clinic_timezone($cid);
+            if ($tz) {
+                update_post_meta($cid, '_clinic_timezone', $tz);
+                $stats['tz_filled']++;
+            }
+        }
+    }
+
+    return $stats;
+}
