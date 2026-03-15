@@ -664,86 +664,218 @@ function str_parse_operating_hours($hours_string) {
 }
 
 /**
- * Convert raw hours text (e.g. "Monday: 9:00 AM - 5:00 PM") into a structured array.
- * Returns associative array keyed by lowercase day name with 'open'/'close' in 24h format.
+ * Convert raw hours text into a structured array.
+ * Handles many real-world formats:
+ *   "Monday: 9:00 AM - 5:00 PM"
+ *   "Mon-Fri: 9AM-5PM"
+ *   "Mon - Fri 9:00 AM – 5:00 PM, Sat 10 AM - 3 PM"
+ *   "Monday 9:00 AM - 5:00 PM\nTuesday 9:00 AM - 5:00 PM"
+ *   "9:00 AM - 5:00 PM" (assumed Mon-Fri)
+ *   "Open 24 hours" / "24/7"
+ *   24-hour format: "09:00 - 17:00"
+ *   Unicode narrow spaces (\u202f) between time and AM/PM
+ *
+ * Returns associative array keyed by lowercase day name with 'open'/'close' in HH:MM format.
  */
 function str_hours_text_to_structured($text) {
     $structured = array();
+
     $day_aliases = array(
-        'mon' => 'monday', 'tue' => 'tuesday', 'wed' => 'wednesday',
-        'thu' => 'thursday', 'fri' => 'friday', 'sat' => 'saturday', 'sun' => 'sunday',
+        'mon' => 'monday', 'tue' => 'tuesday', 'tues' => 'tuesday',
+        'wed' => 'wednesday', 'thu' => 'thursday', 'thur' => 'thursday', 'thurs' => 'thursday',
+        'fri' => 'friday', 'sat' => 'saturday', 'sun' => 'sunday',
         'monday' => 'monday', 'tuesday' => 'tuesday', 'wednesday' => 'wednesday',
         'thursday' => 'thursday', 'friday' => 'friday', 'saturday' => 'saturday', 'sunday' => 'sunday',
     );
     $all_days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
 
-    $lines = preg_split('/[\r\n]+/', $text);
+    // Normalize unicode spaces and special characters
+    $text = preg_replace('/[\x{202F}\x{00A0}\x{2009}\x{2007}]/u', ' ', $text);
+    // Normalize dashes: en-dash, em-dash → regular hyphen
+    $text = str_replace(array('–', '—', "\xe2\x80\x93", "\xe2\x80\x94"), '-', $text);
+
+    // Handle "Open 24 hours" / "24/7" / "Open 24/7"
+    if (preg_match('/\b(open\s+)?24\s*\/?\s*7\b|open\s+24\s+hours/i', $text)) {
+        foreach ($all_days as $d) {
+            $structured[$d] = array('open' => '00:00', 'close' => '23:59');
+        }
+        return $structured;
+    }
+
+    // Split into individual entries by newlines, semicolons, or " | "
+    // But NOT commas inside time ranges (e.g. "9:00 AM - 5:00 PM")
+    // First split by clear line breaks
+    $segments = preg_split('/[\r\n]+|;\s*|\s*\|\s*/', $text);
+
+    // Further split segments that contain multiple day:time pairs separated by commas
+    // e.g. "Mon-Fri: 9AM-5PM, Sat: 10AM-3PM"
+    $lines = array();
+    foreach ($segments as $seg) {
+        $seg = trim($seg);
+        if (empty($seg)) continue;
+
+        // Check if this segment has multiple day-time pairs separated by commas
+        // Pattern: "DayPart: TimePart, DayPart: TimePart"
+        if (preg_match('/[a-z]{3,}[^,]*:\s*\d/i', $seg) && preg_match_all('/,\s*(?=[a-z]{3})/i', $seg)) {
+            $sub = preg_split('/,\s*(?=[a-z]{3,})/i', $seg);
+            foreach ($sub as $s) {
+                $s = trim($s);
+                if ($s) $lines[] = $s;
+            }
+        } else {
+            $lines[] = $seg;
+        }
+    }
+
+    // Time pattern: matches "9:00 AM", "9AM", "9:00AM", "9 AM", "09:00", "17:00", "9:00 a.m."
+    $time_pat = '(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*[-–to]+\s*(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)';
+
     foreach ($lines as $line) {
         $line = trim($line);
         if (empty($line)) continue;
 
-        // Match patterns like "Monday: 9:00 AM - 5:00 PM" or "Mon-Fri: 9 AM - 5 PM"
-        if (!preg_match('/^([a-z, \-]+)\s*:\s*(.+)$/i', $line, $m)) continue;
+        // Skip lines that only say Closed / Holiday etc.
+        if (preg_match('/^\s*(closed|holiday|by\s+appointment)/i', $line)) continue;
 
-        $day_part = strtolower(trim($m[1]));
-        $time_part = trim($m[2]);
-
-        // Resolve which days this line covers
         $target_days = array();
-        if (preg_match('/^(\w+)\s*-\s*(\w+)$/', $day_part, $range)) {
-            $start_key = substr($range[1], 0, 3);
-            $end_key   = substr($range[2], 0, 3);
-            $start_day = isset($day_aliases[$start_key]) ? $day_aliases[$start_key] : null;
-            $end_day   = isset($day_aliases[$end_key])   ? $day_aliases[$end_key]   : null;
-            if ($start_day && $end_day) {
-                $in_range = false;
-                foreach ($all_days as $d) {
-                    if ($d === $start_day) $in_range = true;
-                    if ($in_range) $target_days[] = $d;
-                    if ($d === $end_day) break;
-                }
-            }
-        } else {
-            // Single day or comma-separated
-            foreach (preg_split('/[,&]+/', $day_part) as $single) {
-                $key = substr(strtolower(trim($single)), 0, 3);
-                if (isset($day_aliases[$key])) {
-                    $target_days[] = $day_aliases[$key];
-                }
-            }
+        $time_part = '';
+
+        // Pattern 1: "DayPart: TimePart" or "DayPart TimePart" (day followed by colon or time)
+        if (preg_match('/^([a-z][a-z ,&\/-]*?)\s*[:]\s*(.+)$/i', $line, $m)) {
+            // Has colon separator
+            $day_str = $m[1];
+            $time_part = $m[2];
+            $target_days = str_resolve_days($day_str, $day_aliases, $all_days);
+        } elseif (preg_match('/^([a-z]{3,}(?:\s*[-\/&,]\s*[a-z]{3,})*)\s+(' . $time_pat . '.*)$/i', $line, $m)) {
+            // No colon but day names followed by time
+            $day_str = $m[1];
+            $time_part = $m[2];
+            $target_days = str_resolve_days($day_str, $day_aliases, $all_days);
+        } elseif (preg_match('/' . $time_pat . '/i', $line)) {
+            // Just a time range with no day → assume Mon-Fri
+            $time_part = $line;
+            $target_days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday');
         }
 
-        if (empty($target_days)) continue;
-        if (stripos($time_part, 'closed') !== false) continue; // closed days = no entry
+        if (empty($target_days) || empty($time_part)) continue;
 
-        // Parse time range "9:00 AM - 5:00 PM" or "9 AM - 5 PM"
-        if (preg_match('/(\d{1,2}(?::\d{2})?\s*[ap]m?)\s*[-–]\s*(\d{1,2}(?::\d{2})?\s*[ap]m?)/i', $time_part, $tm)) {
+        // Check for closed
+        if (preg_match('/closed|cerrado|holiday/i', $time_part)) continue;
+
+        // Extract time range
+        if (preg_match('/' . $time_pat . '/i', $time_part, $tm)) {
             $open_24  = str_convert_to_24h($tm[1]);
             $close_24 = str_convert_to_24h($tm[2]);
-            if ($open_24 && $close_24) {
+            if ($open_24 !== false && $close_24 !== false) {
                 foreach ($target_days as $d) {
                     $structured[$d] = array('open' => $open_24, 'close' => $close_24);
                 }
             }
         }
     }
+
     return $structured;
 }
 
 /**
- * Convert 12-hour time string to 24-hour format (HH:MM).
+ * Resolve a day string like "Mon-Fri", "Mon, Wed, Fri", "Monday" into an array of full day names.
+ */
+function str_resolve_days($day_str, $aliases, $all_days) {
+    $day_str = strtolower(trim($day_str));
+    $target = array();
+
+    // Range: "mon-fri", "mon - fri", "monday-friday"
+    if (preg_match('/^([a-z]+)\s*[-\/]\s*([a-z]+)$/', $day_str, $range)) {
+        $start_key = str_day_lookup($range[1], $aliases);
+        $end_key   = str_day_lookup($range[2], $aliases);
+        if ($start_key && $end_key) {
+            $in_range = false;
+            foreach ($all_days as $d) {
+                if ($d === $start_key) $in_range = true;
+                if ($in_range) $target[] = $d;
+                if ($d === $end_key) break;
+            }
+        }
+        return $target;
+    }
+
+    // Comma/ampersand separated: "mon, wed, fri" or "mon & fri"
+    $parts = preg_split('/[,&]+/', $day_str);
+    foreach ($parts as $part) {
+        $part = trim($part);
+        if (empty($part)) continue;
+
+        // Could be a sub-range: "mon-wed"
+        if (preg_match('/^([a-z]+)\s*-\s*([a-z]+)$/', $part, $sub_range)) {
+            $start_key = str_day_lookup($sub_range[1], $aliases);
+            $end_key   = str_day_lookup($sub_range[2], $aliases);
+            if ($start_key && $end_key) {
+                $in_range = false;
+                foreach ($all_days as $d) {
+                    if ($d === $start_key) $in_range = true;
+                    if ($in_range) $target[] = $d;
+                    if ($d === $end_key) break;
+                }
+            }
+        } else {
+            $resolved = str_day_lookup($part, $aliases);
+            if ($resolved) $target[] = $resolved;
+        }
+    }
+
+    return $target;
+}
+
+/**
+ * Look up a day string (any length) in the aliases map.
+ */
+function str_day_lookup($str, $aliases) {
+    $str = strtolower(trim($str));
+    if (isset($aliases[$str])) return $aliases[$str];
+    // Try first 3 chars
+    $short = substr($str, 0, 3);
+    if (isset($aliases[$short])) return $aliases[$short];
+    return null;
+}
+}
+
+/**
+ * Convert time string to 24-hour format (HH:MM).
+ * Handles: "9:00 AM", "9AM", "9 a.m.", "09:00", "17:00", "9:00 PM", "12 PM", "12:00 AM"
  */
 function str_convert_to_24h($time_str) {
     $time_str = strtolower(trim($time_str));
+    // Remove periods from a.m./p.m.
+    $time_str = str_replace('.', '', $time_str);
+    // Detect AM/PM
     $is_pm = (strpos($time_str, 'p') !== false);
+    $is_am = (strpos($time_str, 'a') !== false);
+    $has_meridiem = $is_am || $is_pm;
+    // Strip non-numeric/colon
     $time_str = preg_replace('/[^0-9:]/', '', $time_str);
+    if (empty($time_str)) return false;
 
     $parts = explode(':', $time_str);
     $hour = intval($parts[0]);
     $min  = isset($parts[1]) ? intval($parts[1]) : 0;
 
-    if ($is_pm && $hour < 12) $hour += 12;
-    if (!$is_pm && $hour === 12) $hour = 0;
+    if ($has_meridiem) {
+        // 12-hour conversion
+        if ($is_pm && $hour < 12) $hour += 12;
+        if ($is_am && $hour === 12) $hour = 0;
+    } else {
+        // No AM/PM — if hour <= 12 and appears to be a raw number, assume:
+        // For values 1-6 → PM (afternoon), 7-12 → AM (morning) is ambiguous.
+        // Best guess: if hour < 7 treat as PM (clinics rarely open before 7),
+        // otherwise keep as-is (could be 24-hour format).
+        if ($hour >= 1 && $hour <= 6 && !isset($parts[1])) {
+            // Likely PM for clinic hours (e.g., "5" = 5 PM)
+            $hour += 12;
+        }
+        // If already > 12, it's 24-hour format, keep as-is
+    }
+
+    if ($hour > 23 || $min > 59) return false;
 
     return sprintf('%02d:%02d', $hour, $min);
 }

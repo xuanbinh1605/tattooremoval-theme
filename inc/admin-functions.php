@@ -1553,10 +1553,17 @@ function str_autofill_hours_page() {
     $has_structured = 0;
     $has_timezone = 0;
     $has_raw_hours = 0;
+    $sample_raw = array();
     foreach ($all_clinics as $cid) {
         if (get_post_meta($cid, '_clinic_structured_hours', true)) $has_structured++;
         if (get_post_meta($cid, '_clinic_timezone', true)) $has_timezone++;
-        if (get_post_meta($cid, '_clinic_operating_hours_raw', true)) $has_raw_hours++;
+        $raw_val = get_post_meta($cid, '_clinic_operating_hours_raw', true);
+        if ($raw_val) {
+            $has_raw_hours++;
+            if (count($sample_raw) < 10) {
+                $sample_raw[$cid] = $raw_val;
+            }
+        }
     }
     ?>
     <div class="wrap">
@@ -1573,6 +1580,23 @@ function str_autofill_hours_page() {
                     <li><?php printf(__('Skipped (could not parse): %d', 'search-tattoo-removal'), $results['skipped_no_parse']); ?></li>
                 </ul>
             </div>
+            <?php if (!empty($results['failed_samples'])) : ?>
+            <div class="notice notice-warning">
+                <p><strong><?php _e('Sample unparseable hours (first 15):', 'search-tattoo-removal'); ?></strong></p>
+                <table class="widefat striped" style="max-width:800px;">
+                    <thead><tr><th>ID</th><th>Clinic</th><th>Raw Hours Text</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($results['failed_samples'] as $fs) : ?>
+                        <tr>
+                            <td><a href="<?php echo esc_url(get_edit_post_link($fs['id'])); ?>"><?php echo $fs['id']; ?></a></td>
+                            <td><?php echo esc_html($fs['title']); ?></td>
+                            <td><pre style="white-space:pre-wrap;margin:0;font-size:12px;"><?php echo esc_html($fs['raw']); ?></pre></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <div class="card" style="max-width: 800px;">
@@ -1614,6 +1638,27 @@ function str_autofill_hours_page() {
             </form>
             <p class="description"><?php _e('Safe to run multiple times. Without the overwrite checkbox, it only fills in clinics that are missing data.', 'search-tattoo-removal'); ?></p>
         </div>
+
+        <?php if (!empty($sample_raw)) : ?>
+        <div class="card" style="max-width: 800px; margin-top:20px;">
+            <h2><?php _e('Sample Raw Hours (first 10 clinics)', 'search-tattoo-removal'); ?></h2>
+            <table class="widefat striped">
+                <thead><tr><th>ID</th><th>Clinic</th><th>Raw Hours Text</th><th>Parse Test</th></tr></thead>
+                <tbody>
+                    <?php foreach ($sample_raw as $sid => $sraw) :
+                        $test_result = str_hours_text_to_structured($sraw);
+                    ?>
+                    <tr>
+                        <td><?php echo $sid; ?></td>
+                        <td><?php echo esc_html(get_the_title($sid)); ?></td>
+                        <td><pre style="white-space:pre-wrap;margin:0;font-size:12px;"><?php echo esc_html($sraw); ?></pre></td>
+                        <td><?php echo !empty($test_result) ? '<span style="color:green;">✓ ' . count($test_result) . ' days</span>' : '<span style="color:red;">✗ Failed</span>'; ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
     </div>
     <?php
 }
@@ -1634,6 +1679,7 @@ function str_run_autofill_hours($overwrite = false) {
         'tz_filled'       => 0,
         'skipped_no_raw'  => 0,
         'skipped_no_parse' => 0,
+        'failed_samples'  => array(),
     );
 
     foreach ($clinics as $clinic) {
@@ -1655,6 +1701,13 @@ function str_run_autofill_hours($overwrite = false) {
                     $stats['hours_filled']++;
                 } else {
                     $stats['skipped_no_parse']++;
+                    if (count($stats['failed_samples']) < 15) {
+                        $stats['failed_samples'][] = array(
+                            'id'    => $cid,
+                            'title' => $clinic->post_title,
+                            'raw'   => $raw,
+                        );
+                    }
                 }
             }
         }
