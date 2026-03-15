@@ -837,7 +837,6 @@ function str_day_lookup($str, $aliases) {
     if (isset($aliases[$short])) return $aliases[$short];
     return null;
 }
-}
 
 /**
  * Convert time string to 24-hour format (HH:MM).
