@@ -116,6 +116,30 @@ function str_add_clinic_meta_boxes() {
 add_action('add_meta_boxes', 'str_add_clinic_meta_boxes');
 
 /**
+ * Add meta boxes for review information
+ */
+function str_add_review_meta_boxes() {
+    add_meta_box(
+        'review_details',
+        __('Review Details', 'search-tattoo-removal'),
+        'str_review_details_callback',
+        'review',
+        'normal',
+        'high'
+    );
+
+    add_meta_box(
+        'review_clinic',
+        __('Associated Clinic', 'search-tattoo-removal'),
+        'str_review_clinic_callback',
+        'review',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'str_add_review_meta_boxes');
+
+/**
  * Basic Information Meta Box
  */
 function str_clinic_basic_info_callback($post) {
@@ -669,3 +693,131 @@ function str_save_laser_tech_meta($post_id) {
     }
 }
 add_action('save_post_laser_tech', 'str_save_laser_tech_meta');
+
+/**
+ * Review Details Meta Box
+ */
+function str_review_details_callback($post) {
+    wp_nonce_field('str_save_review_meta', 'str_review_meta_nonce');
+    
+    $reviewer_name = get_post_meta($post->ID, '_review_reviewer_name', true);
+    $rating = get_post_meta($post->ID, '_review_rating', true);
+    $review_date = get_post_meta($post->ID, '_review_date', true);
+    $is_verified = get_post_meta($post->ID, '_review_is_verified', true);
+    $helpful_count = get_post_meta($post->ID, '_review_helpful_count', true) ?: 0;
+    ?>
+    <p>
+        <label for="reviewer_name"><strong><?php _e('Reviewer Name:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="reviewer_name" name="reviewer_name" value="<?php echo esc_attr($reviewer_name); ?>" style="width: 100%;" placeholder="John D.">
+    </p>
+    <p>
+        <label for="rating"><strong><?php _e('Rating (1-5 stars):', 'search-tattoo-removal'); ?></strong></label><br>
+        <select id="rating" name="rating" style="width: 100%;">
+            <option value="">— Select Rating —</option>
+            <?php for ($i = 5; $i >= 1; $i--) : ?>
+                <option value="<?php echo $i; ?>" <?php selected($rating, $i); ?>><?php echo str_repeat('⭐', $i) . ' (' . $i . ' star' . ($i > 1 ? 's' : '') . ')'; ?></option>
+            <?php endfor; ?>
+        </select>
+    </p>
+    <p>
+        <label for="review_date"><strong><?php _e('Review Date:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="date" id="review_date" name="review_date" value="<?php echo esc_attr($review_date); ?>" style="width: 100%;">
+        <span class="description"><?php _e('Leave empty to use post publish date.', 'search-tattoo-removal'); ?></span>
+    </p>
+    <p>
+        <label>
+            <input type="checkbox" name="is_verified" value="1" <?php checked($is_verified, '1'); ?>>
+            <strong><?php _e('Verified Review', 'search-tattoo-removal'); ?></strong>
+        </label>
+        <br><span class="description"><?php _e('Shows verified badge on the review.', 'search-tattoo-removal'); ?></span>
+    </p>
+    <p>
+        <label for="helpful_count"><strong><?php _e('Helpful Count:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="number" id="helpful_count" name="helpful_count" value="<?php echo esc_attr($helpful_count); ?>" min="0" style="width: 100%;" placeholder="0">
+        <span class="description"><?php _e('Number of people who found this review helpful.', 'search-tattoo-removal'); ?></span>
+    </p>
+    <?php
+}
+
+/**
+ * Review Clinic Selection Meta Box
+ */
+function str_review_clinic_callback($post) {
+    $clinic_id = get_post_meta($post->ID, '_review_clinic_id', true);
+    
+    $clinics = get_posts(array(
+        'post_type' => 'clinic',
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC',
+        'post_status' => 'publish'
+    ));
+    ?>
+    <p>
+        <label for="clinic_id"><strong><?php _e('Select Clinic:', 'search-tattoo-removal'); ?></strong></label><br>
+        <select id="clinic_id" name="clinic_id" style="width: 100%;">
+            <option value="">— Select a Clinic —</option>
+            <?php foreach ($clinics as $clinic) : ?>
+                <option value="<?php echo $clinic->ID; ?>" <?php selected($clinic_id, $clinic->ID); ?>>
+                    <?php echo esc_html($clinic->post_title); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <span class="description"><?php _e('This review will be displayed on the selected clinic page.', 'search-tattoo-removal'); ?></span>
+    </p>
+    <?php
+}
+
+/**
+ * Save Review Meta Data
+ */
+function str_save_review_meta($post_id) {
+    if (!isset($_POST['str_review_meta_nonce']) || !wp_verify_nonce($_POST['str_review_meta_nonce'], 'str_save_review_meta')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Save reviewer name
+    if (isset($_POST['reviewer_name'])) {
+        update_post_meta($post_id, '_review_reviewer_name', sanitize_text_field($_POST['reviewer_name']));
+    }
+
+    // Save rating
+    if (isset($_POST['rating'])) {
+        $rating = intval($_POST['rating']);
+        if ($rating >= 1 && $rating <= 5) {
+            update_post_meta($post_id, '_review_rating', $rating);
+        }
+    }
+
+    // Save review date
+    if (isset($_POST['review_date']) && !empty($_POST['review_date'])) {
+        update_post_meta($post_id, '_review_date', sanitize_text_field($_POST['review_date']));
+    } elseif (isset($_POST['review_date'])) {
+        delete_post_meta($post_id, '_review_date');
+    }
+
+    // Save verified status
+    $is_verified = isset($_POST['is_verified']) ? '1' : '0';
+    update_post_meta($post_id, '_review_is_verified', $is_verified);
+
+    // Save helpful count
+    if (isset($_POST['helpful_count'])) {
+        update_post_meta($post_id, '_review_helpful_count', intval($_POST['helpful_count']));
+    }
+
+    // Save clinic relationship
+    if (isset($_POST['clinic_id']) && !empty($_POST['clinic_id'])) {
+        update_post_meta($post_id, '_review_clinic_id', intval($_POST['clinic_id']));
+    } else {
+        delete_post_meta($post_id, '_review_clinic_id');
+    }
+}
+add_action('save_post_review', 'str_save_review_meta');

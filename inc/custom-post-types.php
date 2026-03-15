@@ -133,11 +133,73 @@ function str_register_laser_tech_post_type() {
 add_action('init', 'str_register_laser_tech_post_type', 0);
 
 /**
+ * Register Review Post Type
+ */
+function str_register_review_post_type() {
+    $labels = array(
+        'name'                  => _x('Reviews', 'Post Type General Name', 'search-tattoo-removal'),
+        'singular_name'         => _x('Review', 'Post Type Singular Name', 'search-tattoo-removal'),
+        'menu_name'             => __('Reviews', 'search-tattoo-removal'),
+        'name_admin_bar'        => __('Review', 'search-tattoo-removal'),
+        'archives'              => __('Review Archives', 'search-tattoo-removal'),
+        'attributes'            => __('Review Attributes', 'search-tattoo-removal'),
+        'parent_item_colon'     => __('Parent Review:', 'search-tattoo-removal'),
+        'all_items'             => __('All Reviews', 'search-tattoo-removal'),
+        'add_new_item'          => __('Add New Review', 'search-tattoo-removal'),
+        'add_new'               => __('Add New', 'search-tattoo-removal'),
+        'new_item'              => __('New Review', 'search-tattoo-removal'),
+        'edit_item'             => __('Edit Review', 'search-tattoo-removal'),
+        'update_item'           => __('Update Review', 'search-tattoo-removal'),
+        'view_item'             => __('View Review', 'search-tattoo-removal'),
+        'view_items'            => __('View Reviews', 'search-tattoo-removal'),
+        'search_items'          => __('Search Review', 'search-tattoo-removal'),
+        'not_found'             => __('Not found', 'search-tattoo-removal'),
+        'not_found_in_trash'    => __('Not found in Trash', 'search-tattoo-removal'),
+        'featured_image'        => __('Reviewer Avatar', 'search-tattoo-removal'),
+        'set_featured_image'    => __('Set reviewer avatar', 'search-tattoo-removal'),
+        'remove_featured_image' => __('Remove reviewer avatar', 'search-tattoo-removal'),
+        'use_featured_image'    => __('Use as reviewer avatar', 'search-tattoo-removal'),
+        'insert_into_item'      => __('Insert into review', 'search-tattoo-removal'),
+        'uploaded_to_this_item' => __('Uploaded to this review', 'search-tattoo-removal'),
+        'items_list'            => __('Reviews list', 'search-tattoo-removal'),
+        'items_list_navigation' => __('Reviews list navigation', 'search-tattoo-removal'),
+        'filter_items_list'     => __('Filter reviews list', 'search-tattoo-removal'),
+    );
+
+    $args = array(
+        'label'               => __('Review', 'search-tattoo-removal'),
+        'description'         => __('Patient Reviews for Clinics', 'search-tattoo-removal'),
+        'labels'              => $labels,
+        'supports'            => array('title', 'editor', 'thumbnail'),
+        'hierarchical'        => false,
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'menu_position'       => 7,
+        'menu_icon'           => 'dashicons-star-filled',
+        'show_in_admin_bar'   => true,
+        'show_in_nav_menus'   => false,
+        'can_export'          => true,
+        'has_archive'         => false,
+        'exclude_from_search' => true,
+        'publicly_queryable'  => true,
+        'capability_type'     => 'post',
+        'show_in_rest'        => true,
+        'rest_base'           => 'reviews',
+        'rewrite'             => array('slug' => 'review', 'with_front' => false),
+    );
+
+    register_post_type('review', $args);
+}
+add_action('init', 'str_register_review_post_type', 0);
+
+/**
  * Flush rewrite rules on theme activation
  */
 function str_rewrite_flush() {
     str_register_clinic_post_type();
     str_register_laser_tech_post_type();
+    str_register_review_post_type();
     flush_rewrite_rules();
 }
 add_action('after_switch_theme', 'str_rewrite_flush');

@@ -303,31 +303,120 @@ while (have_posts()) : the_post();
 
 
 
-                    <!-- What People Say Section -->
-                    <?php if ($reviews_summary) : ?>
-                        <section id="reviews-section" class="scroll-mt-32 bg-charcoal text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-48 h-48 bg-brand/10 blur-[100px] -mr-24 -mt-24"></div>
-                            <div class="relative z-10">
-                                <div class="flex items-center mb-6">
+                    <!-- Patient Reviews Section -->
+                    <?php 
+                    // Get all reviews for this clinic
+                    $clinic_reviews = new WP_Query(array(
+                        'post_type' => 'review',
+                        'posts_per_page' => -1,
+                        'meta_key' => '_review_clinic_id',
+                        'meta_value' => $clinic_id,
+                        'orderby' => 'date',
+                        'order' => 'DESC',
+                        'post_status' => 'publish'
+                    ));
+
+                    if ($clinic_reviews->have_posts() || $reviews_summary) : 
+                    ?>
+                        <section id="reviews-section" class="scroll-mt-32 bg-white p-8 rounded-3xl border border-gray-light shadow-sm">
+                            <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-light">
+                                <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square w-6 h-6 text-brand mr-3" aria-hidden="true">
                                         <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path>
                                     </svg>
-                                    <h2 class="text-2xl font-black uppercase tracking-tight">What People Say</h2>
+                                    <h2 class="text-2xl font-black uppercase tracking-tight text-charcoal">Patient Reviews</h2>
                                 </div>
-                                <div class="bg-white/5 border border-white/10 p-6 rounded-2xl">
-                                    <p class="text-slate-200 leading-relaxed text-lg font-medium italic">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex text-amber">
+                                        <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star <?php echo $i <= round((float)$rating) ? 'fill-current' : 'text-gray-light'; ?>">
+                                                <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                            </svg>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <span class="text-lg font-black text-charcoal"><?php echo number_format((float)$rating, 1); ?></span>
+                                    <span class="text-sm text-graphite font-bold">(<?php echo esc_html($clinic_reviews->found_posts ?: $review_count); ?> reviews)</span>
+                                </div>
+                            </div>
+
+                            <?php if ($reviews_summary) : ?>
+                                <!-- Overall Summary -->
+                                <div class="bg-gradient-to-br from-brand-light/10 to-offwhite p-6 rounded-2xl mb-8 border border-brand/10">
+                                    <p class="text-charcoal leading-relaxed text-base font-medium italic">
                                         "<?php echo esc_html($reviews_summary); ?>"
                                     </p>
                                 </div>
-                                <div class="mt-6 flex items-center">
-                                    <div class="flex -space-x-3 mr-4">
-                                        <?php for ($i = 11; $i <= 14; $i++) : ?>
-                                            <img class="w-8 h-8 rounded-full border-2 border-charcoal" alt="user" src="https://i.pravatar.cc/100?u=<?php echo $i; ?>">
-                                        <?php endfor; ?>
-                                    </div>
-                                    <span class="text-xs font-black uppercase tracking-widest text-slate-400">Based on <?php echo esc_html($review_count); ?> verified patient reviews</span>
+                            <?php endif; ?>
+
+                            <?php if ($clinic_reviews->have_posts()) : ?>
+                                <!-- Individual Reviews -->
+                                <div class="space-y-6">
+                                    <?php while ($clinic_reviews->have_posts()) : $clinic_reviews->the_post(); 
+                                        $review_id = get_the_ID();
+                                        $reviewer_name = get_post_meta($review_id, '_review_reviewer_name', true) ?: 'Anonymous';
+                                        $review_rating = get_post_meta($review_id, '_review_rating', true) ?: 5;
+                                        $review_date = get_post_meta($review_id, '_review_date', true) ?: get_the_date('Y-m-d');
+                                        $is_verified = get_post_meta($review_id, '_review_is_verified', true);
+                                        $helpful_count = get_post_meta($review_id, '_review_helpful_count', true) ?: 0;
+                                        $review_content = get_the_content();
+                                        $review_title = get_the_title();
+                                        $reviewer_avatar = get_the_post_thumbnail_url($review_id, 'thumbnail') ?: 'https://i.pravatar.cc/100?u=' . $review_id;
+                                    ?>
+                                        <div class="bg-offwhite p-6 rounded-xl border border-gray-light hover:border-brand/30 transition-all">
+                                            <div class="flex items-start gap-4 mb-4">
+                                                <!-- Reviewer Avatar -->
+                                                <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-brand/20">
+                                                    <img src="<?php echo esc_url($reviewer_avatar); ?>" alt="<?php echo esc_attr($reviewer_name); ?>" class="w-full h-full object-cover">
+                                                </div>
+                                                
+                                                <!-- Reviewer Info -->
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <div>
+                                                            <h3 class="text-lg font-black text-charcoal flex items-center gap-2">
+                                                                <?php echo esc_html($reviewer_name); ?>
+                                                                <?php if ($is_verified) : ?>
+                                                                    <span class="bg-teal text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Verified</span>
+                                                                <?php endif; ?>
+                                                            </h3>
+                                                            <p class="text-xs text-graphite font-bold"><?php echo date('F j, Y', strtotime($review_date)); ?></p>
+                                                        </div>
+                                                        <div class="flex text-amber">
+                                                            <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star <?php echo $i <= $review_rating ? 'fill-current' : 'text-gray-light'; ?>">
+                                                                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                                                                </svg>
+                                                            <?php endfor; ?>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <?php if ($review_title && $review_title !== 'Auto Draft') : ?>
+                                                        <h4 class="text-base font-black text-charcoal mb-2"><?php echo esc_html($review_title); ?></h4>
+                                                    <?php endif; ?>
+                                                    
+                                                    <div class="text-charcoal leading-relaxed text-sm font-medium">
+                                                        <?php echo wpautop($review_content); ?>
+                                                    </div>
+                                                    
+                                                    <?php if ($helpful_count > 0) : ?>
+                                                        <div class="mt-4 flex items-center text-xs text-graphite font-bold">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up mr-1.5">
+                                                                <path d="M7 10v12"></path>
+                                                                <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"></path>
+                                                            </svg>
+                                                            <?php echo esc_html($helpful_count); ?> people found this helpful
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endwhile; wp_reset_postdata(); ?>
                                 </div>
-                            </div>
+                            <?php else : ?>
+                                <div class="text-center py-8">
+                                    <p class="text-graphite font-medium">No reviews yet. Be the first to share your experience!</p>
+                                </div>
+                            <?php endif; ?>
                         </section>
                     <?php endif; ?>
 
