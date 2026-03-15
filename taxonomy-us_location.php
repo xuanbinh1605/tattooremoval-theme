@@ -627,6 +627,9 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                                     <circle cx="12" cy="10" r="3"></circle>
                                                 </svg>
                                                 <span><?php echo esc_html($city ?: $location_name); ?></span>
+                                                <?php $open_info = str_get_clinic_open_status($clinic_id); ?>
+                                                <span class="mx-3 text-gray-light">•</span>
+                                                <span class="<?php echo esc_attr($open_info['class']); ?>"><?php echo esc_html($open_info['text']); ?></span>
                                             </div>
                                         </div>
 

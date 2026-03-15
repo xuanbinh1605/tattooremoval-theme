@@ -471,6 +471,11 @@ while (have_posts()) : the_post();
                                 </svg>
                                 Working Hours
                             </h2>
+                            <?php $open_info = str_get_clinic_open_status($clinic_id); ?>
+                            <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest <?php echo esc_attr($open_info['class']); ?>">
+                                <span class="w-2 h-2 rounded-full <?php echo $open_info['status'] === 'open' ? 'bg-teal' : ($open_info['status'] === 'closing_soon' ? 'bg-amber' : 'bg-red-500'); ?>"></span>
+                                <?php echo esc_html($open_info['text']); ?>
+                            </span>
                         </div>
                         <div class="flex flex-col md:flex-row gap-12">
                             <div class="flex-1 space-y-3">

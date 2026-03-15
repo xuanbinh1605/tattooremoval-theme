@@ -203,12 +203,59 @@ function str_clinic_address_callback($post) {
  */
 function str_clinic_hours_callback($post) {
     $operating_hours_raw = get_post_meta($post->ID, '_clinic_operating_hours_raw', true);
+    $timezone = get_post_meta($post->ID, '_clinic_timezone', true);
+    $structured_hours = get_post_meta($post->ID, '_clinic_structured_hours', true);
+    $structured = $structured_hours ? json_decode($structured_hours, true) : array();
+
+    $us_timezones = array(
+        ''                       => __('— Select Timezone —', 'search-tattoo-removal'),
+        'America/New_York'       => 'Eastern (ET)',
+        'America/Chicago'        => 'Central (CT)',
+        'America/Denver'         => 'Mountain (MT)',
+        'America/Los_Angeles'    => 'Pacific (PT)',
+        'America/Anchorage'      => 'Alaska (AKT)',
+        'Pacific/Honolulu'       => 'Hawaii (HT)',
+        'America/Phoenix'        => 'Arizona (no DST)',
+    );
+
+    $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
     ?>
     <p>
-        <label for="operating_hours_raw"><strong><?php _e('Operating Hours:', 'search-tattoo-removal'); ?></strong></label><br>
-        <textarea id="operating_hours_raw" name="operating_hours_raw" rows="6" style="width: 100%;" placeholder="Mon-Fri: 9:00 AM - 5:00 PM&#10;Sat: 10:00 AM - 3:00 PM&#10;Sun: Closed"><?php echo esc_textarea($operating_hours_raw); ?></textarea>
-        <span class="description"><?php _e('Enter raw hours text. Structured hours can be added later.', 'search-tattoo-removal'); ?></span>
+        <label for="clinic_timezone"><strong><?php _e('Timezone:', 'search-tattoo-removal'); ?></strong></label><br>
+        <select id="clinic_timezone" name="clinic_timezone" style="width: 100%;">
+            <?php foreach ($us_timezones as $tz_value => $tz_label) : ?>
+                <option value="<?php echo esc_attr($tz_value); ?>" <?php selected($timezone, $tz_value); ?>><?php echo esc_html($tz_label); ?></option>
+            <?php endforeach; ?>
+        </select>
+        <span class="description"><?php _e('Required for real-time open/closed status.', 'search-tattoo-removal'); ?></span>
     </p>
+    <p>
+        <label for="operating_hours_raw"><strong><?php _e('Operating Hours (raw text):', 'search-tattoo-removal'); ?></strong></label><br>
+        <textarea id="operating_hours_raw" name="operating_hours_raw" rows="6" style="width: 100%;" placeholder="Mon-Fri: 9:00 AM - 5:00 PM&#10;Sat: 10:00 AM - 3:00 PM&#10;Sun: Closed"><?php echo esc_textarea($operating_hours_raw); ?></textarea>
+        <span class="description"><?php _e('Displayed as-is on the clinic page.', 'search-tattoo-removal'); ?></span>
+    </p>
+
+    <div style="margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px;">
+        <strong><?php _e('Structured Hours (for open/closed calculation):', 'search-tattoo-removal'); ?></strong>
+        <span class="description" style="display:block; margin-bottom:10px;"><?php _e('Leave open & close blank for closed days. Use 24-hour format (e.g. 09:00 / 17:00).', 'search-tattoo-removal'); ?></span>
+        <table class="widefat" style="max-width: 500px;">
+            <thead>
+                <tr><th>Day</th><th>Open</th><th>Close</th></tr>
+            </thead>
+            <tbody>
+                <?php foreach ($days as $day) :
+                    $open_val  = isset($structured[$day]['open'])  ? $structured[$day]['open']  : '';
+                    $close_val = isset($structured[$day]['close']) ? $structured[$day]['close'] : '';
+                ?>
+                <tr>
+                    <td><strong><?php echo ucfirst($day); ?></strong></td>
+                    <td><input type="time" name="structured_hours[<?php echo $day; ?>][open]" value="<?php echo esc_attr($open_val); ?>" style="width:120px;"></td>
+                    <td><input type="time" name="structured_hours[<?php echo $day; ?>][close]" value="<?php echo esc_attr($close_val); ?>" style="width:120px;"></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
     <?php
 }
 
@@ -480,6 +527,28 @@ function str_save_clinic_meta($post_id) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, '_clinic_' . $field, sanitize_text_field($_POST[$field]));
         }
+    }
+
+    // Handle timezone
+    if (isset($_POST['clinic_timezone'])) {
+        update_post_meta($post_id, '_clinic_timezone', sanitize_text_field($_POST['clinic_timezone']));
+    }
+
+    // Handle structured hours (JSON)
+    if (isset($_POST['structured_hours']) && is_array($_POST['structured_hours'])) {
+        $clean_hours = array();
+        $valid_days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+        foreach ($_POST['structured_hours'] as $day => $times) {
+            if (!in_array($day, $valid_days, true)) {
+                continue;
+            }
+            $open  = isset($times['open'])  ? sanitize_text_field($times['open'])  : '';
+            $close = isset($times['close']) ? sanitize_text_field($times['close']) : '';
+            if ($open && $close) {
+                $clean_hours[$day] = array('open' => $open, 'close' => $close);
+            }
+        }
+        update_post_meta($post_id, '_clinic_structured_hours', wp_json_encode($clean_hours));
     }
 
     // Handle textarea fields separately

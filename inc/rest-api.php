@@ -248,6 +248,7 @@ function str_suggest_locations($request) {
  */
 function str_format_clinic_data($clinic_id) {
     $post = get_post($clinic_id);
+    $open_status = str_get_clinic_open_status($clinic_id);
     
     return array(
         'id' => $clinic_id,
@@ -269,6 +270,7 @@ function str_format_clinic_data($clinic_id) {
         'zip' => get_post_meta($clinic_id, '_clinic_zip', true),
         'latitude' => get_post_meta($clinic_id, '_clinic_latitude', true),
         'longitude' => get_post_meta($clinic_id, '_clinic_longitude', true),
-        'hours' => get_post_meta($clinic_id, '_clinic_hours', true),
+        'hours' => get_post_meta($clinic_id, '_clinic_operating_hours_raw', true),
+        'open_status' => $open_status,
     );
 }

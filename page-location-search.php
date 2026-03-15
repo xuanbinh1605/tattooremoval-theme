@@ -120,14 +120,7 @@ if (!empty($price_filters)) {
     );
 }
 
-// Add open now filter
-if ($open_now) {
-    $meta_query[] = array(
-        'key'     => '_clinic_open_status',
-        'value'   => 'Open Now',
-        'compare' => '=',
-    );
-}
+// Open Now filter is applied in PHP after query (uses real-time calculation)
 
 // Add verified license filter
 if ($verified) {
@@ -513,11 +506,18 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                 $counter = 1;
                                 while ($clinics_query->have_posts()) : $clinics_query->the_post();
                                     $clinic_id = get_the_ID();
+                                    $open_status_info = str_get_clinic_open_status($clinic_id);
+                                    $open_status = $open_status_info['text'];
+
+                                    // Skip closed clinics when "Open Now" filter is active
+                                    if ($open_now && $open_status_info['status'] !== 'open' && $open_status_info['status'] !== 'closing_soon') {
+                                        continue;
+                                    }
+
                                     $rating = get_post_meta($clinic_id, '_clinic_rating', true) ?: 0;
                                     $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
                                     $city = get_post_meta($clinic_id, '_clinic_city', true);
                                     $price_range = get_post_meta($clinic_id, '_clinic_price_range_display', true);
-                                    $open_status = get_post_meta($clinic_id, '_clinic_open_status', true) ?: 'Open Now';
                                     $years_in_business = get_post_meta($clinic_id, '_clinic_years_in_business', true);
                                     $thumbnail = str_get_clinic_thumbnail($clinic_id, 'large', 'https://picsum.photos/400/300?random=' . $counter);
                                 ?>
@@ -555,7 +555,7 @@ if (current_user_can('administrator') && isset($_GET['debug'])) {
                                                     </svg>
                                                     <span><?php echo esc_html($city ?: $location_name); ?></span>
                                                     <span class="mx-3 text-gray-light">•</span>
-                                                    <span class="<?php echo (strpos(strtolower($open_status), 'closed') !== false) ? 'text-red-500' : 'text-teal'; ?>">
+                                                    <span class="<?php echo esc_attr($open_status_info['class']); ?>">
                                                         <?php echo esc_html($open_status); ?>
                                                     </span>
                                                 </div>

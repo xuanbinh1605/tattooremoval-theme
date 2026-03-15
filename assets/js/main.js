@@ -160,12 +160,12 @@
     }
 
     /**
-     * Hero Search Autocomplete
+     * Reusable Search Autocomplete
      */
-    function initHeroSearchAutocomplete() {
-        const $input = $('#hero-search-input');
-        const $suggestions = $('#hero-search-suggestions');
-        const $form = $('#hero-search-form');
+    function initSearchAutocomplete(inputId, suggestionsId, formId) {
+        const $input = $('#' + inputId);
+        const $suggestions = $('#' + suggestionsId);
+        const $form = $('#' + formId);
 
         if (!$input.length || typeof strAjax === 'undefined') {
             return;
@@ -293,7 +293,7 @@
 
         // Close on outside click
         $(document).on('click', function(e) {
-            if (!$(e.target).closest('#hero-search-form').length) {
+            if (!$(e.target).closest('#' + formId).length) {
                 $suggestions.empty().removeClass('active');
                 $input.attr('aria-expanded', 'false');
             }
@@ -386,7 +386,8 @@
         initStarRating();
         initLazyLoading();
         initFormValidation();
-        initHeroSearchAutocomplete();
+        initSearchAutocomplete('hero-search-input', 'hero-search-suggestions', 'hero-search-form');
+        initSearchAutocomplete('header-search-input', 'header-search-suggestions', 'header-search-form');
         initCounterAnimation();
 
         // Trigger a custom event for other scripts to hook into

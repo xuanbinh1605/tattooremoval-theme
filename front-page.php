@@ -27,7 +27,7 @@ get_header();
                         Locate the highest-rated medical laser specialists in your city. Compare clinic technology, read verified case studies, and book a free consultation.
                     </p>
                     <div class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-                        <form id="hero-search-form" class="max-w-2xl mx-auto flex flex-col md:flex-row bg-white rounded-lg p-1.5 flex shadow-xl gap-2 relative border border-gray-light">
+                        <form id="hero-search-form" class="max-w-2xl mx-auto md:mx-0 flex flex-col md:flex-row bg-white rounded-lg p-1.5 shadow-xl gap-2 relative border border-gray-light">
                             <div class="flex-grow flex items-center px-3 py-3 bg-offwhite rounded-md relative">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-5 w-5 text-graphite mr-2 flex-shrink-0" aria-hidden="true">
                                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
@@ -147,7 +147,7 @@ get_header();
                         $review_count = get_post_meta($clinic_id, '_clinic_reviews_count', true) ?: 0;
                         $phone = get_post_meta($clinic_id, '_clinic_phone', true);
                         $is_verified = get_post_meta($clinic_id, '_clinic_is_verified', true);
-                        $open_status = get_post_meta($clinic_id, '_clinic_open_status', true);
+                        $open_info = str_get_clinic_open_status($clinic_id);
                         $city = get_post_meta($clinic_id, '_clinic_city', true);
                         $price_range = get_post_meta($clinic_id, '_clinic_price_range_display', true);
                         $min_price = get_post_meta($clinic_id, '_clinic_min_price', true);
@@ -170,9 +170,8 @@ get_header();
                         }
                         
                         // Determine open status styling
-                        $is_open = (stripos($open_status, 'open') !== false);
-                        $status_class = $is_open ? 'text-teal' : 'text-red-500';
-                        $status_text = $open_status ?: 'Call for hours';
+                        $status_class = $open_info['class'];
+                        $status_text = $open_info['text'];
                     ?>
                     
                     <!-- Clinic Card -->

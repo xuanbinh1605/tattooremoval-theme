@@ -69,23 +69,23 @@
                     </a>
                 </div>
 
-                <!-- Search Form (Initially Hidden) -->
-                <div class="flex-grow flex items-center transition-all duration-500 transform opacity-0 -translate-y-4 scale-95 pointer-events-none">
-                    <form role="search" method="get" class="max-w-xl mx-4 hidden sm:flex bg-white rounded-lg p-1.5 shadow-xl gap-2 relative border border-gray-light w-full max-w-lg shadow-md" action="<?php echo esc_url(home_url('/')); ?>">
+                <!-- Search Form (visible on inner pages) -->
+                <div class="flex-grow flex items-center transition-all duration-300 <?php echo is_front_page() ? 'opacity-0 -translate-y-4 scale-95 pointer-events-none' : 'opacity-100 translate-y-0 scale-100'; ?>" id="header-search-wrapper">
+                    <form id="header-search-form" role="search" class="max-w-xl mx-4 hidden sm:flex bg-white rounded-lg p-1.5 gap-2 relative border border-gray-light w-full max-w-lg shadow-sm">
                         <div class="flex-grow flex items-center px-3 py-1.5 bg-offwhite rounded-md relative">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-graphite mr-2 flex-shrink-0" aria-hidden="true">
                                 <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
-                            <input type="text" name="s" placeholder="City, State, or Zip" class="w-full bg-transparent border-none focus:ring-0 text-charcoal placeholder-graphite font-medium focus:outline-none text-sm" autocomplete="off" value="<?php echo get_search_query(); ?>">
+                            <input id="header-search-input" type="text" placeholder="City, State, or Zip" class="w-full bg-transparent border-none focus:ring-0 text-charcoal placeholder-graphite font-medium focus:outline-none text-sm" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="header-search-suggestions" aria-autocomplete="list" value="">
+                            <div id="header-search-suggestions" class="str-suggestions" role="listbox" aria-label="Location suggestions"></div>
                         </div>
                         <button type="submit" class="px-5 py-1.5 text-sm bg-brand hover:bg-brand-hover text-white font-bold rounded-md transition-colors flex-shrink-0 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2 md:hidden" aria-hidden="true">
-                                <path d="m21 21-4.34-4.34"></path>
-                                <circle cx="11" cy="11" r="8"></circle>
-                            </svg>
                             <span class="hidden md:inline">Search</span>
-                            <span class="md:hidden">Go</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 md:hidden" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.34-4.34"></path>
+                            </svg>
                         </button>
                     </form>
                 </div>

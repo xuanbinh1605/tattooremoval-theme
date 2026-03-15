@@ -190,8 +190,13 @@ function str_importer_page() {
                     </tr>
                     <tr>
                         <td><strong>open_status</strong></td>
-                        <td>Current status text</td>
+                        <td>Current status text (legacy)</td>
                         <td>Open Now</td>
+                    </tr>
+                    <tr>
+                        <td><strong>timezone</strong></td>
+                        <td>IANA timezone (e.g. America/New_York)</td>
+                        <td>America/Los_Angeles</td>
                     </tr>
                     <tr>
                         <td><strong>years_in_business</strong></td>
@@ -472,6 +477,17 @@ function str_import_single_clinic($row, $import_mode) {
     if (isset($row['operating_hours_raw']) && !empty($row['operating_hours_raw'])) {
         $parsed_hours = str_parse_operating_hours($row['operating_hours_raw']);
         update_post_meta($post_id, '_clinic_operating_hours_raw', sanitize_textarea_field($parsed_hours));
+
+        // Auto-generate structured hours JSON from parsed text
+        $structured = str_hours_text_to_structured($parsed_hours);
+        if (!empty($structured)) {
+            update_post_meta($post_id, '_clinic_structured_hours', wp_json_encode($structured));
+        }
+    }
+
+    // Handle timezone
+    if (isset($row['timezone']) && !empty($row['timezone'])) {
+        update_post_meta($post_id, '_clinic_timezone', sanitize_text_field($row['timezone']));
     }
 
     // Handle boolean fields
@@ -648,6 +664,91 @@ function str_parse_operating_hours($hours_string) {
 }
 
 /**
+ * Convert raw hours text (e.g. "Monday: 9:00 AM - 5:00 PM") into a structured array.
+ * Returns associative array keyed by lowercase day name with 'open'/'close' in 24h format.
+ */
+function str_hours_text_to_structured($text) {
+    $structured = array();
+    $day_aliases = array(
+        'mon' => 'monday', 'tue' => 'tuesday', 'wed' => 'wednesday',
+        'thu' => 'thursday', 'fri' => 'friday', 'sat' => 'saturday', 'sun' => 'sunday',
+        'monday' => 'monday', 'tuesday' => 'tuesday', 'wednesday' => 'wednesday',
+        'thursday' => 'thursday', 'friday' => 'friday', 'saturday' => 'saturday', 'sunday' => 'sunday',
+    );
+    $all_days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+
+    $lines = preg_split('/[\r\n]+/', $text);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line)) continue;
+
+        // Match patterns like "Monday: 9:00 AM - 5:00 PM" or "Mon-Fri: 9 AM - 5 PM"
+        if (!preg_match('/^([a-z, \-]+)\s*:\s*(.+)$/i', $line, $m)) continue;
+
+        $day_part = strtolower(trim($m[1]));
+        $time_part = trim($m[2]);
+
+        // Resolve which days this line covers
+        $target_days = array();
+        if (preg_match('/^(\w+)\s*-\s*(\w+)$/', $day_part, $range)) {
+            $start_key = substr($range[1], 0, 3);
+            $end_key   = substr($range[2], 0, 3);
+            $start_day = isset($day_aliases[$start_key]) ? $day_aliases[$start_key] : null;
+            $end_day   = isset($day_aliases[$end_key])   ? $day_aliases[$end_key]   : null;
+            if ($start_day && $end_day) {
+                $in_range = false;
+                foreach ($all_days as $d) {
+                    if ($d === $start_day) $in_range = true;
+                    if ($in_range) $target_days[] = $d;
+                    if ($d === $end_day) break;
+                }
+            }
+        } else {
+            // Single day or comma-separated
+            foreach (preg_split('/[,&]+/', $day_part) as $single) {
+                $key = substr(strtolower(trim($single)), 0, 3);
+                if (isset($day_aliases[$key])) {
+                    $target_days[] = $day_aliases[$key];
+                }
+            }
+        }
+
+        if (empty($target_days)) continue;
+        if (stripos($time_part, 'closed') !== false) continue; // closed days = no entry
+
+        // Parse time range "9:00 AM - 5:00 PM" or "9 AM - 5 PM"
+        if (preg_match('/(\d{1,2}(?::\d{2})?\s*[ap]m?)\s*[-–]\s*(\d{1,2}(?::\d{2})?\s*[ap]m?)/i', $time_part, $tm)) {
+            $open_24  = str_convert_to_24h($tm[1]);
+            $close_24 = str_convert_to_24h($tm[2]);
+            if ($open_24 && $close_24) {
+                foreach ($target_days as $d) {
+                    $structured[$d] = array('open' => $open_24, 'close' => $close_24);
+                }
+            }
+        }
+    }
+    return $structured;
+}
+
+/**
+ * Convert 12-hour time string to 24-hour format (HH:MM).
+ */
+function str_convert_to_24h($time_str) {
+    $time_str = strtolower(trim($time_str));
+    $is_pm = (strpos($time_str, 'p') !== false);
+    $time_str = preg_replace('/[^0-9:]/', '', $time_str);
+
+    $parts = explode(':', $time_str);
+    $hour = intval($parts[0]);
+    $min  = isset($parts[1]) ? intval($parts[1]) : 0;
+
+    if ($is_pm && $hour < 12) $hour += 12;
+    if (!$is_pm && $hour === 12) $hour = 0;
+
+    return sprintf('%02d:%02d', $hour, $min);
+}
+
+/**
  * Set featured image from URL
  */
 function str_set_featured_image_from_url($post_id, $image_url) {
@@ -721,7 +822,7 @@ function str_download_template() {
         'title', 'content', 'state', 'city', 'street', 'zip_code', 'phone', 
         'website', 'google_maps_url', 'rating', 'reviews_count', 'reviews_summary',
         'min_price', 'max_price', 'consultation_price', 'price_range_display',
-        'operating_hours_raw', 'open_status', 'years_in_business', 'is_verified', 
+        'operating_hours_raw', 'open_status', 'timezone', 'years_in_business', 'is_verified', 
         'is_featured', 'logo', 'thumbnail', 'thumbnail_url', 'laser_tech',
         'appointment_required', 'online_scheduling', 'offers_packages', 'military_discount',
         'financing', 'cash_only', 'accepts_credit_cards', 'accepts_debit_cards',
@@ -750,6 +851,7 @@ function str_download_template() {
         '$150 range',
         'Mon-Fri: 9AM-5PM, Sat: 10AM-3PM',
         'Open Now',
+        'America/Los_Angeles',
         '15',
         '1',
         '0',
