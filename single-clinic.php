@@ -184,6 +184,15 @@ while (have_posts()) : the_post();
                         <?php endif; ?>
                     </div>
                     
+                    <!-- Open/Closed Status -->
+                    <div class="mt-4">
+                        <?php $open_info = str_get_clinic_open_status($clinic_id); ?>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest <?php echo esc_attr($open_info['class']); ?>">
+                            <span class="w-2 h-2 rounded-full <?php echo $open_info['status'] === 'open' ? 'bg-teal' : ($open_info['status'] === 'closing_soon' ? 'bg-amber' : 'bg-red-500'); ?>"></span>
+                            <?php echo esc_html($open_info['text']); ?>
+                        </span>
+                    </div>
+                    
                     <!-- Laser Technologies Names -->
                     <?php if (!empty($laser_techs)) : ?>
                     <div class="mt-6 pt-4 border-t border-gray-light">
@@ -294,106 +303,7 @@ while (have_posts()) : the_post();
                         </div>
                     </section>
 
-                    <!-- Laser Technology Section -->
-                    <?php if (!empty($laser_techs)) : ?>
-                        <section id="tech-section" class="scroll-mt-32 bg-white p-8 rounded-2xl border border-gray-light shadow-sm">
-                            <div class="flex items-center justify-between mb-8">
-                                <div class="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-6 h-6 text-brand mr-3" aria-hidden="true">
-                                        <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                                    </svg>
-                                    <h2 class="text-2xl font-black text-charcoal uppercase tracking-tight">Laser Technology</h2>
-                                </div>
-                                <span class="text-xs font-black text-brand uppercase tracking-widest bg-brand/10 px-3 py-1 rounded-full"><?php echo count($laser_techs); ?> System<?php echo count($laser_techs) > 1 ? 's' : ''; ?></span>
-                            </div>
-                            
-                            <div class="space-y-6">
-                                <?php foreach ($laser_techs as $idx => $tech) : ?>
-                                    <div class="bg-gradient-to-br from-brand-light/10 to-offwhite p-6 md:p-8 rounded-2xl border border-brand/10 hover:border-brand/30 transition-all duration-300 hover:shadow-lg">
-                                        <div class="flex flex-col md:flex-row gap-6">
-                                            <?php if ($tech['image']) : ?>
-                                            <div class="md:w-48 flex-shrink-0">
-                                                <div class="aspect-square rounded-xl overflow-hidden border-2 border-brand/20 shadow-md">
-                                                    <img src="<?php echo esc_url($tech['image']); ?>" alt="<?php echo esc_attr($tech['title']); ?>" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-                                                </div>
-                                            </div>
-                                            <?php endif; ?>
-                                            
-                                            <div class="flex-1">
-                                                <h3 class="text-xl md:text-2xl font-black text-brand mb-3 uppercase tracking-wider flex items-center">
-                                                    <?php echo esc_html($tech['title']); ?>
-                                                    <?php if ($tech['official_website']) : ?>
-                                                        <a href="<?php echo esc_url($tech['official_website']); ?>" target="_blank" rel="noopener noreferrer" class="ml-3 text-graphite hover:text-brand transition-colors">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link">
-                                                                <path d="M15 3h6v6"></path>
-                                                                <path d="M10 14 21 3"></path>
-                                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                                            </svg>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                </h3>
-                                                
-                                                <?php if ($tech['description']) : ?>
-                                                    <p class="text-graphite leading-relaxed font-medium mb-4"><?php echo nl2br(esc_html($tech['description'])); ?></p>
-                                                <?php endif; ?>
-                                                
-                                                <?php if ($tech['content']) : ?>
-                                                    <div class="text-sm text-charcoal leading-relaxed mb-4"><?php echo wp_kses_post(wpautop($tech['content'])); ?></div>
-                                                <?php endif; ?>
-                                                
-                                                <?php if ($tech['technical_notes']) : ?>
-                                                    <div class="bg-white/60 border border-brand/20 rounded-xl p-4 mb-4">
-                                                        <div class="flex items-start">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info text-brand mr-2 mt-0.5 flex-shrink-0">
-                                                                <circle cx="12" cy="12" r="10"></circle>
-                                                                <path d="M12 16v-4"></path>
-                                                                <path d="M12 8h.01"></path>
-                                                            </svg>
-                                                            <div>
-                                                                <p class="text-[10px] font-black text-brand uppercase tracking-widest mb-1">Technical Specifications</p>
-                                                                <p class="text-xs text-charcoal leading-relaxed font-medium"><?php echo nl2br(esc_html($tech['technical_notes'])); ?></p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                <?php endif; ?>
-                                                
-                                                <div class="flex flex-wrap gap-2">
-                                                    <span class="bg-white px-3 py-1.5 rounded-full text-[9px] font-black text-brand uppercase tracking-widest border border-brand/20 shadow-sm flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check mr-1.5">
-                                                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
-                                                            <path d="m9 12 2 2 4-4"></path>
-                                                        </svg>
-                                                        FDA Cleared
-                                                    </span>
-                                                    <span class="bg-white px-3 py-1.5 rounded-full text-[9px] font-black text-teal uppercase tracking-widest border border-teal/20 shadow-sm flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-snowflake mr-1.5">
-                                                            <line x1="2" x2="22" y1="12" y2="12"></line>
-                                                            <line x1="12" x2="12" y1="2" y2="22"></line>
-                                                            <path d="m20 16-4-4 4-4"></path>
-                                                            <path d="m4 8 4 4-4 4"></path>
-                                                            <path d="m16 4-4 4-4-4"></path>
-                                                            <path d="m8 20 4-4 4 4"></path>
-                                                        </svg>
-                                                        Advanced Cooling
-                                                    </span>
-                                                    <span class="bg-white px-3 py-1.5 rounded-full text-[9px] font-black text-charcoal uppercase tracking-widest border border-gray-light shadow-sm flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette mr-1.5">
-                                                            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
-                                                            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
-                                                            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
-                                                            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
-                                                            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
-                                                        </svg>
-                                                        All Skin Types
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </section>
-                    <?php endif; ?>
+
 
                     <!-- What People Say Section -->
                     <?php if ($reviews_summary) : ?>
@@ -423,43 +333,7 @@ while (have_posts()) : the_post();
                         </section>
                     <?php endif; ?>
 
-                    <!-- Director Section -->
-                    <section id="director-section" class="scroll-mt-32 bg-white p-8 md:p-12 rounded-2xl border border-gray-light shadow-sm w-full overflow-hidden">
-                        <h2 class="text-2xl font-black text-charcoal mb-10 uppercase tracking-tight border-b border-offwhite pb-6 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-6 h-6 text-brand mr-3" aria-hidden="true">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            Clinic Director
-                        </h2>
-                        <div class="flex flex-col md:flex-row gap-10 items-start">
-                            <div class="flex-1 space-y-4">
-                                <h3 class="text-2xl font-black text-charcoal uppercase tracking-tight">Dr. <?php echo esc_html(get_bloginfo('name')); ?></h3>
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="px-3 py-1 bg-teal/10 text-teal text-[10px] font-black uppercase tracking-widest rounded-full flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award w-3 h-3 mr-1.5" aria-hidden="true">
-                                            <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path>
-                                            <circle cx="12" cy="8" r="6"></circle>
-                                        </svg>
-                                        Board Certified
-                                    </span>
-                                    <span class="px-3 py-1 bg-brand/10 text-brand text-[10px] font-black uppercase tracking-widest rounded-full flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-3 h-3 mr-1.5" aria-hidden="true">
-                                            <path d="M12 7v14"></path>
-                                            <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
-                                        </svg>
-                                        MD, FAAD
-                                    </span>
-                                </div>
-                                <p class="text-graphite leading-relaxed text-base font-medium">Board-certified dermatologist with extensive experience in laser tattoo removal and skin rejuvenation procedures.</p>
-                            </div>
-                            <div class="w-full md:w-72 flex-shrink-0">
-                                <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-offwhite relative group">
-                                    <img alt="Clinic Director" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1559839734-2b71f1536783?q=80&w=1000&auto=format&fit=crop">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+
 
                     <!-- Hours Section -->
                     <section id="hours-section" class="scroll-mt-32 bg-white p-8 md:p-12 rounded-2xl border border-gray-light shadow-sm w-full">
@@ -559,21 +433,73 @@ while (have_posts()) : the_post();
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <button class="w-full bg-brand text-white py-5 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-brand-hover transition-all shadow-xl shadow-brand/20">
-                                Request A Quote
-                            </button>
                             
-                            <!-- Laser Technologies in Sidebar -->
+                            <!-- Laser Technology Section -->
                             <?php if (!empty($laser_techs)) : ?>
                             <div class="pt-6 border-t border-gray-light">
-                                <h4 class="text-[10px] font-black text-graphite uppercase tracking-[0.2em] mb-3">Laser Systems Used</h4>
-                                <div class="space-y-2">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h4 class="text-[10px] font-black text-graphite uppercase tracking-[0.2em]">Laser Technology</h4>
+                                    <span class="text-xs font-black text-brand uppercase tracking-widest bg-brand/10 px-2 py-1 rounded-full"><?php echo count($laser_techs); ?></span>
+                                </div>
+                                <div class="space-y-4">
                                     <?php foreach ($laser_techs as $tech) : ?>
-                                        <div class="flex items-center text-xs font-bold text-charcoal bg-offwhite px-3 py-2 rounded-lg border border-gray-light">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-brand mr-2 flex-shrink-0" aria-hidden="true">
-                                                <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                                            </svg>
-                                            <span class="truncate"><?php echo esc_html($tech['title']); ?></span>
+                                        <div class="bg-gradient-to-br from-brand-light/10 to-offwhite p-4 rounded-xl border border-brand/10">
+                                            <?php if ($tech['image']) : ?>
+                                            <div class="mb-4">
+                                                <div class="aspect-square rounded-lg overflow-hidden border-2 border-brand/20 shadow-md">
+                                                    <img src="<?php echo esc_url($tech['image']); ?>" alt="<?php echo esc_attr($tech['title']); ?>" class="w-full h-full object-cover">
+                                                </div>
+                                            </div>
+                                            <?php endif; ?>
+                                            
+                                            <h5 class="text-sm font-black text-brand mb-2 uppercase tracking-wider flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-brand mr-1.5 flex-shrink-0" aria-hidden="true">
+                                                    <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                                                </svg>
+                                                <?php echo esc_html($tech['title']); ?>
+                                            </h5>
+                                            
+                                            <?php if ($tech['description']) : ?>
+                                                <p class="text-xs text-graphite leading-relaxed font-medium mb-3"><?php echo nl2br(esc_html($tech['description'])); ?></p>
+                                            <?php endif; ?>
+                                            
+                                            <?php if ($tech['technical_notes']) : ?>
+                                                <div class="bg-white/60 border border-brand/20 rounded-lg p-3 mb-3">
+                                                    <p class="text-[9px] font-black text-brand uppercase tracking-widest mb-1">Technical Specs</p>
+                                                    <p class="text-xs text-charcoal leading-relaxed font-medium"><?php echo nl2br(esc_html($tech['technical_notes'])); ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                            
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <span class="bg-white px-2 py-1 rounded-full text-[8px] font-black text-brand uppercase tracking-widest border border-brand/20 shadow-sm flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check mr-1">
+                                                        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                                                        <path d="m9 12 2 2 4-4"></path>
+                                                    </svg>
+                                                    FDA Cleared
+                                                </span>
+                                                <span class="bg-white px-2 py-1 rounded-full text-[8px] font-black text-teal uppercase tracking-widest border border-teal/20 shadow-sm flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-snowflake mr-1">
+                                                        <line x1="2" x2="22" y1="12" y2="12"></line>
+                                                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                                                        <path d="m20 16-4-4 4-4"></path>
+                                                        <path d="m4 8 4 4-4 4"></path>
+                                                        <path d="m16 4-4 4-4-4"></path>
+                                                        <path d="m8 20 4-4 4 4"></path>
+                                                    </svg>
+                                                    Advanced Cooling
+                                                </span>
+                                                <span class="bg-white px-2 py-1 rounded-full text-[8px] font-black text-charcoal uppercase tracking-widest border border-gray-light shadow-sm flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette mr-1">
+                                                        <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+                                                        <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+                                                        <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                                                        <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+                                                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+                                                    </svg>
+                                                    All Skin Types
+                                                </span>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>

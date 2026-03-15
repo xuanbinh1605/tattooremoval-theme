@@ -69,8 +69,8 @@
                     </a>
                 </div>
 
-                <!-- Search Form (visible on inner pages) -->
-                <div class="flex-grow flex items-center transition-all duration-300 <?php echo is_front_page() ? 'opacity-0 -translate-y-4 scale-95 pointer-events-none' : 'opacity-100 translate-y-0 scale-100'; ?>" id="header-search-wrapper">
+                <!-- Search Form -->
+                <div class="flex-grow flex items-center transition-all duration-300 opacity-100 translate-y-0 scale-100" id="header-search-wrapper">
                     <form id="header-search-form" role="search" class="max-w-xl mx-4 hidden sm:flex bg-white rounded-lg p-1.5 gap-2 relative border border-gray-light w-full max-w-lg shadow-sm">
                         <div class="flex-grow flex items-center px-3 py-1.5 bg-offwhite rounded-md relative">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-graphite mr-2 flex-shrink-0" aria-hidden="true">
