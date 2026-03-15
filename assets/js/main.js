@@ -314,6 +314,56 @@
     }
 
     /**
+     * Sticky Clinic Navigation (Single Clinic Page)
+     */
+    function initStickyClinicNav() {
+        const $stickyNav = $('#sticky-nav');
+        if (!$stickyNav.length) return;
+
+        let lastScroll = 0;
+        const showThreshold = 400; // Show after scrolling 400px down
+
+        $(window).on('scroll', function() {
+            const currentScroll = $(this).scrollTop();
+
+            if (currentScroll > showThreshold) {
+                // Show sticky nav
+                $stickyNav.removeClass('-translate-y-full opacity-0 pointer-events-none')
+                          .addClass('translate-y-0 opacity-100');
+            } else {
+                // Hide sticky nav
+                $stickyNav.removeClass('translate-y-0 opacity-100')
+                          .addClass('-translate-y-full opacity-0 pointer-events-none');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Active section highlighting on scroll
+        const $navLinks = $stickyNav.find('a[href^="#"]');
+        const sections = $navLinks.map(function() {
+            const href = $(this).attr('href');
+            if (href && href !== '#') {
+                return $(href);
+            }
+        }).get();
+
+        $(window).on('scroll', function() {
+            const scrollPos = $(this).scrollTop() + 150;
+
+            sections.forEach(function($section, i) {
+                if ($section.length && $section.offset().top <= scrollPos && 
+                    $section.offset().top + $section.outerHeight() > scrollPos) {
+                    $navLinks.removeClass('text-brand border-brand')
+                             .addClass('text-graphite border-transparent');
+                    $navLinks.eq(i).removeClass('text-graphite border-transparent')
+                                   .addClass('text-brand border-brand');
+                }
+            });
+        });
+    }
+
+    /**
      * Social Proof Counter Animation
      */
     function initCounterAnimation() {
@@ -381,6 +431,7 @@
         initMobileMenu();
         initSmoothScroll();
         initStickyHeader();
+        initStickyClinicNav();
         initBackToTop();
         initClinicSearch();
         initStarRating();
