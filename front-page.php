@@ -41,6 +41,30 @@ get_header();
                             </button>
                         </form>
                     </div>
+                    <!-- Social Proof Stats -->
+                    <?php
+                        $stat_1_num   = get_theme_mod('str_stat_1_number', 1944);
+                        $stat_1_label = get_theme_mod('str_stat_1_label', 'Verified Clinics');
+                        $stat_2_num   = get_theme_mod('str_stat_2_number', 403);
+                        $stat_2_label = get_theme_mod('str_stat_2_label', 'Active Cities');
+                        $stat_3_num   = get_theme_mod('str_stat_3_number', 1449);
+                        $stat_3_label = get_theme_mod('str_stat_3_label', 'Satisfied Users');
+                    ?>
+                    <div class="mt-10 flex flex-wrap justify-center md:justify-start items-start gap-10 md:gap-16" id="hero-social-proof">
+                        <div class="text-center md:text-left">
+                            <span class="str-counter block text-4xl md:text-5xl font-extrabold text-white tracking-tight" data-target="<?php echo esc_attr($stat_1_num); ?>">0</span>
+                            <span class="block text-xs font-black uppercase tracking-[0.2em] text-brand mt-1"><?php echo esc_html($stat_1_label); ?></span>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <span class="str-counter block text-4xl md:text-5xl font-extrabold text-white tracking-tight" data-target="<?php echo esc_attr($stat_2_num); ?>">0</span>
+                            <span class="block text-xs font-black uppercase tracking-[0.2em] text-brand mt-1"><?php echo esc_html($stat_2_label); ?></span>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <span class="str-counter block text-4xl md:text-5xl font-extrabold text-white tracking-tight" data-target="<?php echo esc_attr($stat_3_num); ?>">0</span>
+                            <span class="block text-xs font-black uppercase tracking-[0.2em] text-brand mt-1"><?php echo esc_html($stat_3_label); ?></span>
+                        </div>
+                    </div>
+
                     <div class="mt-8 flex flex-wrap justify-center md:justify-start items-center gap-6 opacity-60">
                         <div class="flex items-center text-xs font-black uppercase tracking-widest">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-4 h-4 text-brand mr-2" aria-hidden="true">

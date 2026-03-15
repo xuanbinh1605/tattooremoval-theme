@@ -314,6 +314,67 @@
     }
 
     /**
+     * Social Proof Counter Animation
+     */
+    function initCounterAnimation() {
+        var $counters = $('.str-counter');
+        if (!$counters.length) return;
+
+        var animated = false;
+
+        function formatNumber(n) {
+            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function animateCounters() {
+            if (animated) return;
+            animated = true;
+
+            $counters.each(function() {
+                var $el = $(this);
+                var target = parseInt($el.data('target'), 10) || 0;
+                var duration = 2000;
+                var start = 0;
+                var startTime = null;
+
+                function step(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    var progress = Math.min((timestamp - startTime) / duration, 1);
+                    // Ease-out quad
+                    var eased = 1 - (1 - progress) * (1 - progress);
+                    var current = Math.floor(eased * target);
+                    $el.text(formatNumber(current) + '+');
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        $el.text(formatNumber(target) + '+');
+                    }
+                }
+
+                requestAnimationFrame(step);
+            });
+        }
+
+        // Use IntersectionObserver to trigger when stats scroll into view
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            var target = document.getElementById('hero-social-proof');
+            if (target) observer.observe(target);
+        } else {
+            // Fallback: animate immediately
+            animateCounters();
+        }
+    }
+
+    /**
      * Initialize all functions when document is ready
      */
     $(document).ready(function() {
@@ -326,6 +387,7 @@
         initLazyLoading();
         initFormValidation();
         initHeroSearchAutocomplete();
+        initCounterAnimation();
 
         // Trigger a custom event for other scripts to hook into
         $(document).trigger('strThemeReady');

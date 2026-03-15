@@ -182,6 +182,60 @@ require_once STR_DIR . '/inc/admin-functions.php';
 require_once STR_DIR . '/inc/clinic-importer.php';
 
 /**
+ * Customizer: Social Proof Stats
+ */
+function str_customize_register($wp_customize) {
+    // Section
+    $wp_customize->add_section('str_social_proof', array(
+        'title'    => __('Social Proof Stats', 'search-tattoo-removal'),
+        'priority' => 35,
+    ));
+
+    // Stat 1
+    $wp_customize->add_setting('str_stat_1_number', array('default' => 1944, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('str_stat_1_number', array(
+        'label'   => __('Stat 1 — Number', 'search-tattoo-removal'),
+        'section' => 'str_social_proof',
+        'type'    => 'number',
+    ));
+    $wp_customize->add_setting('str_stat_1_label', array('default' => 'Verified Clinics', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('str_stat_1_label', array(
+        'label'   => __('Stat 1 — Label', 'search-tattoo-removal'),
+        'section' => 'str_social_proof',
+        'type'    => 'text',
+    ));
+
+    // Stat 2
+    $wp_customize->add_setting('str_stat_2_number', array('default' => 403, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('str_stat_2_number', array(
+        'label'   => __('Stat 2 — Number', 'search-tattoo-removal'),
+        'section' => 'str_social_proof',
+        'type'    => 'number',
+    ));
+    $wp_customize->add_setting('str_stat_2_label', array('default' => 'Active Cities', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('str_stat_2_label', array(
+        'label'   => __('Stat 2 — Label', 'search-tattoo-removal'),
+        'section' => 'str_social_proof',
+        'type'    => 'text',
+    ));
+
+    // Stat 3
+    $wp_customize->add_setting('str_stat_3_number', array('default' => 1449, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('str_stat_3_number', array(
+        'label'   => __('Stat 3 — Number', 'search-tattoo-removal'),
+        'section' => 'str_social_proof',
+        'type'    => 'number',
+    ));
+    $wp_customize->add_setting('str_stat_3_label', array('default' => 'Satisfied Users', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('str_stat_3_label', array(
+        'label'   => __('Stat 3 — Label', 'search-tattoo-removal'),
+        'section' => 'str_social_proof',
+        'type'    => 'text',
+    ));
+}
+add_action('customize_register', 'str_customize_register');
+
+/**
  * Load Jetpack compatibility file if Jetpack is active
  */
 if (defined('JETPACK__VERSION')) {
