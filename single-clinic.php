@@ -117,12 +117,10 @@ while (have_posts()) : the_post();
                         <span class="text-sm font-black text-charcoal hidden lg:block truncate max-w-[200px]"><?php the_title(); ?></span>
                         <div class="flex space-x-6 overflow-x-auto no-scrollbar py-2">
                             <a href="#gallery-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-brand border-brand">Gallery</a>
-                            <a href="#tech-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Technology</a>
-                            <a href="#director-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Director</a>
+                            <a href="#reviews-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Reviews</a>
                             <a href="#hours-section" class="text-xs font-black uppercase tracking-widest whitespace-nowrap transition-colors py-1 border-b-2 text-graphite border-transparent hover:text-charcoal">Hours</a>
                         </div>
                     </div>
-                    <button class="bg-brand text-white px-5 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-brand-hover transition-all shadow-md ml-4">Get Quote</button>
                 </div>
             </div>
         </div>
@@ -307,7 +305,7 @@ while (have_posts()) : the_post();
 
                     <!-- What People Say Section -->
                     <?php if ($reviews_summary) : ?>
-                        <section class="bg-charcoal text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
+                        <section id="reviews-section" class="scroll-mt-32 bg-charcoal text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-48 h-48 bg-brand/10 blur-[100px] -mr-24 -mt-24"></div>
                             <div class="relative z-10">
                                 <div class="flex items-center mb-6">
