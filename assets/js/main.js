@@ -160,6 +160,160 @@
     }
 
     /**
+     * Hero Search Autocomplete
+     */
+    function initHeroSearchAutocomplete() {
+        const $input = $('#hero-search-input');
+        const $suggestions = $('#hero-search-suggestions');
+        const $form = $('#hero-search-form');
+
+        if (!$input.length || typeof strAjax === 'undefined') {
+            return;
+        }
+
+        let debounceTimer = null;
+        let activeIndex = -1;
+        let currentResults = [];
+        let selectedLocation = null;
+
+        function showSuggestions(results) {
+            currentResults = results;
+            activeIndex = -1;
+
+            if (!results.length) {
+                $suggestions.empty().removeClass('active');
+                $input.attr('aria-expanded', 'false');
+                return;
+            }
+
+            let html = '';
+            results.forEach(function(item, i) {
+                const icon = item.type === 'state'
+                    ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="str-suggest-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>'
+                    : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="str-suggest-icon"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>';
+                const label = item.type === 'state' ? 'State' : 'City';
+                const countText = item.count > 0 ? item.count + ' clinic' + (item.count !== 1 ? 's' : '') : '';
+                html += '<div class="str-suggest-item" role="option" data-index="' + i + '">'
+                    + icon
+                    + '<div class="str-suggest-text">'
+                    + '<span class="str-suggest-name">' + $('<span>').text(item.name).html() + '</span>'
+                    + '<span class="str-suggest-meta">' + label + (countText ? ' &middot; ' + countText : '') + '</span>'
+                    + '</div>'
+                    + '</div>';
+            });
+
+            $suggestions.html(html).addClass('active');
+            $input.attr('aria-expanded', 'true');
+        }
+
+        function selectItem(index) {
+            if (index < 0 || index >= currentResults.length) return;
+            const item = currentResults[index];
+            $input.val(item.name);
+            selectedLocation = item;
+            $suggestions.empty().removeClass('active');
+            $input.attr('aria-expanded', 'false');
+        }
+
+        function navigateTo(item) {
+            if (!item) return;
+            // Build URL to the us-location taxonomy archive or location-search page
+            if (item.type === 'state') {
+                window.location.href = '/us-location/' + encodeURIComponent(item.slug) + '/';
+            } else {
+                // City: get parent state slug for the path
+                var stateSlug = item.state.toLowerCase().replace(/\s+/g, '-');
+                window.location.href = '/us-location/' + encodeURIComponent(stateSlug) + '/' + encodeURIComponent(item.slug) + '/';
+            }
+        }
+
+        // Keyboard input with debounce
+        $input.on('input', function() {
+            var q = $.trim($(this).val());
+            selectedLocation = null;
+
+            if (debounceTimer) clearTimeout(debounceTimer);
+
+            if (q.length < 2) {
+                $suggestions.empty().removeClass('active');
+                $input.attr('aria-expanded', 'false');
+                return;
+            }
+
+            debounceTimer = setTimeout(function() {
+                $.ajax({
+                    url: strAjax.restUrl + 'locations/suggest',
+                    data: { q: q },
+                    dataType: 'json',
+                    success: function(resp) {
+                        showSuggestions(resp.results || []);
+                    }
+                });
+            }, 250);
+        });
+
+        // Keyboard navigation
+        $input.on('keydown', function(e) {
+            if (!$suggestions.hasClass('active')) return;
+
+            var items = $suggestions.find('.str-suggest-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                items.removeClass('highlighted');
+                items.eq(activeIndex).addClass('highlighted');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = Math.max(activeIndex - 1, 0);
+                items.removeClass('highlighted');
+                items.eq(activeIndex).addClass('highlighted');
+            } else if (e.key === 'Enter' && activeIndex >= 0) {
+                e.preventDefault();
+                selectItem(activeIndex);
+                navigateTo(selectedLocation);
+            } else if (e.key === 'Escape') {
+                $suggestions.empty().removeClass('active');
+                $input.attr('aria-expanded', 'false');
+            }
+        });
+
+        // Click on suggestion
+        $suggestions.on('click', '.str-suggest-item', function() {
+            selectItem(parseInt($(this).data('index'), 10));
+            navigateTo(selectedLocation);
+        });
+
+        // Hover highlight
+        $suggestions.on('mouseenter', '.str-suggest-item', function() {
+            $suggestions.find('.str-suggest-item').removeClass('highlighted');
+            $(this).addClass('highlighted');
+            activeIndex = parseInt($(this).data('index'), 10);
+        });
+
+        // Close on outside click
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#hero-search-form').length) {
+                $suggestions.empty().removeClass('active');
+                $input.attr('aria-expanded', 'false');
+            }
+        });
+
+        // Form submit — navigate to selected or search by text
+        $form.on('submit', function(e) {
+            e.preventDefault();
+            if (selectedLocation) {
+                navigateTo(selectedLocation);
+            } else {
+                var q = $.trim($input.val());
+                if (q) {
+                    window.location.href = strAjax.searchPage + '?location_state=' + encodeURIComponent(q);
+                }
+            }
+        });
+    }
+
+    /**
      * Initialize all functions when document is ready
      */
     $(document).ready(function() {
@@ -171,6 +325,7 @@
         initStarRating();
         initLazyLoading();
         initFormValidation();
+        initHeroSearchAutocomplete();
 
         // Trigger a custom event for other scripts to hook into
         $(document).trigger('strThemeReady');

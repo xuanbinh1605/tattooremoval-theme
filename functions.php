@@ -150,10 +150,12 @@ function str_scripts() {
     // Theme scripts
     wp_enqueue_script('str-main', STR_URI . '/assets/js/main.js', array('jquery'), STR_VERSION, true);
 
-    // Localize script with AJAX URL
+    // Localize script with AJAX URL and REST API info
     wp_localize_script('str-main', 'strAjax', array(
-        'ajaxurl' => admin_url('admin-ajax.php'),
-        'nonce'   => wp_create_nonce('str_nonce'),
+        'ajaxurl'  => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('str_nonce'),
+        'restUrl'  => esc_url_raw(rest_url('str/v1/')),
+        'searchPage' => esc_url(home_url('/location-search/')),
     ));
     
     // Location Search Filters (for page template and taxonomy archives)

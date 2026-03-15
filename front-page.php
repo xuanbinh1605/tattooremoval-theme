@@ -27,13 +27,14 @@ get_header();
                         Locate the highest-rated medical laser specialists in your city. Compare clinic technology, read verified case studies, and book a free consultation.
                     </p>
                     <div class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-                        <form class="max-w-2xl mx-auto flex flex-col md:flex-row bg-white rounded-lg p-1.5 flex shadow-xl gap-2 relative border border-gray-light">
+                        <form id="hero-search-form" class="max-w-2xl mx-auto flex flex-col md:flex-row bg-white rounded-lg p-1.5 flex shadow-xl gap-2 relative border border-gray-light">
                             <div class="flex-grow flex items-center px-3 py-3 bg-offwhite rounded-md relative">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-5 w-5 text-graphite mr-2 flex-shrink-0" aria-hidden="true">
                                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                                     <circle cx="12" cy="10" r="3"></circle>
                                 </svg>
-                                <input placeholder="City, State, or Zip" class="w-full bg-transparent border-none focus:ring-0 text-charcoal placeholder-graphite font-medium focus:outline-none text-base" autocomplete="off" type="text" value="">
+                                <input id="hero-search-input" placeholder="City, State, or Zip" class="w-full bg-transparent border-none focus:ring-0 text-charcoal placeholder-graphite font-medium focus:outline-none text-base" autocomplete="off" type="text" value="" role="combobox" aria-expanded="false" aria-controls="hero-search-suggestions" aria-autocomplete="list">
+                                <div id="hero-search-suggestions" class="str-suggestions" role="listbox" aria-label="Location suggestions"></div>
                             </div>
                             <button type="submit" class="px-8 py-3 text-lg bg-brand hover:bg-brand-hover text-white font-bold rounded-md transition-colors flex-shrink-0 flex items-center justify-center">
                                 <span class="inline">Search</span>

@@ -68,6 +68,20 @@ function str_register_rest_routes() {
         'callback' => 'str_get_states',
         'permission_callback' => '__return_true',
     ));
+
+    // Location suggestions endpoint for autocomplete
+    register_rest_route('str/v1', '/locations/suggest', array(
+        'methods' => 'GET',
+        'callback' => 'str_suggest_locations',
+        'permission_callback' => '__return_true',
+        'args' => array(
+            'q' => array(
+                'required' => true,
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+        ),
+    ));
 }
 add_action('rest_api_init', 'str_register_rest_routes');
 
@@ -174,6 +188,59 @@ function str_get_states($request) {
         'success' => true,
         'data' => $formatted_states,
     ), 200);
+}
+
+/**
+ * Location suggestions callback for autocomplete
+ */
+function str_suggest_locations($request) {
+    $query = $request->get_param('q');
+
+    if (strlen($query) < 2) {
+        return new WP_REST_Response(array('results' => array()), 200);
+    }
+
+    // Get all us_location terms (states = parent 0, cities = children)
+    $all_terms = get_terms(array(
+        'taxonomy'   => 'us_location',
+        'hide_empty' => false,
+        'search'     => $query,
+        'number'     => 20,
+    ));
+
+    if (is_wp_error($all_terms)) {
+        return new WP_REST_Response(array('results' => array()), 200);
+    }
+
+    $results = array();
+
+    foreach ($all_terms as $term) {
+        if ($term->parent === 0) {
+            // This is a state
+            $results[] = array(
+                'type'  => 'state',
+                'name'  => $term->name,
+                'slug'  => $term->slug,
+                'state' => $term->name,
+                'city'  => '',
+                'count' => $term->count,
+            );
+        } else {
+            // This is a city — look up its parent state
+            $parent = get_term($term->parent, 'us_location');
+            $state_name = ($parent && !is_wp_error($parent)) ? $parent->name : '';
+            $results[] = array(
+                'type'  => 'city',
+                'name'  => $term->name . ', ' . $state_name,
+                'slug'  => $term->slug,
+                'state' => $state_name,
+                'city'  => $term->name,
+                'count' => $term->count,
+            );
+        }
+    }
+
+    return new WP_REST_Response(array('results' => $results), 200);
 }
 
 /**
