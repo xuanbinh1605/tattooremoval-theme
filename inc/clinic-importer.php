@@ -691,8 +691,8 @@ function str_hours_text_to_structured($text) {
 
     // Normalize unicode spaces and special characters
     $text = preg_replace('/[\x{202F}\x{00A0}\x{2009}\x{2007}]/u', ' ', $text);
-    // Normalize dashes: en-dash, em-dash → regular hyphen
-    $text = str_replace(array('–', '—', "\xe2\x80\x93", "\xe2\x80\x94"), '-', $text);
+    // Normalize dashes: en-dash, em-dash, mojibake variants → regular hyphen
+    $text = str_replace(array('–', '—', "\xe2\x80\x93", "\xe2\x80\x94", '‚Äì', '‚Äî'), '-', $text);
 
     // Handle "Open 24 hours" / "24/7" / "Open 24/7"
     if (preg_match('/\b(open\s+)?24\s*\/?\s*7\b|open\s+24\s+hours/i', $text)) {
