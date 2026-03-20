@@ -1031,6 +1031,52 @@ while (have_posts()) : the_post();
     </div>
 </div>
 
+<!-- Success Modal -->
+<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+        <div class="p-8 text-center">
+            <!-- Success Icon -->
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-teal/10 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+                    <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+            </div>
+            
+            <h2 class="text-2xl font-black text-charcoal uppercase tracking-tight mb-3">Quote Request Sent!</h2>
+            <p class="text-graphite font-medium mb-6 leading-relaxed">
+                Thank you for your interest! We've received your quote request and will get back to you within 24 hours.
+            </p>
+            
+            <!-- Success Details -->
+            <div class="bg-offwhite rounded-xl p-4 mb-6 text-left">
+                <div class="flex items-start mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand mr-2 mt-0.5 flex-shrink-0">
+                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </svg>
+                    <div>
+                        <p class="text-xs font-black text-graphite uppercase tracking-wider mb-1">Email Confirmation</p>
+                        <p class="text-xs text-charcoal font-medium">Check your inbox for a confirmation email</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand mr-2 mt-0.5 flex-shrink-0">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-xs font-black text-graphite uppercase tracking-wider mb-1">Response Time</p>
+                        <p class="text-xs text-charcoal font-medium">We'll contact you within 24 hours</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="closeSuccessModal()" class="w-full bg-brand hover:bg-brand-dark text-white font-black uppercase tracking-widest py-3 rounded-lg transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
 <?php
 endwhile;
 get_footer();

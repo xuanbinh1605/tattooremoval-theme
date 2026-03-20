@@ -10,10 +10,26 @@ function closeQuoteModal() {
     document.getElementById('quoteFormMessage').classList.add('hidden');
 }
 
+function openSuccessModal() {
+    document.getElementById('successModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSuccessModal() {
+    document.getElementById('successModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
 // Close modal when clicking outside
 document.getElementById('quoteModal')?.addEventListener('click', function(e) {
     if (e.target === this) {
         closeQuoteModal();
+    }
+});
+
+document.getElementById('successModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeSuccessModal();
     }
 });
 
@@ -42,11 +58,8 @@ document.getElementById('quoteForm')?.addEventListener('submit', async function(
         messageDiv.classList.remove('hidden');
         
         if (data.success) {
-            messageDiv.className = 'mb-4 p-4 bg-teal/10 border border-teal/20 rounded-lg text-teal font-bold';
-            messageDiv.textContent = data.data.message;
-            setTimeout(() => {
-                closeQuoteModal();
-            }, 2000);
+            closeQuoteModal();
+            openSuccessModal();
         } else {
             messageDiv.className = 'mb-4 p-4 bg-red-100 border border-red-300 rounded-lg text-red-700 font-bold';
             messageDiv.textContent = data.data.message || 'An error occurred';
