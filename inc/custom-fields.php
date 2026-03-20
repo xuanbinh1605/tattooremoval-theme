@@ -555,28 +555,34 @@ function str_clinic_social_media_callback($post) {
     $tiktok = get_post_meta($post->ID, '_clinic_tiktok', true);
     ?>
     <p>
-        <label for="facebook"><strong><?php _e('Facebook URL:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="facebook" name="facebook" value="<?php echo esc_attr($facebook); ?>" style="width: 100%;" placeholder="https://facebook.com/yourpage">
+        <label for="facebook"><strong><?php _e('Facebook URL or Username:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="facebook" name="facebook" value="<?php echo esc_attr($facebook); ?>" style="width: 100%;" placeholder="https://facebook.com/yourpage or @username">
+        <span class="description"><?php _e('Full URL or username/handle (with or without @)', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
-        <label for="twitter"><strong><?php _e('Twitter/X URL:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="twitter" name="twitter" value="<?php echo esc_attr($twitter); ?>" style="width: 100%;" placeholder="https://twitter.com/yourhandle">
+        <label for="twitter"><strong><?php _e('Twitter/X URL or Handle:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="twitter" name="twitter" value="<?php echo esc_attr($twitter); ?>" style="width: 100%;" placeholder="https://twitter.com/handle or @handle">
+        <span class="description"><?php _e('Full URL or username/handle (with or without @)', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
-        <label for="instagram"><strong><?php _e('Instagram URL:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="instagram" name="instagram" value="<?php echo esc_attr($instagram); ?>" style="width: 100%;" placeholder="https://instagram.com/yourhandle">
+        <label for="instagram"><strong><?php _e('Instagram URL or Handle:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="instagram" name="instagram" value="<?php echo esc_attr($instagram); ?>" style="width: 100%;" placeholder="https://instagram.com/handle or @handle">
+        <span class="description"><?php _e('Full URL or username/handle (with or without @)', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
-        <label for="youtube"><strong><?php _e('YouTube URL:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="youtube" name="youtube" value="<?php echo esc_attr($youtube); ?>" style="width: 100%;" placeholder="https://youtube.com/yourchannel">
+        <label for="youtube"><strong><?php _e('YouTube URL or Channel:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="youtube" name="youtube" value="<?php echo esc_attr($youtube); ?>" style="width: 100%;" placeholder="https://youtube.com/@channel or @channel">
+        <span class="description"><?php _e('Full URL or channel name (with or without @)', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
-        <label for="linkedin"><strong><?php _e('LinkedIn URL:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="linkedin" name="linkedin" value="<?php echo esc_attr($linkedin); ?>" style="width: 100%;" placeholder="https://linkedin.com/company/yourcompany">
+        <label for="linkedin"><strong><?php _e('LinkedIn URL or Profile:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="linkedin" name="linkedin" value="<?php echo esc_attr($linkedin); ?>" style="width: 100%;" placeholder="https://linkedin.com/company/name or company-name">
+        <span class="description"><?php _e('Full URL or company/profile name', 'search-tattoo-removal'); ?></span>
     </p>
     <p>
-        <label for="tiktok"><strong><?php _e('TikTok URL:', 'search-tattoo-removal'); ?></strong></label><br>
-        <input type="url" id="tiktok" name="tiktok" value="<?php echo esc_attr($tiktok); ?>" style="width: 100%;" placeholder="https://tiktok.com/@yourhandle">
+        <label for="tiktok"><strong><?php _e('TikTok URL or Username:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="text" id="tiktok" name="tiktok" value="<?php echo esc_attr($tiktok); ?>" style="width: 100%;" placeholder="https://tiktok.com/@username or @username">
+        <span class="description"><?php _e('Full URL or username (with or without @)', 'search-tattoo-removal'); ?></span>
     </p>
     <?php
 }
