@@ -194,12 +194,72 @@ function str_register_review_post_type() {
 add_action('init', 'str_register_review_post_type', 0);
 
 /**
+ * Register Quote Request Post Type
+ */
+function str_register_quote_post_type() {
+    $labels = array(
+        'name'                  => _x('Quote Requests', 'Post Type General Name', 'search-tattoo-removal'),
+        'singular_name'         => _x('Quote Request', 'Post Type Singular Name', 'search-tattoo-removal'),
+        'menu_name'             => __('Quote Requests', 'search-tattoo-removal'),
+        'name_admin_bar'        => __('Quote Request', 'search-tattoo-removal'),
+        'archives'              => __('Quote Archives', 'search-tattoo-removal'),
+        'attributes'            => __('Quote Attributes', 'search-tattoo-removal'),
+        'parent_item_colon'     => __('Parent Quote:', 'search-tattoo-removal'),
+        'all_items'             => __('All Quotes', 'search-tattoo-removal'),
+        'add_new_item'          => __('Add New Quote', 'search-tattoo-removal'),
+        'add_new'               => __('Add New', 'search-tattoo-removal'),
+        'new_item'              => __('New Quote', 'search-tattoo-removal'),
+        'edit_item'             => __('Edit Quote', 'search-tattoo-removal'),
+        'update_item'           => __('Update Quote', 'search-tattoo-removal'),
+        'view_item'             => __('View Quote', 'search-tattoo-removal'),
+        'view_items'            => __('View Quotes', 'search-tattoo-removal'),
+        'search_items'          => __('Search Quote', 'search-tattoo-removal'),
+        'not_found'             => __('Not found', 'search-tattoo-removal'),
+        'not_found_in_trash'    => __('Not found in Trash', 'search-tattoo-removal'),
+        'featured_image'        => __('Tattoo Image', 'search-tattoo-removal'),
+        'set_featured_image'    => __('Set tattoo image', 'search-tattoo-removal'),
+        'remove_featured_image' => __('Remove tattoo image', 'search-tattoo-removal'),
+        'use_featured_image'    => __('Use as tattoo image', 'search-tattoo-removal'),
+        'insert_into_item'      => __('Insert into quote', 'search-tattoo-removal'),
+        'uploaded_to_this_item' => __('Uploaded to this quote', 'search-tattoo-removal'),
+        'items_list'            => __('Quotes list', 'search-tattoo-removal'),
+        'items_list_navigation' => __('Quotes list navigation', 'search-tattoo-removal'),
+        'filter_items_list'     => __('Filter quotes list', 'search-tattoo-removal'),
+    );
+
+    $args = array(
+        'label'               => __('Quote Request', 'search-tattoo-removal'),
+        'description'         => __('Customer Quote Requests for Tattoo Removal', 'search-tattoo-removal'),
+        'labels'              => $labels,
+        'supports'            => array('title', 'thumbnail'),
+        'hierarchical'        => false,
+        'public'              => false,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'menu_position'       => 8,
+        'menu_icon'           => 'dashicons-email-alt',
+        'show_in_admin_bar'   => false,
+        'show_in_nav_menus'   => false,
+        'can_export'          => true,
+        'has_archive'         => false,
+        'exclude_from_search' => true,
+        'publicly_queryable'  => false,
+        'capability_type'     => 'post',
+        'show_in_rest'        => false,
+    );
+
+    register_post_type('quote_request', $args);
+}
+add_action('init', 'str_register_quote_post_type', 0);
+
+/**
  * Flush rewrite rules on theme activation
  */
 function str_rewrite_flush() {
     str_register_clinic_post_type();
     str_register_laser_tech_post_type();
     str_register_review_post_type();
+    str_register_quote_post_type();
     flush_rewrite_rules();
 }
 add_action('after_switch_theme', 'str_rewrite_flush');

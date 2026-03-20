@@ -650,6 +650,14 @@ while (have_posts()) : the_post();
                             <?php endif; ?>
                         </div>
 
+                        <!-- Request Quote Button -->
+                        <button onclick="openQuoteModal()" class="w-full bg-brand hover:bg-brand-dark text-white font-black uppercase tracking-widest py-4 rounded-lg transition-colors shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Request a Quote
+                        </button>
+
                         <!-- Payment & Services -->
                         <?php
                         // Get payment & service meta data
@@ -928,6 +936,100 @@ while (have_posts()) : the_post();
 
     </div>
 </main>
+
+<!-- Quote Request Modal -->
+<div id="quoteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-black text-charcoal uppercase tracking-tight">Request a Quote</h2>
+                <button onclick="closeQuoteModal()" class="text-graphite hover:text-charcoal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="quoteForm" enctype="multipart/form-data">
+                <input type="hidden" name="clinic_id" value="<?php echo $clinic_id; ?>">
+                
+                <!-- Personal Information -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-black text-charcoal uppercase tracking-widest mb-4">Your Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Name *</label>
+                            <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Email *</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Phone *</label>
+                                <input type="tel" name="phone" required class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Location (City, State) *</label>
+                            <input type="text" name="location" required placeholder="e.g., Los Angeles, CA" class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tattoo Information -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-black text-charcoal uppercase tracking-widest mb-4">Tattoo Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Tattoo Size *</label>
+                            <select name="tattoo_size" required class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                                <option value="">Select size</option>
+                                <option value="Small (< 2 inches)">Small (< 2 inches)</option>
+                                <option value="Medium (2-6 inches)">Medium (2-6 inches)</option>
+                                <option value="Large (6-12 inches)">Large (6-12 inches)</option>
+                                <option value="Extra Large (> 12 inches)">Extra Large (> 12 inches)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Colors</label>
+                                <select name="tattoo_colors" class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                                    <option value="">Select colors</option>
+                                    <option value="Black only">Black only</option>
+                                    <option value="Black & Grey">Black & Grey</option>
+                                    <option value="Multi-color">Multi-color</option>
+                                    <option value="Colored (No Black)">Colored (No Black)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Body Location</label>
+                                <input type="text" name="tattoo_location" placeholder="e.g., Arm, Back, Leg" class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Upload Tattoo Image</label>
+                            <input type="file" name="tattoo_image" accept="image/*" class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand">
+                            <p class="text-xs text-graphite mt-1">Accepted formats: JPG, PNG, GIF (Max 5MB)</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-graphite uppercase tracking-wider mb-2">Additional Information</label>
+                            <textarea name="additional_info" rows="3" placeholder="Any other details about your tattoo or questions..." class="w-full px-4 py-3 border border-gray-light rounded-lg focus:outline-none focus:border-brand"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quoteFormMessage" class="mb-4 hidden"></div>
+
+                <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-black uppercase tracking-widest py-4 rounded-lg transition-colors">
+                    Submit Quote Request
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?php
 endwhile;

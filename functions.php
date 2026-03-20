@@ -180,6 +180,21 @@ require_once STR_DIR . '/inc/template-functions.php';
 require_once STR_DIR . '/inc/rest-api.php';
 require_once STR_DIR . '/inc/admin-functions.php';
 require_once STR_DIR . '/inc/clinic-importer.php';
+require_once STR_DIR . '/inc/quote-handler.php';
+
+/**
+ * Enqueue Quote Modal Scripts
+ */
+function str_enqueue_quote_scripts() {
+    if (is_singular('clinic')) {
+        wp_enqueue_script('str-quote-modal', STR_URI . '/assets/js/quote-modal.js', array(), STR_VERSION, true);
+        wp_localize_script('str-quote-modal', 'str_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('str_quote_nonce')
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'str_enqueue_quote_scripts');
 
 /**
  * Customizer: Social Proof Stats
