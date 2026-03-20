@@ -112,6 +112,15 @@ function str_add_clinic_meta_boxes() {
         'side',
         'default'
     );
+
+    add_meta_box(
+        'clinic_social_media',
+        __('Social Media', 'search-tattoo-removal'),
+        'str_clinic_social_media_callback',
+        'clinic',
+        'normal',
+        'default'
+    );
 }
 add_action('add_meta_boxes', 'str_add_clinic_meta_boxes');
 
@@ -535,6 +544,44 @@ function str_clinic_laser_tech_callback($post) {
 }
 
 /**
+ * Social Media Meta Box
+ */
+function str_clinic_social_media_callback($post) {
+    $facebook = get_post_meta($post->ID, '_clinic_facebook', true);
+    $twitter = get_post_meta($post->ID, '_clinic_twitter', true);
+    $instagram = get_post_meta($post->ID, '_clinic_instagram', true);
+    $youtube = get_post_meta($post->ID, '_clinic_youtube', true);
+    $linkedin = get_post_meta($post->ID, '_clinic_linkedin', true);
+    $tiktok = get_post_meta($post->ID, '_clinic_tiktok', true);
+    ?>
+    <p>
+        <label for="facebook"><strong><?php _e('Facebook URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="facebook" name="facebook" value="<?php echo esc_attr($facebook); ?>" style="width: 100%;" placeholder="https://facebook.com/yourpage">
+    </p>
+    <p>
+        <label for="twitter"><strong><?php _e('Twitter/X URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="twitter" name="twitter" value="<?php echo esc_attr($twitter); ?>" style="width: 100%;" placeholder="https://twitter.com/yourhandle">
+    </p>
+    <p>
+        <label for="instagram"><strong><?php _e('Instagram URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="instagram" name="instagram" value="<?php echo esc_attr($instagram); ?>" style="width: 100%;" placeholder="https://instagram.com/yourhandle">
+    </p>
+    <p>
+        <label for="youtube"><strong><?php _e('YouTube URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="youtube" name="youtube" value="<?php echo esc_attr($youtube); ?>" style="width: 100%;" placeholder="https://youtube.com/yourchannel">
+    </p>
+    <p>
+        <label for="linkedin"><strong><?php _e('LinkedIn URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="linkedin" name="linkedin" value="<?php echo esc_attr($linkedin); ?>" style="width: 100%;" placeholder="https://linkedin.com/company/yourcompany">
+    </p>
+    <p>
+        <label for="tiktok"><strong><?php _e('TikTok URL:', 'search-tattoo-removal'); ?></strong></label><br>
+        <input type="url" id="tiktok" name="tiktok" value="<?php echo esc_attr($tiktok); ?>" style="width: 100%;" placeholder="https://tiktok.com/@yourhandle">
+    </p>
+    <?php
+}
+
+/**
  * Add meta boxes for Laser Technology
  */
 function str_add_laser_tech_meta_boxes() {
@@ -585,7 +632,8 @@ function str_save_clinic_meta($post_id) {
         'website', 'phone', 'google_maps_url', 'rating', 'reviews_count',
         'street', 'zip_code', 'full_address', 'operating_hours_raw',
         'min_price', 'max_price', 'price_range_display',
-        'thumbnail_url', 'logo', 'before_after_gallery_url', 'years_in_business'
+        'thumbnail_url', 'logo', 'before_after_gallery_url', 'years_in_business',
+        'facebook', 'twitter', 'instagram', 'youtube', 'linkedin', 'tiktok'
     );
 
     foreach ($fields as $field) {
